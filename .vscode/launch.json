@@ -1,0 +1,18 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Development",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+			"cwd": "${workspaceFolder}",
+			"outputCapture": "std",
+			"console": "internalConsole",
+			"args": [
+				"--config",
+				"webpack.dev.js",
+			]
+		},
+	]
+}
