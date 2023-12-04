@@ -1,0 +1,45 @@
+$xs: 320px;
+$sm: 768px;
+$md: 1024px;
+$lg: 1200px;
+$xl: 1600px;
+$xxl: 1920px;
+
+@function strip-unit($value) {
+    @if unitless($value) or index('px', unit($value)) == null {
+      @error "Property \"#{$value}\" must be in px unit.";
+    }
+    @else {
+        @return $value / ($value * 0 + 1);
+    }
+}
+
+@function pxToRem($px) {
+    $result: $px / 16 * 1rem;
+    @return #{$result};
+}
+
+@function fv($minValuePx, $maxValuePx, $minViewportPx, $maxViewportPx, $unitStr: vw) {
+    $minValuePx: strip-unit($minValuePx);
+    $maxValuePx: strip-unit($maxValuePx);
+    $minViewportPx: strip-unit($minViewportPx);
+    $maxViewportPx: strip-unit($maxViewportPx);
+
+    $slope: ($maxValuePx - $minValuePx) / ($maxViewportPx - $minViewportPx);
+    $slopeToUnit: $slope * 100;
+    $intersectRem: pxToRem($minValuePx - $slope * $minViewportPx);
+
+    $minValueRem: pxToRem(min($minValuePx, $maxValuePx));
+    $maxValueRem: pxToRem(max($minValuePx, $maxValuePx));
+
+	$result: clamp(#{$minValueRem}, #{$slopeToUnit}#{$unitStr} + #{$intersectRem}, #{$maxValueRem});
+    @return #{$result};
+}
+
+@function rv($valuePx, $viewportPx, $unitStr:vw) {
+    $valuePx: strip-unit($valuePx);
+    $viewportPx: strip-unit($viewportPx);
+
+    $result: $valuePx / ($viewportPx / 100) * 1 + $unitStr;
+	@return #{$result};
+} 

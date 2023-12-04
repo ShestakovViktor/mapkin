@@ -27,7 +27,16 @@ module.exports = {
 							},
 						},
 					},
-					"sass-loader",
+					{
+						loader: "sass-loader",
+						options: {
+							sassOptions: {
+								includePaths: [
+									path.join(__dirname, "src/ui/style")
+								],
+							}
+						}
+					}
 				],
 			},
 		],

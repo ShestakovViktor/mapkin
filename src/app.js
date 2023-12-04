@@ -1,6 +1,9 @@
-const root = document.body;
+import "@src/i18n";
+import {initCore} from "@core";
+import {initUI} from "@ui";
 
-const h1 = document.createElement("h1");
-h1.innerText = "Hello mapkin";
 
-root.appendChild(h1);
+const context = {};
+
+initCore(context);
+initUI(context);
