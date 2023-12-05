@@ -6,9 +6,9 @@ import i18next from "i18next";
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
 /**
- * @param {import("@src/app").Context} context
+ * @param {import("@core").Core} core
  */
-export function InitialDialog(context) {
+export function InitialDialog(core) {
     const initialDialog = document.createElement("div");
     initialDialog.classList.add(styles.InitialDialog);
 
@@ -17,25 +17,18 @@ export function InitialDialog(context) {
     createProjectButton.innerText = i18next
         .t("project:InitialDialog.create");
     createProjectButton.onclick = () => {
-        console.log(context);
+        core.signal();
     };
 
     const continueProjectButton = document.createElement("div");
     continueProjectButton.innerText = i18next
         .t("project:InitialDialog.continue");
-    continueProjectButton.onclick = () => {
-        console.log("qwe");
-    };
 
     const loadProjectButton = document.createElement("div");
-    loadProjectButton.innerText = i18next.t("project:InitialDialog.load");
-    loadProjectButton.onclick = () => {
-        console.log("qwe");
-    };
+    loadProjectButton.innerText = i18next
+        .t("project:InitialDialog.load");
 
 
     initialDialog.appendChild(createProjectButton);
-    initialDialog.appendChild(continueProjectButton);
-    initialDialog.appendChild(loadProjectButton);
     return initialDialog;
 }

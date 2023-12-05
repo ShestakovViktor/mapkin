@@ -1,16 +1,15 @@
 import "@src/i18n";
-import {initCore} from "@core";
-import {initUI} from "@ui";
-
-/**
- * @typedef {Object} Context
- * @property {number} width
- */
-const context = {
-    width: 0,
-};
+import {Scene} from "@scene";
+import {Core} from "@core";
+import {UI} from "@ui";
 
 
+const root = document.body;
 
-initCore();
-initUI(context);
+const scene = new Scene(root);
+const core = new Core(scene);
+const ui = new UI(root, core);
+
+if (scene && core && ui) {
+    console.log("App started");
+}
