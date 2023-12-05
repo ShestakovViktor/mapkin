@@ -11,6 +11,8 @@ import {InitialDialog} from "@ui/feature/project/component";
 export function initUI(context) {
     const root = document.body;
 
+
+
     const modalLayer = ModalLayer();
     modalLayer.appendChild(InitialDialog(context));
 
