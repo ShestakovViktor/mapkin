@@ -14,3 +14,17 @@ body {
     height: 100%;
     font-family: Inter;
 }
+
+#root {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    #map, #overlay {
+        width: 100%;
+        height: 100%;
+
+        position: absolute;
+    }
+}

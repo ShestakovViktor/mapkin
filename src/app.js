@@ -1,15 +1,20 @@
 import "@src/i18n";
-import {Scene} from "@scene";
+import "@style/colors.scss";
+import "@style/global.scss";
+
+import {Map} from "@src/map";
 import {Core} from "@core";
 import {UI} from "@ui";
 
+const root = document.createElement("div");
+root.id = "root";
+document.body.appendChild(root);
 
-const root = document.body;
 
-const scene = new Scene(root);
-const core = new Core(scene);
+const map = new Map(root);
+const core = new Core(map);
 const ui = new UI(root, core);
 
-if (scene && core && ui) {
+if (map && core && ui) {
     console.log("App started");
 }

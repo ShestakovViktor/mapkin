@@ -32,7 +32,7 @@ module.exports = {
 						options: {
 							sassOptions: {
 								includePaths: [
-									path.join(__dirname, "src/ui/style")
+									path.join(__dirname, "src/style")
 								],
 							}
 						}
@@ -45,6 +45,7 @@ module.exports = {
 		extensions: [".js"],
 		alias: {
 			"@src": path.resolve(__dirname, "src/"),
+			"@style": path.resolve(__dirname, "src/style/"),
 			"@scene": path.resolve(__dirname, "src/scene/"),
 			"@core": path.resolve(__dirname, "src/core/"),
 			"@ui": path.resolve(__dirname, "src/ui/"),

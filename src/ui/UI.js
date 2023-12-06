@@ -1,19 +1,30 @@
-import "@ui/style/colors.scss";
-import "@ui/style/global.scss";
-
-import {ModalLayer} from "@ui/layout/ModalLayer";
+import {UILayer, ModalLayer} from "@ui/layout";
 import {InitialDialog} from "@ui/feature/project/component";
+import {Modal} from "@ui/utility";
 
 
-export class UI{
+export class UI {
     /**
      * @param {HTMLElement} root
      * @param {import("@core").Core} core
      */
     constructor(root, core) {
         const modalLayer = ModalLayer();
-        modalLayer.appendChild(InitialDialog(core));
 
+        /**
+         * @type {import("@ui/type").Context}
+         */
+        const context = {
+            modal: new Modal(modalLayer),
+        };
+
+
+        const uiLayer = UILayer(context);
+
+        root.appendChild(uiLayer);
         root.appendChild(modalLayer);
+
+
+        context.modal.render(InitialDialog(core));
     }
 }

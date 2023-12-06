@@ -1,7 +1,7 @@
 export class Core {
 
     /**
-     * @param {import("@scene").Scene} scene
+     * @param {import("@src/map").Map} scene
      */
     constructor(scene) {
         console.log(scene);

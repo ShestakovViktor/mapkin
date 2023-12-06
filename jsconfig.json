@@ -13,11 +13,17 @@
             "@src/*": [
                 "src/*"
             ],
+            "@style": [
+                "src/style"
+            ],
+            "@style/*": [
+                "src/style/*"
+            ],
             "@scene": [
-                "src/scene"
+                "src/map"
             ],
             "@scene/*": [
-                "src/scene/*"
+                "src/map/*"
             ],
             "@core": [
                 "src/core"
