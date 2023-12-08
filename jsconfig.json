@@ -19,23 +19,11 @@
             "@style/*": [
                 "src/style/*"
             ],
-            "@scene": [
-                "src/map"
+            "@type": [
+                "src/type"
             ],
-            "@scene/*": [
-                "src/map/*"
-            ],
-            "@core": [
-                "src/core"
-            ],
-            "@core/*": [
-                "src/core/*"
-            ],
-            "@ui": [
-                "src/ui"
-            ],
-            "@ui/*": [
-                "src/ui/*"
+            "@type/*": [
+                "src/type/*"
             ],
         },
         "resolveJsonModule": true,

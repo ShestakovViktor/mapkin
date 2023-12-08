@@ -55,7 +55,8 @@
             "error",
             "all",
             {
-                "ignoreJSX": "all"
+                "ignoreJSX": "all",
+                "allowParensAfterCommentPattern": "@type"
             }
         ],
         "no-extra-semi": "error",

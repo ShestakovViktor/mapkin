@@ -46,9 +46,10 @@ module.exports = {
 		alias: {
 			"@src": path.resolve(__dirname, "src/"),
 			"@style": path.resolve(__dirname, "src/style/"),
+			"@type": path.resolve(__dirname, "src/type/"),
 			"@scene": path.resolve(__dirname, "src/scene/"),
 			"@core": path.resolve(__dirname, "src/core/"),
-			"@ui": path.resolve(__dirname, "src/ui/"),
+			"@src/ui": path.resolve(__dirname, "src/ui/"),
 		},
 	}
 };

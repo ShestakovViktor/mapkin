@@ -1,30 +1,30 @@
-import {UILayer, ModalLayer} from "@ui/layout";
-import {InitialDialog} from "@ui/feature/project/component";
-import {Modal} from "@ui/utility";
+import {UILayer, ModalLayer} from "@src/ui/layout";
+import {InitialDialog} from "@src/ui/feature/project/component";
+import {Modal} from "@src/ui/utility";
+import {createContext} from "@src/ui/context";
 
 
 export class UI {
     /**
      * @param {HTMLElement} root
-     * @param {import("@core").Core} core
+     * @param {import("@src/core").Core} core
      */
     constructor(root, core) {
         const modalLayer = ModalLayer();
 
-        /**
-         * @type {import("@ui/type").Context}
-         */
-        const context = {
+
+        const context = createContext({
             modal: new Modal(modalLayer),
-        };
+            core
+        });
 
 
-        const uiLayer = UILayer(context);
+        const uiLayer = UILayer();
 
         root.appendChild(uiLayer);
         root.appendChild(modalLayer);
 
 
-        context.modal.render(InitialDialog(core));
+        context.modal.render(InitialDialog());
     }
 }

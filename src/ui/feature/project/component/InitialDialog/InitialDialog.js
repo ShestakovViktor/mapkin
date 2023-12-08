@@ -1,23 +1,26 @@
 import styles from "./InitialDialog.module.scss";
 import en from "./string/en.json";
 
+import {CreateProjectDialog} from "@src/ui/feature/project/component/CreateProjectDialog";
+import {useContext} from "@src/ui/context";
 import i18next from "i18next";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
-/**
- * @param {import("@core").Core} core
- */
-export function InitialDialog(core) {
+export function InitialDialog() {
+    const context = useContext();
+
     const initialDialog = document.createElement("div");
     initialDialog.classList.add(styles.InitialDialog);
 
 
     const createProjectButton = document.createElement("div");
-    createProjectButton.innerText = i18next
-        .t("project:InitialDialog.create");
+    createProjectButton.innerText = i18next.t(
+        "project:InitialDialog.create",
+        {postProcess: ["capitalize"]}
+    );
     createProjectButton.onclick = () => {
-        core.signal();
+        context.modal.render(CreateProjectDialog());
     };
 
     const continueProjectButton = document.createElement("div");
