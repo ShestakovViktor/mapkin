@@ -1,5 +1,13 @@
 import JSZip from "jszip";
 
+/**
+ * @typedef {Object} projectParams
+ * @property {string} projectName
+ * @property {File} mapFile
+ * @property {number} horizontalTilesNumber
+ * @property {number} verticalTilesNumber
+ * */
+
 
 export class Core {
     /**
@@ -10,45 +18,85 @@ export class Core {
     }
 
     /**
-     * @param {string} name
-     * @param {File} file
+     * @param {projectParams} params
      * */
-    async createProject(name, file) {
+    async createProject(params) {
+        const file = params.mapFile;
+
+        const image = await this.initImage(file);
+        const map = await this.initMap(image, params);
+        const tiles = await this.initTiles(image, map);
+
+        /** @type {import("@type").Project} */
+        const project = {name: params.projectName, map, tiles};
+
+        this.engine.init(project);
+    }
+
+
+    /**
+     * @param {Blob} file
+     * @return {Promise<HTMLImageElement>}
+     */
+    async initImage(file) {
         const url = URL.createObjectURL(file);
+        const image = document.createElement("img");
+        image.src = url;
+        await new Promise(resolve => image.onload = resolve);
+        return image;
+    }
 
-        const srcImage = document.createElement("img");
-        srcImage.src = url;
-        await new Promise(resolve => srcImage.onload = resolve);
 
-        const dimension = 5;
-
-        /** @type import("@type").Project */
-        const project = {
-            name,
-            mapWidth: srcImage.width,
-            mapHeight: srcImage.height,
-
-            tileWidth: srcImage.width / dimension,
-            tileHeight: srcImage.height / dimension,
-
-            tiles: []
+    /**
+     * @param {HTMLImageElement} image
+     * @param {Object} params
+     * @param {number} params.horizontalTilesNumber
+     * @param {number} params.verticalTilesNumber
+     * @return {Promise<import("@type").Map>}
+     */
+    async initMap(image, params) {
+        /** @type {import("@type").Map} */
+        const map = {
+            width: image.width,
+            height: image.height,
+            layout: {
+                horizontal: params.horizontalTilesNumber,
+                vertial: params.verticalTilesNumber,
+            },
+            tile: {
+                width:  image.width / params.horizontalTilesNumber,
+                height: image.height / params.verticalTilesNumber,
+            }
         };
 
+        return map;
+    }
+
+
+    /**
+     * @param {HTMLImageElement} image
+     * @param {import("@type").Map} map
+     * @return {Promise<import("@type").Tile[]>}
+     */
+    async initTiles(image, map) {
         const canvas = document.createElement("canvas");
-        canvas.width = project.mapWidth;
-        canvas.height = project.mapHeight;
+        canvas.width = map.tile.width;
+        canvas.height = map.tile.height;
         const context = canvas.getContext("2d");
         if (!context) throw new Error();
 
-        for await (let yIndex of Array(dimension).keys()) {
-            for await (let xIndex of Array(dimension).keys()) {
+        /** @type {import("@type").Tile[]} */
+        const tiles = [];
 
-                const x = xIndex * project.tileWidth;
-                const y = yIndex * project.tileHeight;
+        for await (let yi of Array(map.layout.vertial).keys()) {
+            for await (let xi of Array(map.layout.horizontal).keys()) {
+
+                const x = xi * map.tile.width;
+                const y = yi * map.tile.height;
 
                 context.drawImage(
-                    srcImage,
-                    x, y, project.tileWidth, project.tileHeight,
+                    image,
+                    x, y, map.tile.width, map.tile.height,
                     0, 0, canvas.width, canvas.height
                 );
 
@@ -56,12 +104,11 @@ export class Core {
                     resolve => canvas.toBlob(resolve)
                 );
 
-                if (blob) project.tiles.push({x, y, blob});
+                if (blob) tiles.push({name: `${x}-${y}`, x, y, blob});
             }
         }
 
-        console.log(project);
-        this.engine.init(project);
+        return tiles;
     }
 
     download() {

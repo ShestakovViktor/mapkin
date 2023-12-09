@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} Context
  * @property {import("@src/ui/utility").Modal} modal
- * @property {import("@core").Core} core
+ * @property {import("@src/core").Core} core
 */
 
 

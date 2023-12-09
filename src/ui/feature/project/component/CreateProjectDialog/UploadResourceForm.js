@@ -23,15 +23,40 @@ export function UploadResourceForm() {
 
 
         const mapFile = /** @type File */(formData.get("mapFile"));
-        if (mapFile && mapFile.size) {context.core.createProject(
-            /** @type string */(formData.get("projectName")) || "New project",
-            mapFile
-        );}
+
+        // if (mapFile && mapFile.size) {
+
+        const projectName = /** @type string */(
+            String(formData.get("projectName"))
+        ) || "New project";
+
+        const verticalTilesNumber = /** @type number */(
+            Number(formData.get("verticalTilesNumber"))
+        ) || 5;
+
+        const horizontalTilesNumber = /** @type number */(
+            Number(formData.get("horizontalTilesNumber"))
+        ) || 5;
+
+
+        const projectData = {
+            projectName,
+            mapFile,
+            horizontalTilesNumber,
+            verticalTilesNumber,
+        };
+
+        console.log(projectData);
+
+        context.core.createProject(projectData);
 
         context.modal.clear();
     }
 
 
+    /**
+     * Project name
+     */
     const projectNameLabel = document.createElement("label");
     projectNameLabel.htmlFor = "projectName";
     projectNameLabel.innerText = i18next.t(
@@ -39,13 +64,15 @@ export function UploadResourceForm() {
         {postProcess: ["capitalize"]}
     );
 
-
     const projectNameInput = document.createElement("input");
     projectNameInput.id = "projectName";
     projectNameInput.type = "text";
     projectNameInput.name = "projectName";
 
 
+    /**
+     * Map file
+     */
     const mapFileInput = document.createElement("input");
     mapFileInput.type = "file";
     mapFileInput.name = "mapFile";
@@ -55,11 +82,57 @@ export function UploadResourceForm() {
     submitButton.type = "submit";
 
 
+    /**
+     * Horizontal tiles number
+     */
+    const horizontalTilesNumberLabel = document.createElement("label");
+    horizontalTilesNumberLabel.htmlFor = "horizontalTilesNumber";
+    horizontalTilesNumberLabel.innerText = i18next.t(
+        "project:CreateProjectDialog.horizontalTilesNumber",
+        {postProcess: ["capitalize"]}
+    ) + ":";
 
+    const horizontalTilesNumberInput = document.createElement("input");
+    horizontalTilesNumberInput.id = "horizontalTilesNumber";
+    horizontalTilesNumberInput.type = "text";
+    horizontalTilesNumberInput.name = "horizontalTilesNumber";
+
+
+    /**
+     * Vertical tiles number
+     */
+    const verticalTilesNumberLabel = document.createElement("label");
+    verticalTilesNumberLabel.htmlFor = "verticalTilesNumber";
+    verticalTilesNumberLabel.innerText = i18next.t(
+        "project:CreateProjectDialog.verticalTilesNumber",
+        {postProcess: ["capitalize"]}
+    ) + ":";
+
+    const verticalTilesNumberInput = document.createElement("input");
+    verticalTilesNumberInput.id = "verticalTilesNumber";
+    verticalTilesNumberInput.type = "text";
+    verticalTilesNumberInput.name = "verticalTilesNumber";
+
+
+
+
+    /**
+     * Layout
+     */
     resourceForm.appendChild(projectNameLabel);
     resourceForm.appendChild(projectNameInput);
+
     resourceForm.appendChild(mapFileInput);
+
+    resourceForm.appendChild(horizontalTilesNumberLabel);
+    resourceForm.appendChild(horizontalTilesNumberInput);
+
+    resourceForm.appendChild(verticalTilesNumberLabel);
+    resourceForm.appendChild(verticalTilesNumberInput);
+
+
     resourceForm.appendChild(submitButton);
+
 
 
 
