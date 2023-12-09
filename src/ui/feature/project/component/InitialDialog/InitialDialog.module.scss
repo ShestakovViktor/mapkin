@@ -1,0 +1,21 @@
+@use "mixins";
+
+.InitialDialog {
+    @include mixins.button;
+
+    width: 80%;
+    height: 20%;
+
+    display: flex;
+    justify-content: center;
+    gap: 10%;
+
+    font-size: 20px;
+
+    > * {
+        @include mixins.button;
+
+        display: flex;
+        align-items: center;
+    }
+}

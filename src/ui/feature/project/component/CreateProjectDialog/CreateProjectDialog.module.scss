@@ -1,0 +1,11 @@
+@use "mixins";
+
+.CreateProjectDialog {
+    @include mixins.button;
+
+    > .ResourceForm {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+}

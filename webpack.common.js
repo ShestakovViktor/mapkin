@@ -13,21 +13,30 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.css$/,
+				test: /\.s[ac]ss$/i,
 				use: [
 					"style-loader",
 					{
 						loader: "css-loader",
 						options: {
 							modules: {
-								auto: /\.m\.css$/,
+								auto: /\.module\.scss$/,
 								mode: "local",
 								localIdentName: "[local]_[hash:base64:6]",
 								exportLocalsConvention: "camelCase",
 							},
 						},
 					},
-					"postcss-loader",
+					{
+						loader: "sass-loader",
+						options: {
+							sassOptions: {
+								includePaths: [
+									path.join(__dirname, "src/style")
+								],
+							}
+						}
+					}
 				],
 			},
 		],
@@ -35,11 +44,12 @@ module.exports = {
 	resolve: {
 		extensions: [".js"],
 		alias: {
+			"@src": path.resolve(__dirname, "src/"),
+			"@style": path.resolve(__dirname, "src/style/"),
+			"@type": path.resolve(__dirname, "src/type/"),
+			"@scene": path.resolve(__dirname, "src/scene/"),
 			"@core": path.resolve(__dirname, "src/core/"),
-			"@module": path.resolve(__dirname, "src/core/module/"),
-			"@driver": path.resolve(__dirname, "src/core/driver/"),
-			"@math": path.resolve(__dirname, "src/core/math/"),
-			"@gui": path.resolve(__dirname, "src/gui/"),
+			"@src/ui": path.resolve(__dirname, "src/ui/"),
 		},
 	}
 };

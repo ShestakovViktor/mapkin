@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "checkJs": true,
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "paths": {
+            "@src": [
+                "src"
+            ],
+            "@src/*": [
+                "src/*"
+            ],
+            "@style": [
+                "src/style"
+            ],
+            "@style/*": [
+                "src/style/*"
+            ],
+            "@type": [
+                "src/type"
+            ],
+            "@type/*": [
+                "src/type/*"
+            ],
+        },
+        "resolveJsonModule": true,
+        "strict": true,
+        "target": "ES6"
+    },
+    "files": [
+        "module.d.ts",
+    ],
+    "include": [
+        "src/**/*.js",
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}
