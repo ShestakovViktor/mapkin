@@ -13,6 +13,10 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: /\.svg$/,
+				loader: "svg-inline-loader"
+			},
+			{
 				test: /\.s[ac]ss$/i,
 				use: [
 					"style-loader",
@@ -47,9 +51,7 @@ module.exports = {
 			"@src": path.resolve(__dirname, "src/"),
 			"@style": path.resolve(__dirname, "src/style/"),
 			"@type": path.resolve(__dirname, "src/type/"),
-			"@scene": path.resolve(__dirname, "src/scene/"),
-			"@core": path.resolve(__dirname, "src/core/"),
-			"@src/ui": path.resolve(__dirname, "src/ui/"),
+			"@public": path.resolve(__dirname, "public/"),
 		},
 	}
 };

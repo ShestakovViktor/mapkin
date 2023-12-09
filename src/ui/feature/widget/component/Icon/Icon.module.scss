@@ -1,0 +1,13 @@
+@use "mixins";
+
+.Button {
+    @include mixins.button;
+
+
+}
+    .Icon {
+        svg {
+
+            stroke: inherit;
+        }
+    }

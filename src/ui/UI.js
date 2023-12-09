@@ -1,4 +1,4 @@
-import {UILayer, ModalLayer} from "@src/ui/layout";
+import {InterfaceLayer, ModalLayer} from "@src/ui/layout";
 import {InitialDialog} from "@src/ui/feature/project/component";
 import {Modal} from "@src/ui/utility";
 import {createContext} from "@src/ui/context";
@@ -19,9 +19,9 @@ export class UI {
         });
 
 
-        const uiLayer = UILayer();
+        const interfaceLayer = InterfaceLayer();
 
-        root.appendChild(uiLayer);
+        root.appendChild(interfaceLayer);
         root.appendChild(modalLayer);
 
 

@@ -1,3 +1,5 @@
+import styles from "@src/ui/layout/ModalLayer/ModalLayer.module.scss";
+
 export class Modal {
     /**
      * @param {HTMLElement} modalLayer
@@ -21,4 +23,8 @@ export class Modal {
         this.modalLayer.appendChild(element);
     }
 
+    hide() {
+        this.clear();
+        this.modalLayer.classList.add(styles.Hidden);
+    }
 }

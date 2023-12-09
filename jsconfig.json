@@ -25,6 +25,12 @@
             "@type/*": [
                 "src/type/*"
             ],
+            "@public": [
+                "public/"
+            ],
+            "@public/*": [
+                "public/*"
+            ],
         },
         "resolveJsonModule": true,
         "strict": true,

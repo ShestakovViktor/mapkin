@@ -19,7 +19,7 @@ export class Core {
 
     /**
      * @param {projectParams} params
-     * */
+     */
     async createProject(params) {
         const file = params.mapFile;
 
@@ -107,6 +107,7 @@ export class Core {
                 if (blob) tiles.push({name: `${x}-${y}`, x, y, blob});
             }
         }
+
 
         return tiles;
     }

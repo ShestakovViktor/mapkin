@@ -14,6 +14,9 @@ export function InitialDialog() {
     initialDialog.classList.add(styles.InitialDialog);
 
 
+    /**
+     * Create project button
+     */
     const createProjectButton = document.createElement("div");
     createProjectButton.innerText = i18next.t(
         "project:InitialDialog.create",

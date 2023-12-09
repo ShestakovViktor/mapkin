@@ -12,8 +12,6 @@ export function UploadResourceForm() {
     resourceForm.addEventListener("submit", handleSubmit);
 
 
-
-
     /** @param {SubmitEvent} event */
     function handleSubmit(event) {
         event.preventDefault();
@@ -32,11 +30,11 @@ export function UploadResourceForm() {
 
         const verticalTilesNumber = /** @type number */(
             Number(formData.get("verticalTilesNumber"))
-        ) || 5;
+        ) || 1;
 
         const horizontalTilesNumber = /** @type number */(
             Number(formData.get("horizontalTilesNumber"))
-        ) || 5;
+        ) || 1;
 
 
         const projectData = {
@@ -50,7 +48,7 @@ export function UploadResourceForm() {
 
         context.core.createProject(projectData);
 
-        context.modal.clear();
+        context.modal.hide();
     }
 
 
@@ -95,6 +93,7 @@ export function UploadResourceForm() {
     const horizontalTilesNumberInput = document.createElement("input");
     horizontalTilesNumberInput.id = "horizontalTilesNumber";
     horizontalTilesNumberInput.type = "text";
+    horizontalTilesNumberInput.value = "5";
     horizontalTilesNumberInput.name = "horizontalTilesNumber";
 
 
@@ -111,9 +110,8 @@ export function UploadResourceForm() {
     const verticalTilesNumberInput = document.createElement("input");
     verticalTilesNumberInput.id = "verticalTilesNumber";
     verticalTilesNumberInput.type = "text";
+    verticalTilesNumberInput.value = "5";
     verticalTilesNumberInput.name = "verticalTilesNumber";
-
-
 
 
     /**
@@ -130,10 +128,7 @@ export function UploadResourceForm() {
     resourceForm.appendChild(verticalTilesNumberLabel);
     resourceForm.appendChild(verticalTilesNumberInput);
 
-
     resourceForm.appendChild(submitButton);
-
-
 
 
     return resourceForm;

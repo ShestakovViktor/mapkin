@@ -1,0 +1,19 @@
+.ToolBar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+
+
+    .Button {
+        padding: 8px;
+        aspect-ratio: 1;
+        width: 64px;
+
+        * {
+            stroke: var(--grey-60);
+            width: 32px;
+            height: 32px;
+        }
+    }
+}
