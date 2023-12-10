@@ -1,6 +1,6 @@
 import {useContext} from "@ui/context";
 import styles from "./InterfaceLayer.module.scss";
-import {StatusBar, ToolBar} from "@ui/layout";
+import {ToolBar, SystemBar, StatusBar} from "@ui/layout";
 
 
 export function InterfaceLayer() {
@@ -11,11 +11,12 @@ export function InterfaceLayer() {
     interfaceLayer.classList.add(styles.InterfaceLayer);
 
     interfaceLayer.addEventListener("mousedown", (event) => {
-        context.core.mode.onMouseDown(event);
+        context.core.io.onMouseDown(event);
     });
 
 
     interfaceLayer.appendChild(ToolBar());
+    interfaceLayer.appendChild(SystemBar());
     interfaceLayer.appendChild(StatusBar());
 
     return interfaceLayer;

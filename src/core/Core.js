@@ -1,20 +1,18 @@
-import {Mode, AddMarkerMode} from "@core/mode";
-import {Project} from "@core";
+import {IO, Project} from "@core";
+
 
 export class Core {
     /**
      * @param {import("@engine").Engine} engine
      */
     constructor(engine) {
+        /** @private */
         this.engine = engine;
 
+        /** @private */
         this.project = new Project();
 
-        this.mode = new Mode();
-
-        this.modes = {
-            addMarker: new AddMarkerMode()
-        };
+        this.io = new IO();
     }
 
 
@@ -31,6 +29,8 @@ export class Core {
      */
     async initProject(params) {
         await this.project.init(params);
-        if (this.project.data) this.engine.init(this.project.data);
+        if (this.project.data) {
+            this.engine.init(this.project.data);
+        }
     }
 }

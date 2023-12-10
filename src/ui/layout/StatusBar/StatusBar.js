@@ -3,10 +3,9 @@ import styles from "./StatusBar.module.scss";
 
 export function StatusBar() {
     const statusBar = document.createElement("div");
-    statusBar.classList.add(styles.ToolBar);
+    statusBar.classList.add(styles.StatusBar);
 
-    console.log(styles.StatusBar);
-
+    statusBar.innerText = "Status bar";
 
     return statusBar;
 }

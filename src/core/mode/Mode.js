@@ -1,12 +1,21 @@
+/* eslint-disable no-unused-vars */
+
+/**
+ * @class
+ * @abstract
+ */
 export class Mode {
     /**
      * @param {MouseEvent} event
      */
     onMouseDown(event) {
-        console.log(event);
+        throw new Error("Methor must be implemented");
     }
 
-    onMouseUp() {
-
+    /**
+     * @param {MouseEvent} event
+     */
+    onMouseUp(event) {
+        throw new Error();
     }
 }

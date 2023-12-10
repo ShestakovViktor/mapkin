@@ -24,7 +24,8 @@ export class UI {
         root.appendChild(interfaceLayer);
         root.appendChild(modalLayer);
 
+        context.modal.hide();
 
-        context.modal.render(InitialDialog());
+        //context.modal.render(InitialDialog());
     }
 }

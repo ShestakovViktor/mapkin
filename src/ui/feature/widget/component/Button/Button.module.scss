@@ -2,6 +2,9 @@
 
 .Button {
     @include mixins.button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .Icon {
         svg {

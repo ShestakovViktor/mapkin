@@ -1,14 +1,28 @@
 import styles from "./ToolBar.module.scss";
-import {Icon, Button} from "@ui/feature/widget/component";
+import SelectIconSvg from "@public/icon/select.svg";
 import MarkerIconSvg from "@public/icon/marker.svg";
-import DownloadIconSvg from "@public/icon/download.svg";
+
+import {Icon, Button} from "@ui/feature/widget/component";
+import {useContext} from "@ui/context";
 
 
 export function ToolBar() {
+    const context = useContext();
     const toolBar = document.createElement("div");
     toolBar.classList.add(styles.ToolBar);
 
     console.log(styles.ToolBar);
+
+    /**
+     * Select mode button
+     */
+    const selectModeButton = Button({
+        class: styles.Button,
+        icon: Icon(SelectIconSvg),
+        onClick: () => {
+            context.core.io.setMode("select");
+        }
+    });
 
 
     /**
@@ -18,24 +32,12 @@ export function ToolBar() {
         class: styles.Button,
         icon: Icon(MarkerIconSvg),
         onClick: () => {
-            console.log("qweq");
+            context.core.io.setMode("marker");
         }
     });
 
 
-    /**
-     * Download project button
-     */
-    const downloadProjectButton = Button({
-        class: styles.Button,
-        icon: Icon(DownloadIconSvg),
-        onClick: () => {
-            console.log("qweq");
-        }
-    });
-
-
+    toolBar.appendChild(selectModeButton);
     toolBar.appendChild(addMarkerButton);
-    toolBar.appendChild(downloadProjectButton);
     return toolBar;
 }

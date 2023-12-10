@@ -8,12 +8,13 @@
 
 
     display: grid;
-    grid-template-columns: 10px auto min-content 10px;
-    grid-template-rows: auto min-content 10px;
+    grid-template-columns: 10px min-content auto min-content 10px;
+    grid-template-rows: 10px auto min-content 10px;
     grid-template-areas: 
-        ". .         ToolBar ."
-        ". .         ToolBar ."
-        ". StatusBar ToolBar .";
+        ". .         .         .       ."
+        ". SystemBar .         ToolBar ."
+        ". SystemBar StatusBar ToolBar ."
+        ". .         .         .       .";
 
     align-items: center;
 
@@ -23,6 +24,11 @@
     }
 
     > :nth-child(2) {
+        grid-area: SystemBar;
+        justify-self: flex-start;
+    }
+
+    > :nth-child(3) {
         grid-area: StatusBar;
     }
 }

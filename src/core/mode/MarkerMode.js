@@ -1,6 +1,6 @@
 import {Mode} from "@core/mode";
 
-export class AddMarkerMode extends Mode {
+export class MarkerMode extends Mode {
     /**
      * @param {MouseEvent} event
      */
