@@ -10,6 +10,24 @@
             "@src": [
                 "src"
             ],
+            "@core": [
+                "src/core/"
+            ],
+            "@core/*": [
+                "src/core/*"
+            ],
+            "@engine": [
+                "src/engine/"
+            ],
+            "@engine/*": [
+                "src/engine/*"
+            ],
+            "@ui": [
+                "src/ui/"
+            ],
+            "@ui/*": [
+                "src/ui/*"
+            ],
             "@src/*": [
                 "src/*"
             ],

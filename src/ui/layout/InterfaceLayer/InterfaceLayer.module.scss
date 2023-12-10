@@ -8,14 +8,21 @@
 
 
     display: grid;
-    grid-template-columns: 5% auto 5% 2%;
-    grid-template-rows: 5% auto 5% 2%;
+    grid-template-columns: 10px auto min-content 10px;
+    grid-template-rows: auto min-content 10px;
     grid-template-areas: 
-        ".     .             . ."
-        ".     .       toolbar ."
-        ". statusBar statusBar .";
+        ". .         ToolBar ."
+        ". .         ToolBar ."
+        ". StatusBar ToolBar .";
+
+    align-items: center;
 
     > :nth-child(1) {
-        grid-area: toolbar;
+        grid-area: ToolBar;
+        justify-self: flex-end;
+    }
+
+    > :nth-child(2) {
+        grid-area: StatusBar;
     }
 }

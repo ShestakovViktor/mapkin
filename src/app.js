@@ -2,9 +2,9 @@ import "@src/i18n";
 import "@style/colors.scss";
 import "@style/global.scss";
 
-import {Engine} from "@src/engine";
-import {Core} from "@src/core";
-import {UI} from "@src/ui";
+import {Engine} from "@engine";
+import {Core} from "@core";
+import {UI} from "@ui";
 
 const root = document.createElement("div");
 root.id = "root";

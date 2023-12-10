@@ -1,4 +1,4 @@
-import {useContext} from "@src/ui/context";
+import {useContext} from "@ui/context";
 import styles from "./CreateProjectDialog.module.scss";
 
 import i18next from "i18next";
@@ -46,7 +46,7 @@ export function UploadResourceForm() {
 
         console.log(projectData);
 
-        context.core.createProject(projectData);
+        context.core.initProject(projectData);
 
         context.modal.hide();
     }

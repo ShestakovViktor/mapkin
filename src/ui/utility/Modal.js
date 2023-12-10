@@ -1,4 +1,4 @@
-import styles from "@src/ui/layout/ModalLayer/ModalLayer.module.scss";
+import styles from "@ui/layout/ModalLayer/ModalLayer.module.scss";
 
 export class Modal {
     /**

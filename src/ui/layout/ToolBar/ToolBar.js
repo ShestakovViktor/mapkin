@@ -1,5 +1,5 @@
 import styles from "./ToolBar.module.scss";
-import {Icon, Button} from "@src/ui/feature/widget/component";
+import {Icon, Button} from "@ui/feature/widget/component";
 import MarkerIconSvg from "@public/icon/marker.svg";
 import DownloadIconSvg from "@public/icon/download.svg";
 

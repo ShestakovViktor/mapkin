@@ -1,8 +1,8 @@
 import styles from "./InitialDialog.module.scss";
 import en from "./string/en.json";
 
-import {CreateProjectDialog} from "@src/ui/feature/project/component/CreateProjectDialog";
-import {useContext} from "@src/ui/context";
+import {CreateProjectDialog} from "@ui/feature/project/component/CreateProjectDialog";
+import {useContext} from "@ui/context";
 import i18next from "i18next";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
