@@ -3,7 +3,7 @@ import JSZip from "jszip";
 /**
  * @typedef {Object} Params
  * @property {string} projectName
- * @property {File} mapFile
+ * @property {Blob} mapFile
  * @property {number} horizontalTilesNumber
  * @property {number} verticalTilesNumber
  */

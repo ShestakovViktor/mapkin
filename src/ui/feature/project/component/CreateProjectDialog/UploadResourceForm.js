@@ -20,7 +20,7 @@ export function UploadResourceForm() {
         const formData = new FormData(form);
 
 
-        const mapFile = /** @type File */(formData.get("mapFile"));
+        const mapFile = /** @type Blob */(formData.get("mapFile"));
 
         // if (mapFile && mapFile.size) {
 
@@ -46,7 +46,7 @@ export function UploadResourceForm() {
 
         console.log(projectData);
 
-        context.core.initProject(projectData);
+        context.core.newProject(projectData);
 
         context.modal.hide();
     }

@@ -27,7 +27,25 @@ export class Core {
     /**
      * @param {import("@core").Params} params
      */
-    async initProject(params) {
+    async newProject(params) {
+        await this.project.init(params);
+        if (this.project.data) {
+            this.engine.init(this.project.data);
+        }
+    }
+
+    async testProject() {
+        const response = await fetch("/testMap.jpg");
+
+        const mapFile = await response.blob();
+
+        const params = {
+            projectName: "Test project",
+            horizontalTilesNumber: 5,
+            verticalTilesNumber: 5,
+            mapFile,
+        };
+
         await this.project.init(params);
         if (this.project.data) {
             this.engine.init(this.project.data);

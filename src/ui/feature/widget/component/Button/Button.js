@@ -5,6 +5,7 @@ import styles from "./Button.module.scss";
  * @param {Object} params
  * @param {string} [params.class]
  * @param {string} [params.label]
+ * @param {string} [params.tooltip]
  * @param {SVGElement} [params.icon]
  * @param {() => void} [params.onClick]
  * @return {HTMLButtonElement}
@@ -12,12 +13,14 @@ import styles from "./Button.module.scss";
 export function Button(params) {
     const button = document.createElement("button");
     button.classList.add(styles.Button);
+
+    if (params.tooltip) button.title = params.tooltip;
+
     if (params.class) button.classList.add(params.class);
+
     if (params.onClick) button.addEventListener("click", params.onClick);
 
-    if (params.icon) {
-        button.appendChild(params.icon);
-    }
+    if (params.icon) button.appendChild(params.icon);
 
     return button;
 }

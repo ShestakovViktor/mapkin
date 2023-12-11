@@ -26,15 +26,29 @@ export function InitialDialog() {
         context.modal.render(CreateProjectDialog());
     };
 
-    const continueProjectButton = document.createElement("div");
-    continueProjectButton.innerText = i18next
-        .t("project:InitialDialog.continue");
+    /**
+     * Continue project button
+     */
 
+    const continueProjectButton = document.createElement("div");
+    continueProjectButton.innerText = i18next.t(
+        "project:InitialDialog.continue"
+    );
+    continueProjectButton.onclick = () => {
+        context.core.testProject();
+        context.modal.hide();
+    };
+
+    /**
+     * Load project button
+     */
     const loadProjectButton = document.createElement("div");
-    loadProjectButton.innerText = i18next
-        .t("project:InitialDialog.load");
+    loadProjectButton.innerText = i18next.t(
+        "project:InitialDialog.load"
+    );
 
 
     initialDialog.appendChild(createProjectButton);
+    initialDialog.appendChild(continueProjectButton);
     return initialDialog;
 }

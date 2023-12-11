@@ -1,8 +1,14 @@
 <svg version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-    <path d="m2.5 0.5h8l3 3v12h-11z" fill="none" stroke="#000" stroke-linecap="square" stroke-linejoin="round" stroke-width="1px"/>
-    <g fill="none" stroke="#000" stroke-linecap="round" stroke-width="1px">
-        <path d="m10.5 1v2.5h2.5" stroke-linejoin="round"/>
-        <path d="m8 6.5v6"/>
-        <path d="m5.5 10.5 2.5 2.5 2.5-2.5" stroke-linejoin="round"/>
+    <g fill="none" stroke="#000" stroke-width="1px">
+        <path d="m15.5 0.5v15h-15v-15z" stroke-linecap="square" stroke-linejoin="round"/>
+        <path d="m0.5 3.5h15" stroke-linejoin="round"/>
+        <g stroke-linecap="round">
+            <g transform="translate(0 -.5)">
+                <path d="m8 7v5.5"/>
+                <path d="m5.5 10.5 2.5 2.5 2.5-2.5" stroke-linejoin="round"/>
+            </g>
+            <path d="m2 2h3.5"/>
+            <path d="m13 2h1"/>
+        </g>
     </g>
 </svg>

@@ -19,6 +19,12 @@ export class Engine {
         this.mapContainer.style.width = `${project.map.width}px`;
         this.mapContainer.style.height = `${project.map.height}px`;
 
+
+
+        const initialWidthScale = window.innerWidth / project.map.width;
+        const initialHeightScale = window.innerHeight / project.map.height;
+        this.mapContainer.style.transform = `scale(${initialWidthScale}, ${initialHeightScale})`;
+
         project.tiles.forEach(data => {
             const tile = document.createElement("img");
             const url = URL.createObjectURL(data.blob);
@@ -28,6 +34,7 @@ export class Engine {
             tile.style.height = `${project.map.tile.height}px`;
             tile.style.left = `${data.x}px`;
             tile.style.top = `${data.y}px`;
+
 
             this.mapContainer.appendChild(tile);
         });

@@ -18,6 +18,7 @@ body {
 #root {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 
     position: relative;
 
@@ -34,11 +35,9 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    transform: scale(.5);
     transform-origin: left top;
     img {
         position: absolute;
-        border-radius: 2em;
-        border: 2px solid black;
+        border: 1px solid var(--grey-60);
     }
 }
