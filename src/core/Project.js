@@ -1,26 +1,77 @@
-import JSZip from "jszip";
-
 /**
  * @typedef {Object} Params
  * @property {string} projectName
- * @property {Blob} mapFile
+ * @property {File} mapFile
  * @property {number} horizontalTilesNumber
  * @property {number} verticalTilesNumber
  */
 
+import {Converter} from "./Converter";
+
+
 export class Project {
+
+    constructor() {
+        /**
+         * @type {{
+            * name: string
+            * size: {width: number; height: number};
+            * grid: {rows: number; cols: number;};
+            * tile: {width: number, height: number};
+         * }}
+         */
+        this.props = {
+            name: "",
+            size: {width: 0, height: 0},
+            grid: {rows: 0, cols: 0},
+            tile: {width: 0, height: 0},
+        };
+
+        /** @type {{[key: string]: Blob}} */
+        this.tiles = {};
+
+        /** @type {{x: number, y: number, tile: string}[]} */
+        this.layout = [];
+
+        /** @type {{map: File} | undefined} */
+        this.src = undefined;
+
+        this.converter = new Converter(this);
+    }
+
+
     /**
-     * @param {Params} params
+     * @param {{
+     * projectName: string;
+     * mapFile: File;
+     * horizontalTilesNumber: number;
+     * verticalTilesNumber: number;
+     * }} params
      */
     async init(params) {
-        const file = params.mapFile;
+        this.image = await this.initImage(params.mapFile);
 
-        const image = await this.initMapImage(file);
-        const map = await this.initMapObject(image, params);
-        const tiles = await this.initMapTiles(image, map);
+        this.props = {
+            name: params.projectName,
+            size: {
+                width: this.image.width,
+                height: this.image.height
+            },
+            grid: {
+                rows: params.verticalTilesNumber,
+                cols: params.horizontalTilesNumber,
+            },
+            tile: {
+                width: this.image.width / params.horizontalTilesNumber,
+                height: this.image.height / params.verticalTilesNumber,
+            }
+        };
 
-        /** @type {import("@type").Project} */
-        this.data = {name: params.projectName, map, tiles};
+        this.src = {
+            map: params.mapFile,
+        };
+
+        await this.initTiles();
     }
 
 
@@ -28,7 +79,7 @@ export class Project {
      * @param {Blob} file
      * @return {Promise<HTMLImageElement>}
      */
-    async initMapImage(file) {
+    async initImage(file) {
         const url = URL.createObjectURL(file);
         const image = document.createElement("img");
         image.src = url;
@@ -37,56 +88,24 @@ export class Project {
     }
 
 
-    /**
-     * @param {HTMLImageElement} image
-     * @param {Object} params
-     * @param {number} params.horizontalTilesNumber
-     * @param {number} params.verticalTilesNumber
-     * @return {Promise<import("@type").Map>}
-     */
-    async initMapObject(image, params) {
-        /** @type {import("@type").Map} */
-        const map = {
-            width: image.width,
-            height: image.height,
-            layout: {
-                horizontal: params.horizontalTilesNumber,
-                vertial: params.verticalTilesNumber,
-            },
-            tile: {
-                width:  image.width / params.horizontalTilesNumber,
-                height: image.height / params.verticalTilesNumber,
-            }
-        };
+    async initTiles() {
+        if (!this.image) return;
 
-        return map;
-    }
-
-
-    /**
-     * @param {HTMLImageElement} image
-     * @param {import("@type").Map} map
-     * @return {Promise<import("@type").Tile[]>}
-     */
-    async initMapTiles(image, map) {
         const canvas = document.createElement("canvas");
-        canvas.width = map.tile.width;
-        canvas.height = map.tile.height;
+        canvas.width = this.props.tile.width;
+        canvas.height = this.props.tile.height;
         const context = canvas.getContext("2d");
         if (!context) throw new Error();
 
-        /** @type {import("@type").Tile[]} */
-        const tiles = [];
+        for await (let yi of Array(this.props.grid.cols).keys()) {
+            for await (let xi of Array(this.props.grid.rows).keys()) {
 
-        for await (let yi of Array(map.layout.vertial).keys()) {
-            for await (let xi of Array(map.layout.horizontal).keys()) {
-
-                const x = xi * map.tile.width;
-                const y = yi * map.tile.height;
+                const x = xi * this.props.tile.width;
+                const y = yi * this.props.tile.height;
 
                 context.drawImage(
-                    image,
-                    x, y, map.tile.width, map.tile.height,
+                    this.image,
+                    x, y, this.props.tile.width, this.props.tile.height,
                     0, 0, canvas.width, canvas.height
                 );
 
@@ -94,29 +113,11 @@ export class Project {
                     resolve => canvas.toBlob(resolve)
                 );
 
-                if (blob) tiles.push({name: `${x}-${y}`, x, y, blob});
+                if (blob) {
+                    this.layout.push({x, y, tile: `${xi}-${yi}`});
+                    this.tiles[`${xi}-${yi}`] = blob;
+                }
             }
         }
-
-
-        return tiles;
-    }
-
-    export() {
-        const zip = new JSZip();
-        console.log(zip);
-
-        // imagePieces.forEach((piece, index) => {
-        //     zip.file(`peace-${index}.jpg`, piece);
-        // });
-
-        // const archive = await zip.generateAsync({type:"blob"});
-        // const tempLink = document.createElement("a");
-
-        // const archiveUrl = URL.createObjectURL(archive);
-
-        // tempLink.download = "example.zip";
-        // tempLink.href = archiveUrl;
-        // tempLink.click();
     }
 }

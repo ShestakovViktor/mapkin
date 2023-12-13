@@ -13,42 +13,40 @@ export function InitialDialog() {
     const initialDialog = document.createElement("div");
     initialDialog.classList.add(styles.InitialDialog);
 
+    [
+        {
+            label: i18next.t(
+                "project:InitialDialog.create",
+                {postProcess: ["capitalize"]}
+            ),
+            onClick: () => {context.modal.render(CreateProjectDialog());}
+        },
+        {
+            label: i18next.t(
+                "project:InitialDialog.continue",
+                {postProcess: ["capitalize"]}
+            ),
+            onClick: () => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".mp";
+                input.click();
+                input.addEventListener("change", async () => {
+                    if (!input.files?.length) return;
+                    const file = input.files[0];
 
-    /**
-     * Create project button
-     */
-    const createProjectButton = document.createElement("div");
-    createProjectButton.innerText = i18next.t(
-        "project:InitialDialog.create",
-        {postProcess: ["capitalize"]}
-    );
-    createProjectButton.onclick = () => {
-        context.modal.render(CreateProjectDialog());
-    };
+                    context.core.importProject(file);
+                });
 
-    /**
-     * Continue project button
-     */
+                context.modal.hide();
+            },
+        }
+    ].forEach((data) => {
+        const button = document.createElement("div");
+        button.innerText = data.label;
+        button.addEventListener("click", data.onClick);
+        initialDialog.appendChild(button);
+    });
 
-    const continueProjectButton = document.createElement("div");
-    continueProjectButton.innerText = i18next.t(
-        "project:InitialDialog.continue"
-    );
-    continueProjectButton.onclick = () => {
-        context.core.testProject();
-        context.modal.hide();
-    };
-
-    /**
-     * Load project button
-     */
-    const loadProjectButton = document.createElement("div");
-    loadProjectButton.innerText = i18next.t(
-        "project:InitialDialog.load"
-    );
-
-
-    initialDialog.appendChild(createProjectButton);
-    initialDialog.appendChild(continueProjectButton);
     return initialDialog;
 }

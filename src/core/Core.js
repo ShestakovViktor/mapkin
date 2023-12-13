@@ -1,6 +1,5 @@
 import {IO, Project} from "@core";
 
-
 export class Core {
     /**
      * @param {import("@engine").Engine} engine
@@ -9,7 +8,6 @@ export class Core {
         /** @private */
         this.engine = engine;
 
-        /** @private */
         this.project = new Project();
 
         this.io = new IO();
@@ -29,26 +27,22 @@ export class Core {
      */
     async newProject(params) {
         await this.project.init(params);
-        if (this.project.data) {
-            this.engine.init(this.project.data);
-        }
+        this.engine.render(this.project);
     }
 
-    async testProject() {
-        const response = await fetch("/testMap.jpg");
+    /**
+     * @param {File} file
+     * @return {Promise<void>}
+     */
+    async importProject(file) {
+        await this.project.converter.import(file);
+        this.engine.render(this.project);
+    }
 
-        const mapFile = await response.blob();
-
-        const params = {
-            projectName: "Test project",
-            horizontalTilesNumber: 5,
-            verticalTilesNumber: 5,
-            mapFile,
-        };
-
-        await this.project.init(params);
-        if (this.project.data) {
-            this.engine.init(this.project.data);
-        }
+    /**
+     * @return {Promise<File>}
+     */
+    async exportProject() {
+        return await this.project.converter.export();
     }
 }

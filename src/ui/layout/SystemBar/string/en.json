@@ -1,5 +1,5 @@
 {
-    "saveProject": "save project",
-    "downloadProject": "download project",
+    "exportProject": "export project",
+    "compileProject": "compile project",
     "projectSettings": "project setting"
 }

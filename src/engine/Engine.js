@@ -8,33 +8,32 @@ export class Engine {
         this.mapContainer = mapContainer;
         root.appendChild(mapContainer);
 
-
         const overlay = document.createElement("div");
         overlay.id = "overlay";
         root.appendChild(overlay);
     }
 
-    /** @param {import("@type").Project} project */
-    init(project) {
-        this.mapContainer.style.width = `${project.map.width}px`;
-        this.mapContainer.style.height = `${project.map.height}px`;
+    /** @param {import("@core").Project} project */
+    render(project) {
+        this.mapContainer.style.width = `${project.props.size.width}px`;
+        this.mapContainer.style.height = `${project.props.size.height}px`;
 
+        const initialWidthScale
+            = window.innerWidth / project.props.size.width;
+        const initialHeightScale
+            = window.innerHeight / project.props.size.height;
+        this.mapContainer.style.transform
+            = `scale(${initialWidthScale}, ${initialHeightScale})`;
 
-
-        const initialWidthScale = window.innerWidth / project.map.width;
-        const initialHeightScale = window.innerHeight / project.map.height;
-        this.mapContainer.style.transform = `scale(${initialWidthScale}, ${initialHeightScale})`;
-
-        project.tiles.forEach(data => {
+        project.layout.forEach(data => {
             const tile = document.createElement("img");
-            const url = URL.createObjectURL(data.blob);
+            const url = URL.createObjectURL(project.tiles[data.tile]);
             tile.src = url;
             tile.style.position = "absolute";
-            tile.style.width = `${project.map.tile.width}px`;
-            tile.style.height = `${project.map.tile.height}px`;
+            tile.style.width = `${project.props.tile.width}px`;
+            tile.style.height = `${project.props.tile.height}px`;
             tile.style.left = `${data.x}px`;
             tile.style.top = `${data.y}px`;
-
 
             this.mapContainer.appendChild(tile);
         });

@@ -2,6 +2,7 @@
  * @typedef {Object} Project
  * @property {string} name
  * @property {import("@type").Map} map
- * @property {import("@type").Tile[]} tiles
+ * @property {Object} src
+ * @property {File} src.map
  */
 export {};

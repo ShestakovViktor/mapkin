@@ -20,9 +20,8 @@ export function UploadResourceForm() {
         const formData = new FormData(form);
 
 
-        const mapFile = /** @type Blob */(formData.get("mapFile"));
+        const mapFile = /** @type File */(formData.get("mapFile"));
 
-        // if (mapFile && mapFile.size) {
 
         const projectName = /** @type string */(
             String(formData.get("projectName"))
@@ -63,6 +62,7 @@ export function UploadResourceForm() {
     );
 
     const projectNameInput = document.createElement("input");
+    projectNameInput.value = "New project";
     projectNameInput.id = "projectName";
     projectNameInput.type = "text";
     projectNameInput.name = "projectName";
@@ -73,6 +73,7 @@ export function UploadResourceForm() {
      */
     const mapFileInput = document.createElement("input");
     mapFileInput.type = "file";
+    mapFileInput.accept = "image/*";
     mapFileInput.name = "mapFile";
 
 
