@@ -11,6 +11,9 @@ const config = {
 	entry: {
 		editor: "./src/editor.js",
 	},
+	output: {
+		filename: "[name].[fullhash].bundle.js",
+	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: "/src/index.html",

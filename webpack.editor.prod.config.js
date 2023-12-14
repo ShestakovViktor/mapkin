@@ -12,7 +12,7 @@ const config = {
 		editor: "./src/editor.js",
 	},
 	output: {
-		filename: "[name].[fullhash].bundle.js",
+		filename: "[name].js",
 		path: path.resolve(__dirname, "./build"),
 		publicPath: "./",
 		clean: true,
