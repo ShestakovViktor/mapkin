@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Development",
+			"name": "editor",
 			"type": "node",
 			"request": "launch",
 			"program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
@@ -11,7 +11,20 @@
 			"console": "internalConsole",
 			"args": [
 				"--config",
-				"webpack.dev.js",
+				"webpack.editor.dev.config.js",
+			]
+		},
+		{
+			"name": "viewer",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+			"cwd": "${workspaceFolder}",
+			"outputCapture": "std",
+			"console": "internalConsole",
+			"args": [
+				"--config",
+				"webpack.viewer.dev.config.js",
 			]
 		},
 	]

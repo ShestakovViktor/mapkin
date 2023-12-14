@@ -43,8 +43,6 @@ export function UploadResourceForm() {
             verticalTilesNumber,
         };
 
-        console.log(projectData);
-
         context.core.newProject(projectData);
 
         context.modal.hide();

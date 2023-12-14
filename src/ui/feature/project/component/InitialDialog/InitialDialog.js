@@ -10,6 +10,25 @@ i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 export function InitialDialog() {
     const context = useContext();
 
+    function handleProjectCreation() {
+        context.modal.render(CreateProjectDialog());
+    }
+
+    function handleProjectUpload() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".mp";
+        input.click();
+        input.addEventListener("change", async () => {
+            if (!input.files?.length) return;
+            const file = input.files[0];
+
+            context.core.importProject(file);
+        });
+
+        context.modal.hide();
+    }
+
     const initialDialog = document.createElement("div");
     initialDialog.classList.add(styles.InitialDialog);
 
@@ -19,27 +38,14 @@ export function InitialDialog() {
                 "project:InitialDialog.create",
                 {postProcess: ["capitalize"]}
             ),
-            onClick: () => {context.modal.render(CreateProjectDialog());}
+            onClick: handleProjectCreation,
         },
         {
             label: i18next.t(
                 "project:InitialDialog.continue",
                 {postProcess: ["capitalize"]}
             ),
-            onClick: () => {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = ".mp";
-                input.click();
-                input.addEventListener("change", async () => {
-                    if (!input.files?.length) return;
-                    const file = input.files[0];
-
-                    context.core.importProject(file);
-                });
-
-                context.modal.hide();
-            },
+            onClick: handleProjectUpload,
         }
     ].forEach((data) => {
         const button = document.createElement("div");

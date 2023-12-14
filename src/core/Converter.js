@@ -6,7 +6,7 @@ export class Converter {
     /** @param {import("@core").Project} project */
     constructor(project) {
 
-        /** @type {import("@core").Project} project */
+        /** @type {import("@core").Project} */
         this.project = project;
     }
 
@@ -49,9 +49,9 @@ export class Converter {
 
     /** @return {Promise<File>} */
     async export() {
-        const zip = new JSZip();
+        const result = new JSZip();
 
-        const tilesFolder = zip.folder("tiles");
+        const tilesFolder = result.folder("tiles");
 
         if (tilesFolder) {
             Object.entries(this.project.tiles)
@@ -60,7 +60,7 @@ export class Converter {
                 });
         }
 
-        const srcFolder = zip.folder("src");
+        const srcFolder = result.folder("src");
 
         if (this.project.src && srcFolder) {
             const extension = this.project.src.map.name.split(".")[1];
@@ -68,11 +68,39 @@ export class Converter {
         }
 
 
-        zip.file("props.json", JSON.stringify(this.project.props));
-        zip.file("layout.json", JSON.stringify(this.project.layout));
+        result.file("props.json", JSON.stringify(this.project.props));
+        result.file("layout.json", JSON.stringify(this.project.layout));
 
-        const blob = await zip.generateAsync({type:"blob"});
+        const resultBlob = await result.generateAsync({type:"blob"});
 
-        return new File([blob], `${this.project.props.name}.mp`);
+        return new File([resultBlob], `${this.project.props.name}.mp`);
+    }
+
+
+    async compile() {
+        const result = new JSZip();
+
+        const projectFile = await this.export();
+        result.file("project.mp", projectFile);
+
+        const promises = [
+            "viewer.js",
+            "viewer.html"
+        ].map((name) => {
+            return fetch(name)
+                .then((response) => {
+                    return response.blob();
+                })
+                .then((blob) => {
+                    return result.file(name, blob);
+                });
+        });
+
+        await Promise.all(promises);
+
+        const resultBlob = await result.generateAsync({type:"blob"});
+
+        return new File([resultBlob], `${this.project.props.name}.zip`);
+
     }
 }

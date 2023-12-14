@@ -45,4 +45,11 @@ export class Core {
     async exportProject() {
         return await this.project.converter.export();
     }
+
+    /**
+     * @return {Promise<File>}
+     */
+    async compileProject() {
+        return await this.project.converter.compile();
+    }
 }

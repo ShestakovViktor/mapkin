@@ -1,3 +1,8 @@
 /node_modules
 
-/public/testMap.jpg
+/build
+
+/public/viewer.html
+/public/viewer.js
+/public/viewer.js.LICENSE.txt
+/public/project.mp

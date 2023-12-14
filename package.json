@@ -4,8 +4,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "webpack-dev-server --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js"
+        "dev-editor": "webpack-dev-server --config webpack.editor.dev.config.js",
+        "build-editor": "webpack --config webpack.editor.prod.config.js",
+        "dev-viewer": "webpack-dev-server --config webpack.viewer.dev.config.js",
+        "build-viewer": "webpack --config webpack.viewer.prod.config.js",
+        "build": "npm run build-editor && npm run build-viewer"
     },
     "author": "",
     "license": "ISC",
