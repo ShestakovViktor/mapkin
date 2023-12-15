@@ -1,87 +1,136 @@
 import JSZip from "jszip";
 
 
-
 export class Converter {
+
+
     /** @param {import("@core").Project} project */
     constructor(project) {
 
         /** @type {import("@core").Project} */
         this.project = project;
+
+        this.paths = {
+            source: "source",
+            tiles: "tiles",
+            data: "data.json",
+        };
     }
 
-    /** @param {File} file */
-    async import(file) {
-        const zip = await JSZip.loadAsync(file);
 
-        /** @type {Promise<{path: string, data: Blob}>[]} */
+    /** @return {import("@type").Data} */
+    exportData() {
+        return {
+            props: this.project.props,
+            layout: this.project.layout,
+        };
+    }
+
+
+    /** @param {import("@type").Data} data */
+    importData(data) {
+        this.project.props = data.props;
+        this.project.layout = data.layout;
+    }
+
+
+    /** @param {JSZip} archive */
+    archiveData(archive) {
+        archive.file(
+            this.paths.data,
+            JSON.stringify(this.exportData(), null, 4)
+        );
+    }
+
+
+    /** @param {JSZip} archive */
+    async extractData(archive) {
+        const dataString = await archive
+            .files[this.paths.data]
+            .async("text");
+
+        this.importData(JSON.parse(dataString));
+    }
+
+
+    /** @param {JSZip} archive */
+    archiveResource(archive) {
+        const resourceFolder = archive.folder(this.paths.tiles);
+        if (!resourceFolder) throw new Error();
+
+        Object.entries(this.project.tiles)
+            .forEach(([name, blob]) => {
+                resourceFolder.file(`${name}.jpg`, blob);
+            });
+    }
+
+
+    /** @param {JSZip} archive */
+    async extractResource(archive) {
         const promises = [];
 
-        for (let path in zip.files) {
-            promises.push(new Promise (
-                (resolve) => zip.files[path].async("blob")
-                    .then(data => resolve({path, data}))
-            ));
+        for (let path in archive.files) {
+            if (!path.includes(this.paths.tiles)) continue;
+
+            const fileName = path.split("/")[1];
+            const name = fileName.split(".")[0];
+            const options = {type: "image/png"};
+
+            promises.push(
+                archive.files[path]
+                    .async("blob")
+                    .then(data => {
+                        this.project.tiles[name] = new Blob([data], options);
+                    })
+            );
         }
 
-        const files = await Promise.all(promises);
-
-        for await (const {path, data} of files) {
-            if (path.includes("tiles/")) {
-                const fileName = path.split("/")[1];
-                const name = fileName.split(".")[0];
-                this.project.tiles[name] = new Blob(
-                    [data],
-                    {type: "image/png"},
-                );
-            }
-            else if (path == "props.json") {
-                const string = await data.text();
-                this.project.props = JSON.parse(string);
-            }
-            else if (path == "layout.json") {
-                const string = await data.text();
-                this.project.layout = JSON.parse(string);
-            }
-        }
-
+        await Promise.all(promises);
     }
+
+
+    /** @param {JSZip} archive */
+    exportSource(archive) {
+        const sourceFolder = archive.folder(this.paths.source);
+        if (!sourceFolder) throw new Error();
+
+        if (this.project.src) {
+            const extension = this.project.src.map.name.split(".")[1];
+            sourceFolder.file(`map.${extension}`, this.project?.src.map);
+        }
+    }
+
 
     /** @return {Promise<File>} */
     async export() {
-        const result = new JSZip();
+        const archive = JSZip();
 
-        const tilesFolder = result.folder("tiles");
+        this.archiveData(archive);
+        this.archiveResource(archive);
+        this.exportSource(archive);
 
-        if (tilesFolder) {
-            Object.entries(this.project.tiles)
-                .forEach(([name, blob]) => {
-                    tilesFolder.file(`${name}.jpg`, blob);
-                });
-        }
+        const archiveBlob = await archive.generateAsync({type: "blob"});
 
-        const srcFolder = result.folder("src");
+        const archiveFile = new File(
+            [archiveBlob],
+            `${this.project.props.name}.mp`
+        );
 
-        if (this.project.src && srcFolder) {
-            const extension = this.project.src.map.name.split(".")[1];
-            srcFolder.file(`map.${extension}`, this.project?.src.map);
-        }
-
-
-        result.file("props.json", JSON.stringify(this.project.props));
-        result.file("layout.json", JSON.stringify(this.project.layout));
-
-        const resultBlob = await result.generateAsync({type:"blob"});
-
-        return new File([resultBlob], `${this.project.props.name}.mp`);
+        return archiveFile;
     }
 
 
-    async compile() {
-        const result = new JSZip();
+    /** @param {File} file */
+    async import(file) {
+        const archive = await JSZip.loadAsync(file);
 
-        const projectFile = await this.export();
-        result.file("project.mp", projectFile);
+        await this.extractData(archive);
+        await this.extractResource(archive);
+    }
+
+
+    async exportAsSite() {
+        const archive = new JSZip();
 
         const promises = [
             "viewer.js",
@@ -92,15 +141,26 @@ export class Converter {
                     return response.blob();
                 })
                 .then((blob) => {
-                    return result.file(name, blob);
+                    return blob.text();
+                })
+                .then((text) => {
+                    if (name == "viewer.html") {
+                        const data = this.exportData();
+                        text = text.replace(
+                            "/**/",
+                            `const project = '${JSON.stringify(data)}';`
+                        );
+                    }
+                    return archive.file(name, new Blob([text]));
                 });
         });
 
         await Promise.all(promises);
 
-        const resultBlob = await result.generateAsync({type:"blob"});
+        this.archiveResource(archive);
+
+        const resultBlob = await archive.generateAsync({type:"blob"});
 
         return new File([resultBlob], `${this.project.props.name}.zip`);
-
     }
 }

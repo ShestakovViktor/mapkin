@@ -11,20 +11,7 @@
 			"console": "internalConsole",
 			"args": [
 				"--config",
-				"webpack.editor.dev.config.js",
-			]
-		},
-		{
-			"name": "viewer",
-			"type": "node",
-			"request": "launch",
-			"program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
-			"cwd": "${workspaceFolder}",
-			"outputCapture": "std",
-			"console": "internalConsole",
-			"args": [
-				"--config",
-				"webpack.viewer.dev.config.js",
+				"webpack.dev.js"
 			]
 		},
 	]

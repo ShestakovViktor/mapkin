@@ -49,7 +49,7 @@ export class Core {
     /**
      * @return {Promise<File>}
      */
-    async compileProject() {
-        return await this.project.converter.compile();
+    async exportProjectAsSite() {
+        return await this.project.converter.exportAsSite();
     }
 }

@@ -31,7 +31,7 @@ export function SystemBar() {
     }
 
     async function handleProjectCompile() {
-        const websiteArchive = await context.core.compileProject();
+        const websiteArchive = await context.core.exportProjectAsSite();
 
         const projectFileUrl = URL.createObjectURL(websiteArchive);
 

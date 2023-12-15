@@ -1,8 +1,9 @@
 const path = require("path");
 const merge = require("webpack-merge");
-const common = require("./webpack.config.js");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+
+const common = require("./webpack.config.js");
 
 /** @type {import("webpack").Configuration} */
 const config = {
@@ -16,7 +17,7 @@ const config = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
-			template: "/src/index.html",
+			template: "./src/index.html",
 			filename: "viewer.html"
 		}),
 	]

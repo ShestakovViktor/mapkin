@@ -1,30 +1,31 @@
 const {merge} = require("webpack-merge");
-const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+
 
 const common = require("./webpack.config.js");
 
 /** @type {import("webpack").Configuration} */
 const config = {
-	mode: "production",
+	mode: "development",
 	entry: {
-		editor: "./src/editor.js",
+		editor: "/src/editor.js",
 	},
 	output: {
-		filename: "[name].js",
-		path: path.resolve(__dirname, "./build"),
-		publicPath: "./",
-		clean: true,
+		filename: "[name].[fullhash].js",
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: "/src/index.html",
 		}),
-		new CopyWebpackPlugin({
-			patterns: [{from: "./public/", to: "./"}]
-		}),
 	],
+	devtool: "inline-source-map",
+	devServer: {
+		port: 3000,
+		hot: true,
+		compress: true,
+		static: "./build"
+	},
 };
 
 module.exports = merge(common, config);

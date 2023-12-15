@@ -15,6 +15,7 @@
         "console": true,
         "document": true,
         "window": true,
+        "project": true,
         "Promise": true
     },
     "rules": {

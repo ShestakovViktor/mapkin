@@ -1,25 +1,34 @@
-/**
- * @typedef {Object} Params
- * @property {string} projectName
- * @property {File} mapFile
- * @property {number} horizontalTilesNumber
- * @property {number} verticalTilesNumber
- */
-
 import {Converter} from "./Converter";
 
+/**
+ * @typedef {{
+    * projectName: string;
+    * mapFile: File;
+    * horizontalTilesNumber: number;
+    * verticalTilesNumber: number;
+ * }} Params
+ */
+
+/**
+ * @typedef {{
+    * name: string
+    * size: {width: number; height: number};
+    * grid: {rows: number; cols: number;};
+    * tile: {width: number, height: number};
+ * }} Props
+ */
+
+/**
+ * @typedef {{
+    * x: number,
+    * y: number,
+    * tile: string
+ * }} Tile
+ */
 
 export class Project {
-
     constructor() {
-        /**
-         * @type {{
-            * name: string
-            * size: {width: number; height: number};
-            * grid: {rows: number; cols: number;};
-            * tile: {width: number, height: number};
-         * }}
-         */
+        /** @type {Props} */
         this.props = {
             name: "",
             size: {width: 0, height: 0},
@@ -30,7 +39,7 @@ export class Project {
         /** @type {{[key: string]: Blob}} */
         this.tiles = {};
 
-        /** @type {{x: number, y: number, tile: string}[]} */
+        /** @type {Tile[]} */
         this.layout = [];
 
         /** @type {{map: File} | undefined} */
@@ -40,14 +49,7 @@ export class Project {
     }
 
 
-    /**
-     * @param {{
-     * projectName: string;
-     * mapFile: File;
-     * horizontalTilesNumber: number;
-     * verticalTilesNumber: number;
-     * }} params
-     */
+    /** @param {Params} params */
     async init(params) {
         this.image = await this.initImage(params.mapFile);
 
