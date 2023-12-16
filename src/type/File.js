@@ -1,7 +1,8 @@
 /**
- * @typedef {Object} File
- * @property {string} name
- * @property {Blob} blob
+ * @typedef {{
+ *     name: string;
+ *     blob: Blob;
+ * }} File
  */
 
 export {};

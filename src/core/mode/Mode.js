@@ -1,11 +1,20 @@
 /* eslint-disable no-unused-vars */
 
-/**
- * @class
- * @abstract
- */
 export class Mode {
+
     /**
+     * @param {import("@src/viewer").viewer} viewer
+     * @param {import("@core").Project} project
+     * @param {import("@core").Invoker} invoker
+     */
+    constructor(viewer, project, invoker) {
+        this.viewer = viewer;
+        this.project = project;
+        this.invoker = invoker;
+    }
+
+    /**
+     * @abstract
      * @param {MouseEvent} event
      */
     onMouseDown(event) {
@@ -13,6 +22,7 @@ export class Mode {
     }
 
     /**
+     * @abstract
      * @param {MouseEvent} event
      */
     onMouseUp(event) {

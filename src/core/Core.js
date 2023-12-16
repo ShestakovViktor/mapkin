@@ -1,54 +1,50 @@
-import {IO, Project} from "@core";
+import {Interaction, Project, Invoker} from "@core";
 
 export class Core {
-    /**
-     * @param {import("@engine").Engine} engine
-     */
-    constructor(engine) {
+    /** @param {import("@src/viewer").Viewer} viewer */
+    constructor(viewer) {
         /** @private */
-        this.engine = engine;
+        this.viewer = viewer;
 
         this.project = new Project();
 
-        this.io = new IO();
-    }
+        this.invoker = new Invoker();
 
-
-    /**
-     * @param {string} name
-     */
-    setMode(name) {
-        console.log(name);
-        //this.mode = this.modes[name];
+        this.input = new Interaction(
+            this.viewer,
+            this.project,
+            this.invoker
+        );
     }
 
     /**
-     * @param {import("@core").Params} params
-     */
-    async newProject(params) {
+     * @param {{
+    *     projectName: string;
+    *     mapFile: File;
+    *     horizontalTilesNumber: number;
+    *     verticalTilesNumber: number;
+    * }} params
+    */
+    async initProject(params) {
         await this.project.init(params);
-        this.engine.render(this.project);
+        this.viewer.init(this.project.data, this.project.assets);
+        this.viewer.render();
     }
 
-    /**
-     * @param {File} file
-     * @return {Promise<void>}
-     */
+    /** @param {File} file */
     async importProject(file) {
         await this.project.converter.import(file);
-        this.engine.render(this.project);
+        console.log(this.project);
+        this.viewer.init(this.project.data, this.project.assets);
+        this.viewer.render();
     }
 
-    /**
-     * @return {Promise<File>}
-     */
+    /** @return {Promise<File>} */
     async exportProject() {
         return await this.project.converter.export();
     }
 
-    /**
-     * @return {Promise<File>}
-     */
+    /** @return {Promise<File>} */
     async exportProjectAsSite() {
         return await this.project.converter.exportAsSite();
     }

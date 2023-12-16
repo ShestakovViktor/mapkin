@@ -11,7 +11,7 @@ export function InterfaceLayer() {
     interfaceLayer.classList.add(styles.InterfaceLayer);
 
     interfaceLayer.addEventListener("mousedown", (event) => {
-        context.core.io.onMouseDown(event);
+        context.core.input.onMouseDown(event);
     });
 
 

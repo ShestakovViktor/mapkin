@@ -5,9 +5,9 @@
     "main": "index.js",
     "scripts": {
         "dev": "webpack-dev-server --config webpack.dev.js",
-        "build": "npm run build-editor && npm run build-viewer",
+        "build": "npm run build-editor && npm run build-website",
         "build-editor": "webpack --config webpack.build.editor.js",
-        "build-viewer": "webpack --config webpack.build.viewer.js"
+        "build-website": "webpack --config webpack.build.website.js"
     },
     "author": "",
     "license": "ISC",

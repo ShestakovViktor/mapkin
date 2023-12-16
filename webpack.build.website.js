@@ -9,7 +9,7 @@ const common = require("./webpack.config.js");
 const config = {
 	mode: "production",
 	entry: {
-		viewer: "./src/viewer.js",
+		website: "./src/website.js",
 	},
 	output: {
 		filename: "[name].js",
@@ -18,7 +18,7 @@ const config = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: "./src/index.html",
-			filename: "viewer.html"
+			filename: "website.html"
 		}),
 	]
 };

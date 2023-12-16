@@ -44,7 +44,7 @@ module.exports = {
 		alias: {
 			"@src": path.resolve(__dirname, "src/"),
 			"@core": path.resolve(__dirname, "src/core/"),
-			"@engine": path.resolve(__dirname, "src/engine/"),
+			"@viewer": path.resolve(__dirname, "src/viewer/"),
 			"@ui": path.resolve(__dirname, "src/ui/"),
 			"@style": path.resolve(__dirname, "src/style/"),
 			"@type": path.resolve(__dirname, "src/type/"),

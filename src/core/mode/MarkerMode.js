@@ -1,10 +1,22 @@
+import {AddMarkerAction} from "@core/action";
 import {Mode} from "@core/mode";
 
 export class MarkerMode extends Mode {
-    /**
-     * @param {MouseEvent} event
-     */
+    /** @param {MouseEvent} event */
     onMouseDown(event) {
-        console.log(event.pageX, event.pageY);
+        this.invoker.execute(
+            new AddMarkerAction(
+                this.viewer,
+                this.project,
+                {
+                    x: event.pageX,
+                    y: event.pageY,
+                    asset: "marker",
+                    text: "Hello world",
+                }
+            )
+        );
+
+        console.log(this.project.data.layout.markers);
     }
 }

@@ -1,11 +1,17 @@
 import {SelectMode, MarkerMode} from "@core/mode";
 
-export class IO {
-    constructor() {
+export class Interaction {
+
+    /**
+     * @param {import("@src/viewer").Viewer} viewer
+     * @param {import("@core").Project} project
+     * @param {import("@core").Invoker} invoker
+     */
+    constructor(viewer, project, invoker) {
         /** @private */
         this.modes = {
-            select: new SelectMode(),
-            marker: new MarkerMode()
+            select: new SelectMode(viewer, project, invoker),
+            marker: new MarkerMode(viewer, project, invoker)
         };
 
         /** @private */
@@ -17,6 +23,7 @@ export class IO {
      * @param {keyof typeof this.modes} name
      */
     setMode(name) {
+        console.log(`Mode set: ${name}`);
         this.mode = this.modes[name];
     }
 

@@ -1,47 +1,30 @@
 import {Converter} from "./Converter";
 
-/**
- * @typedef {{
-    * projectName: string;
-    * mapFile: File;
-    * horizontalTilesNumber: number;
-    * verticalTilesNumber: number;
- * }} Params
- */
 
-/**
- * @typedef {{
-    * name: string
-    * size: {width: number; height: number};
-    * grid: {rows: number; cols: number;};
-    * tile: {width: number, height: number};
- * }} Props
- */
-
-/**
- * @typedef {{
-    * x: number,
-    * y: number,
-    * tile: string
- * }} Tile
- */
 
 export class Project {
     constructor() {
-        /** @type {Props} */
-        this.props = {
+        /** @type {import("@type").Data} */
+        this.data = {
             name: "",
             size: {width: 0, height: 0},
             grid: {rows: 0, cols: 0},
-            tile: {width: 0, height: 0},
+
+            layout: {
+                tiles: [],
+                markers: [],
+            }
         };
 
         /** @type {{[key: string]: Blob}} */
-        this.tiles = {};
+        this.assets = {};
 
-        /** @type {Tile[]} */
-        this.layout = [];
-
+        /**
+         * @type {{
+         *     tiles: import("@type").Tile[];
+         *     markers: import("@type").Marker[];
+         * }}
+         */
         /** @type {{map: File} | undefined} */
         this.src = undefined;
 
@@ -49,11 +32,24 @@ export class Project {
     }
 
 
-    /** @param {Params} params */
+    /** @param {import("@type").Marker} marker */
+    addMarker(marker) {
+        this.data.layout.markers.push(marker);
+    }
+
+
+    /**
+     * @param {{
+     *     projectName: string;
+     *     mapFile: File;
+     *     horizontalTilesNumber: number;
+     *     verticalTilesNumber: number;
+     * }} params
+     */
     async init(params) {
         this.image = await this.initImage(params.mapFile);
 
-        this.props = {
+        this.data = {
             name: params.projectName,
             size: {
                 width: this.image.width,
@@ -63,9 +59,9 @@ export class Project {
                 rows: params.verticalTilesNumber,
                 cols: params.horizontalTilesNumber,
             },
-            tile: {
-                width: this.image.width / params.horizontalTilesNumber,
-                height: this.image.height / params.verticalTilesNumber,
+            layout: {
+                tiles: [],
+                markers: [],
             }
         };
 
@@ -93,21 +89,26 @@ export class Project {
     async initTiles() {
         if (!this.image) return;
 
+        const tileWidth = this.data.size.width
+            / this.data.grid.cols;
+        const tileHeight = this.data.size.height
+            / this.data.grid.rows;
+
         const canvas = document.createElement("canvas");
-        canvas.width = this.props.tile.width;
-        canvas.height = this.props.tile.height;
+        canvas.width = tileWidth;
+        canvas.height = tileHeight;
         const context = canvas.getContext("2d");
         if (!context) throw new Error();
 
-        for await (let yi of Array(this.props.grid.cols).keys()) {
-            for await (let xi of Array(this.props.grid.rows).keys()) {
+        for await (let yi of Array(this.data.grid.cols).keys()) {
+            for await (let xi of Array(this.data.grid.rows).keys()) {
 
-                const x = xi * this.props.tile.width;
-                const y = yi * this.props.tile.height;
+                const x = xi * tileWidth;
+                const y = yi * tileHeight;
 
                 context.drawImage(
                     this.image,
-                    x, y, this.props.tile.width, this.props.tile.height,
+                    x, y, tileWidth, tileHeight,
                     0, 0, canvas.width, canvas.height
                 );
 
@@ -116,8 +117,15 @@ export class Project {
                 );
 
                 if (blob) {
-                    this.layout.push({x, y, tile: `${xi}-${yi}`});
-                    this.tiles[`${xi}-${yi}`] = blob;
+                    const name = `${xi}-${yi}`;
+                    this.data.layout.tiles.push({
+                        asset: name,
+                        width: tileWidth,
+                        height: tileHeight,
+                        x,
+                        y,
+                    });
+                    this.assets[name] = blob;
                 }
             }
         }

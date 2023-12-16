@@ -12,25 +12,9 @@ export class Converter {
 
         this.paths = {
             source: "source",
-            tiles: "tiles",
+            asset: "static",
             data: "data.json",
         };
-    }
-
-
-    /** @return {import("@type").Data} */
-    exportData() {
-        return {
-            props: this.project.props,
-            layout: this.project.layout,
-        };
-    }
-
-
-    /** @param {import("@type").Data} data */
-    importData(data) {
-        this.project.props = data.props;
-        this.project.layout = data.layout;
     }
 
 
@@ -38,7 +22,7 @@ export class Converter {
     archiveData(archive) {
         archive.file(
             this.paths.data,
-            JSON.stringify(this.exportData(), null, 4)
+            JSON.stringify(this.project.data, null, 4)
         );
     }
 
@@ -49,16 +33,16 @@ export class Converter {
             .files[this.paths.data]
             .async("text");
 
-        this.importData(JSON.parse(dataString));
+        this.project.data = JSON.parse(dataString);
     }
 
 
     /** @param {JSZip} archive */
-    archiveResource(archive) {
-        const resourceFolder = archive.folder(this.paths.tiles);
+    archiveAsset(archive) {
+        const resourceFolder = archive.folder(this.paths.asset);
         if (!resourceFolder) throw new Error();
 
-        Object.entries(this.project.tiles)
+        Object.entries(this.project.assets)
             .forEach(([name, blob]) => {
                 resourceFolder.file(`${name}.jpg`, blob);
             });
@@ -66,11 +50,13 @@ export class Converter {
 
 
     /** @param {JSZip} archive */
-    async extractResource(archive) {
+    async extractAsset(archive) {
+
+        /** @type {Promise<any>[]} */
         const promises = [];
 
         for (let path in archive.files) {
-            if (!path.includes(this.paths.tiles)) continue;
+            if (!path.includes(this.paths.asset)) continue;
 
             const fileName = path.split("/")[1];
             const name = fileName.split(".")[0];
@@ -80,7 +66,7 @@ export class Converter {
                 archive.files[path]
                     .async("blob")
                     .then(data => {
-                        this.project.tiles[name] = new Blob([data], options);
+                        this.project.assets[name] = new Blob([data], options);
                     })
             );
         }
@@ -106,14 +92,14 @@ export class Converter {
         const archive = JSZip();
 
         this.archiveData(archive);
-        this.archiveResource(archive);
+        this.archiveAsset(archive);
         this.exportSource(archive);
 
         const archiveBlob = await archive.generateAsync({type: "blob"});
 
         const archiveFile = new File(
             [archiveBlob],
-            `${this.project.props.name}.mp`
+            `${this.project.data.name}.mp`
         );
 
         return archiveFile;
@@ -125,7 +111,7 @@ export class Converter {
         const archive = await JSZip.loadAsync(file);
 
         await this.extractData(archive);
-        await this.extractResource(archive);
+        await this.extractAsset(archive);
     }
 
 
@@ -133,8 +119,8 @@ export class Converter {
         const archive = new JSZip();
 
         const promises = [
-            "viewer.js",
-            "viewer.html"
+            "website.js",
+            "website.html"
         ].map((name) => {
             return fetch(name)
                 .then((response) => {
@@ -144,11 +130,10 @@ export class Converter {
                     return blob.text();
                 })
                 .then((text) => {
-                    if (name == "viewer.html") {
-                        const data = this.exportData();
+                    if (name == "website.html") {
                         text = text.replace(
                             "/**/",
-                            `const project = '${JSON.stringify(data)}';`
+                            `const project = '${JSON.stringify(this.project.data)}';`
                         );
                     }
                     return archive.file(name, new Blob([text]));
@@ -157,10 +142,10 @@ export class Converter {
 
         await Promise.all(promises);
 
-        this.archiveResource(archive);
+        this.archiveAsset(archive);
 
         const resultBlob = await archive.generateAsync({type:"blob"});
 
-        return new File([resultBlob], `${this.project.props.name}.zip`);
+        return new File([resultBlob], `${this.project.data.name}.zip`);
     }
 }

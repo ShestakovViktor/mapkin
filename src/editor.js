@@ -2,7 +2,7 @@ import "@src/i18n";
 import "@style/colors.scss";
 import "@style/global.scss";
 
-import {Engine} from "@engine";
+import {Viewer} from "@src/viewer";
 import {Core} from "@core";
 import {UI} from "@ui";
 
@@ -11,10 +11,10 @@ root.id = "root";
 document.body.appendChild(root);
 
 
-const engine = new Engine(root);
-const core = new Core(engine);
+const viewer = new Viewer(root, {mode: "editor"});
+const core = new Core(viewer);
 const ui = new UI(root, core);
 
-if (engine && core && ui) {
+if (viewer && core && ui) {
     console.log("App started");
 }

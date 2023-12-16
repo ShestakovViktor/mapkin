@@ -25,7 +25,7 @@ export function ToolBar() {
                 {postProcess: ["capitalize"]}
             ),
             onClick: () => {
-                context.core.io.setMode("select");
+                context.core.input.setMode("select");
             }
         },
         {
@@ -36,7 +36,7 @@ export function ToolBar() {
                 {postProcess: ["capitalize"]}
             ),
             onClick: () => {
-                context.core.io.setMode("marker");
+                context.core.input.setMode("marker");
             }
         }
     ].forEach((data) => toolBar.appendChild(Button(data)));

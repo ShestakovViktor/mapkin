@@ -21,11 +21,11 @@
             "@core/*": [
                 "src/core/*"
             ],
-            "@engine": [
-                "src/engine/"
+            "@viewer": [
+                "src/viewer"
             ],
-            "@engine/*": [
-                "src/engine/*"
+            "@viewer/*": [
+                "src/viewer/*"
             ],
             "@ui": [
                 "src/ui/"
@@ -64,7 +64,6 @@
     ],
     "include": [
         "src/**/*.js",
-        "viewer.js",
     ],
     "exclude": [
         "node_modules"
