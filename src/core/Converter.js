@@ -44,7 +44,13 @@ export class Converter {
 
         Object.entries(this.project.assets)
             .forEach(([name, blob]) => {
-                resourceFolder.file(`${name}.jpg`, blob);
+
+                /** @type {{[key: string]: string}} */
+                const ext = {
+                    "image/svg+xml": "svg",
+                    "image/png": "png"
+                };
+                resourceFolder.file(`${name}.${ext[blob.type]}`, blob);
             });
     }
 

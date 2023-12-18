@@ -65,6 +65,12 @@ export class Project {
             }
         };
 
+
+        const response = await fetch("./icon/marker.svg");
+        const blob = await response.blob();
+        this.assets["marker"] = blob;
+
+
         this.src = {
             map: params.mapFile,
         };

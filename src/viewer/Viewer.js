@@ -70,12 +70,23 @@ export class Viewer {
 
 
         this.data.layout.markers.forEach(markerData => {
-            const src = "./icon/marker.svg";
+            let url;
+
+            if (this.mode == "website") {
+                url = "./static/marker.svg";
+            }
+            else if (this.mode == "editor" && this.assets) {
+                url = "./icon/marker.svg";
+            }
+            else {
+                throw new Error("Something going wrong");
+            }
+
             const markerElement = Marker({
                 x: markerData.x,
                 y: markerData.y,
                 text: markerData.text,
-                src
+                src: url
             });
             this.markerLayer.appendChild(markerElement);
         });
@@ -84,7 +95,7 @@ export class Viewer {
             let url;
 
             if (this.mode == "website") {
-                url = `./static/${tileData.asset}.jpg`;
+                url = `./static/${tileData.asset}.png`;
             }
             else if (this.mode == "editor" && this.assets) {
                 url = URL.createObjectURL(this.assets[tileData.asset]);
