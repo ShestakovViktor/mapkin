@@ -3,7 +3,7 @@
 export class Mode {
 
     /**
-     * @param {import("@src/viewer").viewer} viewer
+     * @param {import("@viewer").Viewer} viewer
      * @param {import("@core").Project} project
      * @param {import("@core").Invoker} invoker
      */
@@ -17,7 +17,7 @@ export class Mode {
      * @abstract
      * @param {MouseEvent} event
      */
-    onMouseDown(event) {
+    onMouseClick(event) {
         throw new Error("Methor must be implemented");
     }
 

@@ -1,4 +1,5 @@
-import {Marker, Tile} from "@viewer";
+import {Marker, Tile} from "@viewer/component";
+import {Map, TileLayer, MarkerLayer} from "@viewer/layout";
 
 export class Viewer {
 
@@ -11,16 +12,14 @@ export class Viewer {
         /** @type {"editor" | "website"} */
         this.mode = props.mode;
 
-        this.map = document.createElement("div");
-        this.map.id = "map";
+        this.map = Map();
         root.appendChild(this.map);
 
+        this.tileLayer = TileLayer();
+        this.map.appendChild(this.tileLayer);
 
-        this.tiles = document.createElement("div");
-        this.map.appendChild(this.tiles);
-
-        this.markers = document.createElement("div");
-        this.map.appendChild(this.markers);
+        this.markerLayer = MarkerLayer();
+        this.map.appendChild(this.markerLayer);
 
 
         /** @type {import("@type").Data | undefined} */
@@ -43,13 +42,13 @@ export class Viewer {
         this.map.style.width = `${this.data.size.width}px`;
         this.map.style.height = `${this.data.size.height}px`;
 
-        const initialWidthScale
-            = window.innerWidth / this.data.size.width;
-        const initialHeightScale
-            = window.innerHeight / this.data.size.height;
+        // const initialWidthScale
+        //     = window.innerWidth / this.data.size.width;
+        // const initialHeightScale
+        //     = window.innerHeight / this.data.size.height;
 
-        this.map.style.transform
-            = `scale(${initialWidthScale}, ${initialHeightScale})`;
+        // this.map.style.transform
+        //     = `scale(${initialWidthScale}, ${initialHeightScale})`;
     }
 
 
@@ -78,7 +77,7 @@ export class Viewer {
                 text: markerData.text,
                 src
             });
-            this.markers.appendChild(markerElement);
+            this.markerLayer.appendChild(markerElement);
         });
 
         this.data.layout.tiles.forEach(tileData => {
@@ -102,7 +101,7 @@ export class Viewer {
                 src: url
             });
 
-            this.tiles.appendChild(tileElement);
+            this.tileLayer.appendChild(tileElement);
         });
     }
 }

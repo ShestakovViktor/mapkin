@@ -10,8 +10,8 @@ export function InterfaceLayer() {
     interfaceLayer.id = "interface";
     interfaceLayer.classList.add(styles.InterfaceLayer);
 
-    interfaceLayer.addEventListener("mousedown", (event) => {
-        context.core.input.onMouseDown(event);
+    window.addEventListener("click", (event) => {
+        context.core.input.onMouseClick(event);
     });
 
 

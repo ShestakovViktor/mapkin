@@ -3,20 +3,30 @@ import {Mode} from "@core/mode";
 
 export class MarkerMode extends Mode {
     /** @param {MouseEvent} event */
-    onMouseDown(event) {
-        this.invoker.execute(
-            new AddMarkerAction(
-                this.viewer,
-                this.project,
-                {
-                    x: event.pageX,
-                    y: event.pageY,
-                    asset: "marker",
-                    text: "Hello world",
-                }
-            )
+    onMouseClick(event) {
+
+        console.log(event);
+
+        const map = /** @type {HTMLDivElement | null} */(
+            document.querySelector("#map")
         );
 
-        console.log(this.project.data.layout.markers);
+        if (map) {
+            const rect = map.getBoundingClientRect();
+
+            this.invoker.execute(
+                new AddMarkerAction(
+                    this.viewer,
+                    this.project,
+                    {
+                        x: Math.abs(rect.x) + event.pageX,
+                        y: Math.abs(rect.y) + event.pageY,
+                        asset: "marker",
+                        text: "Hello world",
+                    }
+                )
+            );
+        }
+
     }
 }

@@ -2,10 +2,15 @@
     width: 100%;
     height: 100%;
 
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
 
+    pointer-events: none;
+
+    > * {
+        pointer-events: all;
+    } 
 
     display: grid;
     grid-template-columns: 10px min-content auto min-content 10px;

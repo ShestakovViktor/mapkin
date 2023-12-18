@@ -31,8 +31,8 @@ export class Interaction {
     /**
      * @param {MouseEvent} event
      */
-    onMouseDown(event) {
-        this.mode.onMouseDown(event);
+    onMouseClick(event) {
+        this.mode.onMouseClick(event);
     }
 
 

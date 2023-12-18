@@ -18,7 +18,12 @@ export function Button(params) {
 
     if (params.class) button.classList.add(params.class);
 
-    if (params.onClick) button.addEventListener("click", params.onClick);
+    if (params.onClick) {
+        button.addEventListener("click", (event) => {
+            event?.stopPropagation();
+            if (params.onClick) params.onClick();
+        });
+    }
 
     if (params.icon) button.appendChild(params.icon);
 

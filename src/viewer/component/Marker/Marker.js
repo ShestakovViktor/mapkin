@@ -12,7 +12,8 @@ export function Marker(props) {
     const marker = document.createElement("img");
     marker.classList.add(styles.Marker);
 
-    marker.style.position = "absolute";
+    marker.src = props.src;
+
     marker.style.width = "64px";
     marker.style.height = "64px";
     marker.style.left = `${props.x}px`;
