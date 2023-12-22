@@ -1,11 +1,11 @@
 import JSZip from "jszip";
+import {Media} from "@core";
 
 
 export class Converter {
-
-
     /** @param {import("@core").Project} project */
     constructor(project) {
+        this.media = new Media();
 
         /** @type {import("@core").Project} */
         this.project = project;
@@ -16,7 +16,6 @@ export class Converter {
             data: "data.json",
         };
     }
-
 
     /** @param {JSZip} archive */
     archiveData(archive) {
@@ -45,12 +44,9 @@ export class Converter {
         Object.entries(this.project.assets)
             .forEach(([name, blob]) => {
 
-                /** @type {{[key: string]: string}} */
-                const ext = {
-                    "image/svg+xml": "svg",
-                    "image/png": "png"
-                };
-                resourceFolder.file(`${name}.${ext[blob.type]}`, blob);
+                const ext = this.media.typeToExtension(blob.type);
+
+                resourceFolder.file(`${name}.${ext}`, blob);
             });
     }
 
@@ -65,13 +61,17 @@ export class Converter {
             if (!path.includes(this.paths.asset)) continue;
 
             const fileName = path.split("/")[1];
-            const name = fileName.split(".")[0];
-            const options = {type: "image/png"};
+            const [name, extension] = fileName.split(".");
+
+            if (!extension) continue;
+
+            const options = {type: this.media.extensionToType(extension)};
 
             promises.push(
                 archive.files[path]
                     .async("blob")
                     .then(data => {
+                        console.log(path);
                         this.project.assets[name] = new Blob([data], options);
                     })
             );

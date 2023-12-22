@@ -76,7 +76,7 @@ export class Viewer {
                 url = "./static/marker.svg";
             }
             else if (this.mode == "editor" && this.assets) {
-                url = "./icon/marker.svg";
+                url = URL.createObjectURL(this.assets["marker"]);
             }
             else {
                 throw new Error("Something going wrong");
