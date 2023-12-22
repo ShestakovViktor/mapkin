@@ -1,20 +1,13 @@
-import {Interaction, Project, Invoker} from "@core";
+import {Project, Invoker} from "@core";
 
 export class Core {
     /** @param {import("@src/viewer").Viewer} viewer */
     constructor(viewer) {
-        /** @private */
         this.viewer = viewer;
 
         this.project = new Project();
 
         this.invoker = new Invoker();
-
-        this.input = new Interaction(
-            this.viewer,
-            this.project,
-            this.invoker
-        );
     }
 
     /**

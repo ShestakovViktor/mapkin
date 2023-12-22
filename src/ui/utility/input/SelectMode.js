@@ -1,4 +1,4 @@
-import {Mode} from "@core/mode";
+import {Mode} from ".";
 
 export class SelectMode extends Mode {
     onMouseClick() {

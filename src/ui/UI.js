@@ -1,6 +1,6 @@
 import {InterfaceLayer, ModalLayer} from "@ui/layout";
 import {InitialDialog} from "@ui/feature/project/component";
-import {Modal} from "@ui/utility";
+import {Input, Media, Modal} from "@ui/utility";
 import {createContext} from "@ui/context";
 
 
@@ -15,6 +15,7 @@ export class UI {
 
         const context = createContext({
             modal: new Modal(modalLayer),
+            input: new Input(core),
             core
         });
 

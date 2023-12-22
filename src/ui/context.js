@@ -1,19 +1,19 @@
 /**
- * @typedef {Object} Context
- * @property {import("@ui/utility").Modal} modal
- * @property {import("@core").Core} core
-*/
-
-
-/**
- * @type Context
+ * @typedef {{
+ *     modal: import("@ui/utility").Modal;
+ *     input: import("@ui/utility").Input;
+ *     core: import("@core").Core;
+ * }} Context
  */
+
+
+/** @type Context */
 let context;
 
 
 /**
  * @param {Context} newContext
- * @returns Context
+ * @returns {Context}
  */
 export function createContext(newContext) {
     context = newContext;
@@ -21,9 +21,7 @@ export function createContext(newContext) {
 }
 
 
-/**
- * @returns Context
- */
+/** @returns {Context} */
 export function useContext() {
     return context;
 }

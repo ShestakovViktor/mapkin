@@ -1,13 +1,11 @@
 import styles from "@ui/layout/ModalLayer/ModalLayer.module.scss";
 
 export class Modal {
-    /**
-     * @param {HTMLElement} modalLayer
-     */
+
+    /** @param {HTMLElement} modalLayer */
     constructor(modalLayer) {
-        /**
-         * @private
-         */
+
+        /** @private */
         this.modalLayer = modalLayer;
     }
 

@@ -1,20 +1,20 @@
-import {SelectMode, MarkerMode} from "@core/mode";
+/* eslint-disable no-unused-vars */
+import {Mode, SelectMode, MarkerMode} from ".";
 
-export class Interaction {
+export class Input {
 
-    /**
-     * @param {import("@src/viewer").Viewer} viewer
-     * @param {import("@core").Project} project
-     * @param {import("@core").Invoker} invoker
-     */
-    constructor(viewer, project, invoker) {
+    /** @param {import("@core").Core} core */
+    constructor(core) {
         /** @private */
         this.modes = {
-            select: new SelectMode(viewer, project, invoker),
-            marker: new MarkerMode(viewer, project, invoker)
+            select: new SelectMode(core),
+            marker: new MarkerMode(core)
         };
 
-        /** @private */
+        /**
+         * @private
+         * @type {Mode}
+         */
         this.mode = this.modes["select"];
     }
 

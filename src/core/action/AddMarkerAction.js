@@ -3,19 +3,17 @@ import {Action} from "@core/action";
 export class AddMarkerAction extends Action {
 
     /**
-     * @param {import("@src/viewer").Viewer} viewer
-     * @param {import("@core").Project} project
+     * @param {import("@core").Core} core
      * @param {import("@type").Marker} data
      */
-    constructor(viewer, project, data) {
+    constructor(core, data) {
         super();
-        this.viewer = viewer;
-        this.project = project;
+        this.core = core;
         this.data = data;
     }
 
     execute() {
-        this.project.addMarker(this.data);
-        this.viewer.render();
+        this.core.project.addMarker(this.data);
+        this.core.viewer.render();
     }
 }

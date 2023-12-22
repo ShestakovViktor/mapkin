@@ -11,7 +11,7 @@ export function InterfaceLayer() {
     interfaceLayer.classList.add(styles.InterfaceLayer);
 
     window.addEventListener("click", (event) => {
-        context.core.input.onMouseClick(event);
+        context.input.onMouseClick(event);
     });
 
 
