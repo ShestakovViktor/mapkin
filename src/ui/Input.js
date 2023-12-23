@@ -1,14 +1,17 @@
 /* eslint-disable no-unused-vars */
-import {Mode, SelectMode, MarkerMode} from ".";
+import {Mode, SelectMode, MarkerMode} from "./mode";
 
 export class Input {
 
-    /** @param {import("@core").Core} core */
-    constructor(core) {
+    /**
+     * @param {import("@core").Core} core
+     * @param {import("@ui").Modal} modal
+     */
+    constructor(core, modal) {
         /** @private */
         this.modes = {
-            select: new SelectMode(core),
-            marker: new MarkerMode(core)
+            select: new SelectMode(core, modal),
+            marker: new MarkerMode(core, modal)
         };
 
         /**

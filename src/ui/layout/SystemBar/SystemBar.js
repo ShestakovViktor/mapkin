@@ -3,9 +3,9 @@ import DisketteIconSvg from "@public/icon/diskette.svg";
 import DownloadIconSvg from "@public/icon/download.svg";
 import GearIconSvg from "@public/icon/gear.svg";
 import en from "./string/en.json";
-import JSZip from "jszip";
 
-import {Icon, Button} from "@ui/feature/widget/component";
+
+import {Icon, Button} from "@ui/widget";
 import i18next from "i18next";
 import {useContext} from "@ui/context";
 

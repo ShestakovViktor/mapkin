@@ -3,7 +3,7 @@ import CursorIconSvg from "@public/icon/cursor.svg";
 import MarkerIconSvg from "@public/icon/marker.svg";
 import en from "./string/en.json";
 
-import {Icon, Button} from "@ui/feature/widget/component";
+import {Icon, Button} from "@ui/widget";
 import {useContext} from "@ui/context";
 
 import i18next from "i18next";

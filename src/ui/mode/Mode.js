@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
 export class Mode {
 
-    /** @param {import("@core").Core} core */
-    constructor(core) {
+    /**
+     * @param {import("@core").Core} core
+     * @param {import("@ui").Modal} modal
+     */
+    constructor(core, modal) {
         this.core = core;
+        this.modal = modal;
     }
 
 

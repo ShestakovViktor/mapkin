@@ -3,6 +3,7 @@ import {Media} from "@core";
 
 
 export class Converter {
+
     /** @param {import("@core").Project} project */
     constructor(project) {
         this.media = new Media();
@@ -17,22 +18,32 @@ export class Converter {
         };
     }
 
+
+    /** @return {Promise<File>} */
+    async export() {
+        const archive = JSZip();
+
+        this.archiveData(archive);
+        this.archiveAsset(archive);
+        this.archiveSource(archive);
+
+        const archiveBlob = await archive.generateAsync({type: "blob"});
+
+        const archiveFile = new File(
+            [archiveBlob],
+            `${this.project.data.name}.mp`
+        );
+
+        return archiveFile;
+    }
+
+
     /** @param {JSZip} archive */
     archiveData(archive) {
         archive.file(
             this.paths.data,
             JSON.stringify(this.project.data, null, 4)
         );
-    }
-
-
-    /** @param {JSZip} archive */
-    async extractData(archive) {
-        const dataString = await archive
-            .files[this.paths.data]
-            .async("text");
-
-        this.project.data = JSON.parse(dataString);
     }
 
 
@@ -48,6 +59,37 @@ export class Converter {
 
                 resourceFolder.file(`${name}.${ext}`, blob);
             });
+    }
+
+
+    /** @param {JSZip} archive */
+    archiveSource(archive) {
+        const sourceFolder = archive.folder(this.paths.source);
+        if (!sourceFolder) throw new Error();
+
+        if (this.project.src) {
+            const extension = this.project.src.map.name.split(".")[1];
+            sourceFolder.file(`map.${extension}`, this.project?.src.map);
+        }
+    }
+
+
+    /** @param {File} file */
+    async import(file) {
+        const archive = await JSZip.loadAsync(file);
+
+        await this.extractData(archive);
+        await this.extractAsset(archive);
+    }
+
+
+    /** @param {JSZip} archive */
+    async extractData(archive) {
+        const dataString = await archive
+            .files[this.paths.data]
+            .async("text");
+
+        this.project.data = JSON.parse(dataString);
     }
 
 
@@ -78,46 +120,6 @@ export class Converter {
         }
 
         await Promise.all(promises);
-    }
-
-
-    /** @param {JSZip} archive */
-    exportSource(archive) {
-        const sourceFolder = archive.folder(this.paths.source);
-        if (!sourceFolder) throw new Error();
-
-        if (this.project.src) {
-            const extension = this.project.src.map.name.split(".")[1];
-            sourceFolder.file(`map.${extension}`, this.project?.src.map);
-        }
-    }
-
-
-    /** @return {Promise<File>} */
-    async export() {
-        const archive = JSZip();
-
-        this.archiveData(archive);
-        this.archiveAsset(archive);
-        this.exportSource(archive);
-
-        const archiveBlob = await archive.generateAsync({type: "blob"});
-
-        const archiveFile = new File(
-            [archiveBlob],
-            `${this.project.data.name}.mp`
-        );
-
-        return archiveFile;
-    }
-
-
-    /** @param {File} file */
-    async import(file) {
-        const archive = await JSZip.loadAsync(file);
-
-        await this.extractData(archive);
-        await this.extractAsset(archive);
     }
 
 

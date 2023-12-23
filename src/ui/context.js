@@ -1,7 +1,7 @@
 /**
  * @typedef {{
- *     modal: import("@ui/utility").Modal;
- *     input: import("@ui/utility").Input;
+ *     modal: import("@ui").Modal;
+ *     input: import("@ui").Input;
  *     core: import("@core").Core;
  * }} Context
  */

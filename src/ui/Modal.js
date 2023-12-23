@@ -9,20 +9,16 @@ export class Modal {
         this.modalLayer = modalLayer;
     }
 
-    clear() {
-        this.modalLayer.innerHTML = "";
-    }
-
     /**
      * @param {HTMLElement} element
      */
     render(element) {
-        this.clear();
+        this.modalLayer.innerHTML = "";
         this.modalLayer.appendChild(element);
+        this.modalLayer.classList.remove(styles.Hidden);
     }
 
     hide() {
-        this.clear();
         this.modalLayer.classList.add(styles.Hidden);
     }
 }
