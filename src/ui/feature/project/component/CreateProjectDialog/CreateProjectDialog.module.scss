@@ -1,7 +1,6 @@
 @use "mixins";
 
 .CreateProjectDialog {
-    @include mixins.button;
 
     > .ResourceForm {
         display: flex;

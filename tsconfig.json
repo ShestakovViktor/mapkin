@@ -1,0 +1,78 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": "./",
+        "checkJs": true,
+        "jsx": "react",
+        "strictNullChecks": true,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "es6",
+            "dom",
+        ],
+        "downlevelIteration": true,
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "module": "CommonJs",
+        "outDir": "./build",
+        "paths": {
+            "@src": [
+                "src",
+            ],
+            "@src/*": [
+                "src/*"
+            ],
+            "@core": [
+                "src/core"
+            ],
+            "@core/*": [
+                "src/core/*"
+            ],
+            "@viewer": [
+                "src/viewer"
+            ],
+            "@viewer/*": [
+                "src/viewer/*"
+            ],
+            "@ui": [
+                "src/ui"
+            ],
+            "@ui/*": [
+                "src/ui/*"
+            ],
+            "@style": [
+                "src/style"
+            ],
+            "@style/*": [
+                "src/style/*"
+            ],
+            "@type": [
+                "src/type"
+            ],
+            "@type/*": [
+                "src/type/*"
+            ],
+            "@public": [
+                "public"
+            ],
+            "@public/*": [
+                "public/*"
+            ],
+        },
+        "resolveJsonModule": true,
+        "rootDir": ".",
+        "strict": true,
+        "target": "ES6"
+    },
+    "include": [
+        "./**/*.ts",
+    ],
+    "exclude": [
+        "node_modules"
+    ],
+}

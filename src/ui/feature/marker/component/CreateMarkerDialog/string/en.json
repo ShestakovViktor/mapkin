@@ -1,3 +1,5 @@
 {
-    "text": "marker text"
+    "text": "marker text",
+    "createMarker": "create marker",
+    "cancel": "cancel"
 }

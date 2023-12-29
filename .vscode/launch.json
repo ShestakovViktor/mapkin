@@ -5,13 +5,14 @@
 			"name": "editor",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceFolder}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+			"program": "${workspaceFolder}/node_modules/.bin/ts-node",
 			"cwd": "${workspaceFolder}",
 			"outputCapture": "std",
 			"console": "internalConsole",
 			"args": [
+				"node_modules/.bin/webpack-dev-server",
 				"--config",
-				"webpack.dev.js"
+				"webpack.dev.ts"
 			]
 		},
 	]
