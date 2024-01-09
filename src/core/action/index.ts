@@ -1,2 +1,3 @@
 export * from "./Action";
-export * from "./AddMarkerAction";
+export * from "./AddEntityAction";
+export * from "./MockAction";

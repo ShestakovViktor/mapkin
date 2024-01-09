@@ -1,5 +1,5 @@
-import {Data} from "@src/type";
-import {Marker, Tile} from "@viewer/component";
+import {Data, Entity, Node, Tile as TileData} from "@src/type";
+import {Tile as TileComponent} from "@viewer/component";
 import {Map, TileLayer, MarkerLayer, ModalLayer} from "@viewer/layout";
 import gsap from "gsap";
 
@@ -7,13 +7,17 @@ export class Viewer {
     mode: "editor" | "website" | "";
 
     modalLayer: HTMLDivElement;
+
     tileLayer: HTMLDivElement;
+
     markerLayer: HTMLDivElement;
 
     factor: number;
+
     map: HTMLDivElement;
 
     data: Data | undefined;
+
     assets: {[key: string]: Blob} | undefined;
 
     constructor(root: HTMLElement, props: {mode: "editor" | "website"}) {
@@ -85,51 +89,67 @@ export class Viewer {
 
         this.setupContainer();
 
-
-        this.data.layout.markers.forEach(markerData => {
-            let url;
-
-            if (this.mode == "website") {
-                url = "./static/marker.svg";
-            }
-            else if (this.mode == "editor" && this.assets) {
-                url = URL.createObjectURL(this.assets.marker);
-            }
-            else {
-                throw new Error("Something going wrong");
-            }
-
-            const markerElement = Marker({
-                x: markerData.x,
-                y: markerData.y,
-                text: markerData.text,
-                src: url,
-            });
-            this.markerLayer.appendChild(markerElement);
-        });
-
-        this.data.layout.tiles.forEach(tileData => {
-            let url;
-
-            if (this.mode == "website") {
-                url = `./static/${tileData.asset}.png`;
-            }
-            else if (this.mode == "editor" && this.assets) {
-                url = URL.createObjectURL(this.assets[tileData.asset]);
-            }
-            else {
-                throw new Error("Something going wrong");
-            }
-
-            const tileElement = Tile({
-                x: tileData.x,
-                y: tileData.y,
-                width: tileData.width,
-                height: tileData.height,
-                src: url,
-            });
-
-            this.tileLayer.appendChild(tileElement);
-        });
+        this.renderNode(this.data.layout);
     }
+
+    renderNode(node: Node): void {
+        const entity = this.data?.entity[node.id];
+        if (!entity) throw new Error("!!!");
+
+        if (this.isTile(entity)) this.renderTile(entity);
+        else if (node.childs) {
+            node.childs.forEach(child => this.renderNode(child));
+        }
+    }
+
+
+    private isTile(pet: Entity): pet is TileData {
+        return pet.type == "tile";
+    }
+
+    private renderTile(tileData: TileData): void {
+        let url = undefined;
+
+        if (this.mode == "website") {
+            url = `./static/${tileData.asset}.jpg`;
+        }
+        else if (this.mode == "editor" && this.assets) {
+            url = URL.createObjectURL(this.assets[tileData.asset]);
+        }
+        else {
+            throw new Error("Something going wrong");
+        }
+
+        const tileElement = TileComponent({
+            x: tileData.x,
+            y: tileData.y,
+            width: tileData.width,
+            height: tileData.height,
+            src: url,
+        });
+
+        this.tileLayer.appendChild(tileElement);
+    }
+
+
+    //     if (this.mode == "website") {
+    //         url = "./static/marker.svg";
+    //     }
+    //     else if (this.mode == "editor" && this.assets) {
+    //         url = URL.createObjectURL(this.assets.marker);
+    //     }
+    //     else {
+    //         throw new Error("Something going wrong");
+    //     }
+
+    //     const markerElement = Marker({
+    //         x: layer.x,
+    //         y: layer.y,
+    //         text: layer.text,
+    //         src: url,
+    //     });
+    //     this.markerLayer.appendChild(markerElement);
+
+    // let url;
+
 }

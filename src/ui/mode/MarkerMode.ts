@@ -1,5 +1,7 @@
 import {Mode} from ".";
-import {AddMarkerAction} from "@core/action";
+import {AddEntityAction} from "@core/action";
+import {OVERLAY} from "@src/core/Project";
+import {Marker} from "@src/type";
 
 import {CreateMarkerDialog} from "@ui/feature/marker/component";
 
@@ -38,18 +40,25 @@ export class MarkerMode extends Mode {
 
             const rect = map.getBoundingClientRect();
 
-            console.log(this.core.viewer.factor);
-
-            const markerData = {
+            const markerData: Marker = {
+                type: "marker",
                 x: (Math.abs(rect.x) + event.pageX) / this.core.viewer.factor,
                 y: (Math.abs(rect.y) + event.pageY) / this.core.viewer.factor,
                 asset: "marker",
                 text: res.text,
             };
 
-            const addMarkerAction = new AddMarkerAction(this.core, markerData);
+            const layerId = this.core.project.getEntityId({name: OVERLAY});
 
-            this.core.invoker.execute(addMarkerAction);
+            if (!layerId) throw new Error("There is no ovelay layer");
+
+            const addEntityAction = new AddEntityAction(
+                this.core,
+                markerData,
+                layerId
+            );
+
+            this.core.invoker.execute(addEntityAction);
         }
     }
 }

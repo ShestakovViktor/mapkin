@@ -24,7 +24,7 @@ export function SystemBar(): HTMLDivElement {
         const projectFileUrl = URL.createObjectURL(projectFile);
 
         const tempLink = document.createElement("a");
-        tempLink.download = projectFile.name;
+        tempLink.download = "project.mp";
         tempLink.href = projectFileUrl;
         tempLink.click();
         tempLink.remove();
@@ -36,11 +36,10 @@ export function SystemBar(): HTMLDivElement {
         const projectFileUrl = URL.createObjectURL(websiteArchive);
 
         const tempLink = document.createElement("a");
-        tempLink.download = websiteArchive.name;
+        tempLink.download = "project.zip";
         tempLink.href = projectFileUrl;
         tempLink.click();
         tempLink.remove();
-
     }
 
     [

@@ -254,7 +254,12 @@
             }
         ],
         "@stylistic/no-extra-semi": "error",
-        "@stylistic/no-multiple-empty-lines": "warn",
+        "@stylistic/no-multiple-empty-lines": [
+            "warn",
+            {
+                "max": 1
+            }
+        ],
         "@stylistic/no-trailing-spaces": "error",
         "@stylistic/object-curly-spacing": [
             "error",

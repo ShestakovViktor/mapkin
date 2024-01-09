@@ -1,7 +1,7 @@
-export type Tile = {
-    asset: string;
+import {Element} from "@type";
+
+export type Tile = Element & {
+    type: "tile";
     width: number;
     height: number;
-    x: number;
-    y: number;
-}
+};

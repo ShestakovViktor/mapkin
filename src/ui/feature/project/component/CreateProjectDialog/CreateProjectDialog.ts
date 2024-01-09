@@ -5,7 +5,6 @@ import i18next from "i18next";
 import {Dialog, Form, Input, Label} from "@ui/widget";
 import {useContext} from "@ui/context";
 
-
 i18next.addResourceBundle(
     "en",
     "project",
@@ -14,10 +13,8 @@ i18next.addResourceBundle(
     true
 );
 
-
 export function CreateProjectDialog(): HTMLDivElement {
     const context = useContext();
-
 
     function handleSubmit(event: SubmitEvent): void {
         event.preventDefault();
@@ -25,9 +22,7 @@ export function CreateProjectDialog(): HTMLDivElement {
         const form = event.target as HTMLFormElement;
         const formData = new FormData(form);
 
-
         const mapFile = formData.get("mapFile") as File;
-
 
         const projectName = String(
             formData.get("projectName")
@@ -41,7 +36,6 @@ export function CreateProjectDialog(): HTMLDivElement {
             formData.get("horizontalTilesNumber")
         ) || 1;
 
-
         const projectData = {
             projectName,
             mapFile,
@@ -54,7 +48,6 @@ export function CreateProjectDialog(): HTMLDivElement {
 
         context.modal.hide();
     }
-
 
     return Dialog({
         class: styles.CreateProjectDialog,
@@ -77,13 +70,11 @@ export function CreateProjectDialog(): HTMLDivElement {
                         name: "projectName",
                     }),
 
-
                     Input({
                         type: "file",
                         name: "mapFile",
                         accept: "image/*",
                     }),
-
 
                     Label({
                         htmlFor: "horizontalTilesNumber",
@@ -99,7 +90,6 @@ export function CreateProjectDialog(): HTMLDivElement {
                         value: "5",
                     }),
 
-
                     Label({
                         htmlFor: "verticalTilesNumber",
                         innerText: i18next.t(
@@ -113,7 +103,6 @@ export function CreateProjectDialog(): HTMLDivElement {
                         name: "verticalTilesNumber",
                         value: "5",
                     }),
-
 
                     Input({type: "submit"}),
                 ],

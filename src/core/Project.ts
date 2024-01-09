@@ -1,126 +1,104 @@
-import {Data, Marker} from "@src/type";
-import {Converter} from "./Converter";
+import {Data, Node, Entity} from "@src/type";
 
-
+export const MAP = "map";
+export const OVERLAY = "overlay";
 
 export class Project {
-    data: Data;
-    converter: Converter;
-    assets: {[key: string]: Blob};
-    src: {[key: string]: File};
+    private data: Data;
 
-    constructor() {
-        this.data = {
-            name: "",
+    private assets: {[key: string]: Blob};
+
+    constructor(params?: Partial<{
+        data: Partial<Data>;
+        assets: {[key: string]: Blob};
+    }>) {
+
+        const rootId = this.genId();
+        const rootEntity: Entity = {
+            type: "group",
+        };
+
+        const data: Data = {
+            name: "New project",
             size: {width: 0, height: 0},
             grid: {rows: 0, cols: 0},
-
-            layout: {
-                tiles: [],
-                markers: [],
-            },
+            entity: {[rootId]: rootEntity},
+            layout: {id: rootId, childs: []},
         };
 
-        this.assets = {};
-        this.src = {};
+        if (params?.data) Object.assign(data, params.data);
 
-        this.converter = new Converter(this);
+        this.data = data;
+        this.assets = params?.assets ?? {};
     }
 
-
-    addMarker(marker: Marker): void {
-        this.data.layout.markers.push(marker);
+    getData(): Data {
+        return this.data;
     }
 
-
-    async init(params: {
-        projectName: string;
-        mapFile: File;
-        horizontalTilesNumber: number;
-        verticalTilesNumber: number;
-    }): Promise<void> {
-        const image = await this.initImage(params.mapFile);
-
-        this.data = {
-            name: params.projectName,
-            size: {
-                width: image.width,
-                height: image.height,
-            },
-            grid: {
-                rows: params.verticalTilesNumber,
-                cols: params.horizontalTilesNumber,
-            },
-            layout: {
-                tiles: [],
-                markers: [],
-            },
-        };
-
-        await this.initTiles(image);
-
-
-        const response = await fetch("./icon/marker.svg");
-        const blob = await response.blob();
-        this.assets.marker = blob;
-
-
-        this.src = {
-            map: params.mapFile,
-        };
-
+    setData(data: Data): void {
+        this.data = data;
     }
 
-
-    async initImage(blob: Blob): Promise<HTMLImageElement> {
-        const url = URL.createObjectURL(blob);
-        const image = document.createElement("img");
-        image.src = url;
-        await new Promise(resolve => image.onload = resolve);
-        return image;
+    private getRootNode(): Node {
+        return this.data.layout;
     }
 
+    private getNode(id: string, node?: Node): Node | undefined {
+        if (!node) node = this.getRootNode();
 
-    async initTiles(image: HTMLImageElement): Promise<void> {
-        const tileWidth = this.data.size.width
-            / this.data.grid.cols;
-        const tileHeight = this.data.size.height
-            / this.data.grid.rows;
+        if (node.id == id) return node;
+        else if (node.childs) {
+            return node.childs.find((child) => {
+                return this.getNode(id, child);
+            });
+        }
+        return;
+    }
 
-        const canvas = document.createElement("canvas");
-        canvas.width = tileWidth;
-        canvas.height = tileHeight;
-        const context = canvas.getContext("2d");
-        if (!context) throw new Error();
+    appendChild(entityId: string, parentId?: string): void {
+        const parent = parentId
+            ? this.getNode(parentId)
+            : this.getRootNode();
 
-        for await (const yi of Array(this.data.grid.cols).keys()) {
-            for await (const xi of Array(this.data.grid.rows).keys()) {
+        if (!parent) throw new Error("Parent node does not exist");
+        if (!parent.childs) parent.childs = [];
 
-                const x = xi * tileWidth;
-                const y = yi * tileHeight;
+        parent.childs.push({id: entityId});
+    }
 
-                context.drawImage(
-                    image,
-                    x, y, tileWidth, tileHeight,
-                    0, 0, canvas.width, canvas.height
-                );
+    addEntity(data: Entity): string {
+        const id = this.genId();
+        this.data.entity[id] = {...data};
+        return id;
+    }
 
-                const blob = await new Promise<Blob | null>(
-                    resolve => canvas.toBlob(resolve, "image/jpeg")
-                );
+    getEntity(id: string): Entity | undefined {
+        return this.data.entity[id];
+    }
 
-                if (blob) {
-                    const name = `${xi}-${yi}`;
-                    this.data.layout.tiles.push({
-                        asset: name,
-                        width: tileWidth,
-                        height: tileHeight,
-                        x,
-                        y,
-                    });
-                    this.assets[name] = blob;
-                }
+    getEntityId(params: Partial<Entity>): string | undefined {
+        for (const key in this.data.entity) {
+            const entity = this.data.entity[key];
+            if (params.name && entity.name == params.name) {
+                return key;
             }
         }
+        return undefined;
+    }
+
+    addAsset(blob: Blob): string {
+        const id = this.genId();
+        this.assets[id] = blob;
+        return id;
+    }
+
+    getAssets(): {[key: string]: Blob} {
+        return this.assets;
+    }
+
+    private genId(): string {
+        return Date.now().toString(36)
+            + Math.random().toString(36).substring(2, 12).padStart(12, "0");
     }
 }
