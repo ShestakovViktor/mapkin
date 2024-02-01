@@ -6,12 +6,13 @@ type Props = {
     x: number;
     y: number;
     src: string;
-}
+};
 export function Tile(props: Props): HTMLImageElement {
     const tile = document.createElement("img");
     tile.classList.add(styles.Tile);
 
     tile.src = props.src;
+    tile.draggable = false;
 
     tile.style.width = `${props.width}px`;
     tile.style.height = `${props.height}px`;
