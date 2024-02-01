@@ -32,7 +32,7 @@ export class Core {
 
     async importProject(blob: Blob): Promise<void> {
         this.project = await this.converter.importProject(blob);
-        this.viewer.init(this.project.getData(), this.project.getAssets());
+        this.viewer.setProject(this.project);
         this.viewer.render();
     }
 
@@ -57,20 +57,21 @@ export class Core {
             },
         };
 
-        const project = new Project({data});
+        const project = new Project(data);
 
         const mapEntity: Entity = {type: "group"};
         const mapId = project.addEntity(mapEntity);
         project.appendChild(mapId);
 
-        tiles.forEach((data) => {
+        const promises = tiles.map((data) => {
+            const assetId = project.addAsset(data.base64);
             const tile: Tile = {
                 type: "tile",
                 x: data.x,
                 y: data.y,
                 width: data.width,
                 height: data.height,
-                asset: project.addAsset(data.blob),
+                asset: assetId,
             };
 
             const entityId = project.addEntity(tile);
@@ -78,9 +79,10 @@ export class Core {
             project.appendChild(entityId, mapId);
         });
 
-        this.project = project;
+        await Promise.all(promises);
 
-        this.viewer.init(this.project.getData(), this.project.getAssets());
+        this.project = project;
+        this.viewer.setProject(this.project);
         this.viewer.render();
     }
 }

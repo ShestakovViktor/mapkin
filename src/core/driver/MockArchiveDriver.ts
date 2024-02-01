@@ -30,7 +30,6 @@ export class MockArchiveDriver implements ArchiveDriver {
 
             const byteArray = new Uint8Array(byteArrays);
             result[path] = new Blob([byteArray], {type: ""});
-
         }
 
         return new Promise(resolve => resolve(result));

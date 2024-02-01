@@ -17,7 +17,7 @@ describe("Project", () => {
     it("Add asset", () => {
         const project = new Project();
 
-        const assetId = project.addAsset(new Blob());
+        const assetId = project.addAsset("qwe");
 
         assert.notEqual(assetId, undefined);
     });

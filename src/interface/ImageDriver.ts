@@ -3,7 +3,7 @@ export type ImageTile = {
     y: number;
     width: number;
     height: number;
-    blob: Blob;
+    base64: string;
 };
 
 export interface ImageDriver {

@@ -35,18 +35,14 @@ export class WebImageDriver implements ImageDriver {
                     0, 0, canvas.width, canvas.height
                 );
 
-                const blob = await new Promise<Blob | null>(
-                    resolve => canvas.toBlob(resolve, "image/jpeg")
-                );
-
-                if (!blob) throw new Error("No data from canvas");
+                const base64 = canvas.toDataURL("image/jpeg");
 
                 tiles.push({
                     x,
                     y,
                     width: tileWidth,
                     height: tileHeight,
-                    blob,
+                    base64,
                 });
             }
         }

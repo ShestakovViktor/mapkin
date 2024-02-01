@@ -2,7 +2,6 @@ import {ArchiveDriver} from "@src/interface";
 
 import JSZip from "jszip";
 
-
 export class WebArchiveDriver implements ArchiveDriver {
     async archive(data: {[key: string]: Blob}): Promise<Blob> {
         const archive = JSZip();

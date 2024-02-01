@@ -10,9 +10,7 @@ const root = document.createElement("div");
 root.id = "root";
 document.body.appendChild(root);
 
-
-
-const viewer = new Viewer(root, {mode: "editor"});
+const viewer = new Viewer(root);
 const core = new Core(viewer);
 new UI(root, core);
 

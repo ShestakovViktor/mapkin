@@ -6,12 +6,7 @@ export const OVERLAY = "overlay";
 export class Project {
     private data: Data;
 
-    private assets: {[key: string]: Blob};
-
-    constructor(params?: Partial<{
-        data: Partial<Data>;
-        assets: {[key: string]: Blob};
-    }>) {
+    constructor(params?: Partial<Data>) {
 
         const rootId = this.genId();
         const rootEntity: Entity = {
@@ -24,12 +19,12 @@ export class Project {
             grid: {rows: 0, cols: 0},
             entity: {[rootId]: rootEntity},
             layout: {id: rootId, childs: []},
+            assets: {},
         };
 
-        if (params?.data) Object.assign(data, params.data);
+        Object.assign(data, params);
 
         this.data = data;
-        this.assets = params?.assets ?? {};
     }
 
     getData(): Data {
@@ -87,14 +82,14 @@ export class Project {
         return undefined;
     }
 
-    addAsset(blob: Blob): string {
+    addAsset(base64: string): string {
         const id = this.genId();
-        this.assets[id] = blob;
+        this.data.assets[id] = base64;
         return id;
     }
 
-    getAssets(): {[key: string]: Blob} {
-        return this.assets;
+    getAssets(): {[key: string]: string} {
+        return this.data.assets;
     }
 
     private genId(): string {

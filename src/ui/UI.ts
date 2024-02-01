@@ -4,7 +4,6 @@ import {Input, Modal} from "@ui";
 import {createContext} from "@ui/context";
 import {Core} from "@core";
 
-
 export class UI {
 
     constructor(root: HTMLElement, core: Core) {
@@ -13,19 +12,16 @@ export class UI {
         const modal = new Modal(modalLayer);
         const input = new Input(core, modal);
 
-
         const context = createContext({modal, input, core});
 
         const interfaceLayer = InterfaceLayer();
 
-        core.viewer.map.addEventListener("click", (event) => {
-            context.input.onMouseClick(event);
-        });
-
+        // core.viewer.map.addEventListener("click", (event) => {
+        //     context.input.onMouseClick(event);
+        // });
 
         root.appendChild(interfaceLayer);
         root.appendChild(modalLayer);
-
 
         context.modal.show(InitialDialog());
     }
