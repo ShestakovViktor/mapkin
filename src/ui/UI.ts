@@ -1,11 +1,12 @@
 import {InterfaceLayer, ModalLayer} from "@ui/layout/";
 import {InitialDialog} from "@ui/feature/project/component";
 import {Input, Modal} from "@ui";
-import {createContext} from "@ui/context";
+import {Context, createContext} from "@ui/context";
 import {Core} from "@core";
 import {Viewer} from "@viewer";
 
 export class UI {
+    private context: Context;
 
     constructor(root: HTMLElement, viewer: Viewer, core: Core) {
         const modalLayer = ModalLayer();
@@ -13,19 +14,21 @@ export class UI {
         const modal = new Modal(modalLayer);
         const input = new Input(viewer, core, modal);
 
-        const context = createContext({modal, input, viewer, core});
+        this.context = createContext({modal, input, viewer, core});
 
         const interfaceLayer = InterfaceLayer();
 
         const map = viewer.getTop();
 
         map.addEventListener("click", (event) => {
-            context.input.onMouseClick(event);
+            this.context.input.onMouseClick(event);
         });
 
         root.appendChild(interfaceLayer);
         root.appendChild(modalLayer);
+    }
 
-        context.modal.show(InitialDialog());
+    showInitialDialog(): void {
+        this.context.modal.show(InitialDialog());
     }
 }

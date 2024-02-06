@@ -5,6 +5,7 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import {Configuration} from "webpack";
 import {merge} from "webpack-merge";
 import common from "./webpack.config";
+import webpack from "webpack";
 
 export default merge<Configuration>(common, {
     mode: "production",
@@ -18,6 +19,9 @@ export default merge<Configuration>(common, {
         clean: true,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            "ENV": JSON.stringify("production"),
+        }),
         new HtmlWebpackPlugin({
             template: "./src/index.html",
         }),

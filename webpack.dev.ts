@@ -7,9 +7,10 @@ import {
 } from "webpack-dev-server";
 import {merge} from "webpack-merge";
 import common from "./webpack.config";
+import webpack from "webpack";
 
 interface Configuration extends WebpackConfiguration {
-  devServer?: WebpackDevServerConfiguration;
+    devServer?: WebpackDevServerConfiguration;
 }
 
 export default merge<Configuration>(common, {
@@ -21,6 +22,9 @@ export default merge<Configuration>(common, {
         filename: "[name].[fullhash].js",
     },
     plugins: [
+        new webpack.DefinePlugin({
+            "ENV": JSON.stringify("development"),
+        }),
         new HtmlWebpackPlugin({
             template: "/src/index.html",
         }),
@@ -30,6 +34,6 @@ export default merge<Configuration>(common, {
         port: 3000,
         hot: true,
         compress: true,
-        static: "./build",
+        static: ["./build", "./public"],
     },
 });
