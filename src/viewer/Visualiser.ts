@@ -43,7 +43,9 @@ export class Visualiser {
     }
 
     render(): void {
-        this.renderNode(this.project.getData().layout);
+        const rootNode = this.project.getData().layout;
+        if (!rootNode) throw new Error();
+        this.renderNode(rootNode);
     }
 
     private renderNode(node: Node): void {
@@ -66,7 +68,7 @@ export class Visualiser {
             y: tileData.y,
             width: tileData.width,
             height: tileData.height,
-            src: this.project.getAssets()[tileData.asset],
+            src: this.project.getSources()[tileData.source],
         });
 
         this.map.appendChild(tileElement);

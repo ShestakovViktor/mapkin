@@ -1,0 +1,15 @@
+@use "mixins";
+
+.TabView {
+    display: flex;
+    flex-direction: column;
+
+    .TabBar {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .TabArea {
+
+    }
+}

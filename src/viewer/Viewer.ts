@@ -27,6 +27,19 @@ export class Viewer {
         }
     }
 
+    getTop(): HTMLElement {
+        return this.map;
+    }
+
+    getRelativeCoordinates([x, y]: [number, number]): [number, number] {
+        const rect = this.map.getBoundingClientRect();
+        const scale = this.pivot.getScale();
+        return [
+            (Math.abs(rect.x) + x) / scale,
+            (Math.abs(rect.y) + y) / scale,
+        ];
+    }
+
     setProject(project: Project): void {
         this.project = project;
         this.visualiser = new Visualiser(this.map, this.pivot, project);

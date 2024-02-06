@@ -1,4 +1,4 @@
-import {Data, Node, Entity} from "@src/type";
+import {Data, Node, Entity, Asset} from "@src/type";
 
 export const MAP = "map";
 export const OVERLAY = "overlay";
@@ -7,24 +7,26 @@ export class Project {
     private data: Data;
 
     constructor(params?: Partial<Data>) {
-
-        const rootId = this.genId();
-        const rootEntity: Entity = {
-            type: "group",
-        };
-
-        const data: Data = {
+        this.data = {
             name: "New project",
             size: {width: 0, height: 0},
             grid: {rows: 0, cols: 0},
-            entity: {[rootId]: rootEntity},
-            layout: {id: rootId, childs: []},
-            assets: {},
+            source: {},
+            entity: {},
+            asset: {},
+            layout: undefined,
         };
 
-        Object.assign(data, params);
+        const rootId = this.addEntity({type: "group", name: "root"});
+        this.appendChild(rootId);
 
-        this.data = data;
+        const mapId = this.addEntity({type: "group", name: "map"});
+        this.appendChild(mapId, rootId);
+
+        const overlayId = this.addEntity({type: "group", name: OVERLAY});
+        this.appendChild(overlayId, rootId);
+
+        this.data = Object.assign(this.data, params);
     }
 
     getData(): Data {
@@ -35,13 +37,7 @@ export class Project {
         this.data = data;
     }
 
-    private getRootNode(): Node {
-        return this.data.layout;
-    }
-
-    private getNode(id: string, node?: Node): Node | undefined {
-        if (!node) node = this.getRootNode();
-
+    private getNode(id: string, node: Node): Node | undefined {
         if (node.id == id) return node;
         else if (node.childs) {
             return node.childs.find((child) => {
@@ -52,9 +48,14 @@ export class Project {
     }
 
     appendChild(entityId: string, parentId?: string): void {
-        const parent = parentId
-            ? this.getNode(parentId)
-            : this.getRootNode();
+        if (!parentId) {
+            this.data.layout = {id: entityId};
+            return;
+        }
+
+        if (!this.data.layout) throw new Error();
+
+        const parent = this.getNode(parentId, this.data.layout);
 
         if (!parent) throw new Error("Parent node does not exist");
         if (!parent.childs) parent.childs = [];
@@ -82,14 +83,28 @@ export class Project {
         return undefined;
     }
 
-    addAsset(base64: string): string {
+    getAssets(): {[key: string]: Asset} {
+        return this.data.asset;
+    }
+
+    getAssetId(params: Partial<Asset>): string | undefined {
+        for (const key in this.data.asset) {
+            const asset = this.data.asset[key];
+            if (params.name && asset.name == params.name) {
+                return key;
+            }
+        }
+        return undefined;
+    }
+
+    addSource(base64: string): string {
         const id = this.genId();
-        this.data.assets[id] = base64;
+        this.data.source[id] = base64;
         return id;
     }
 
-    getAssets(): {[key: string]: string} {
-        return this.data.assets;
+    getSources(): {[key: string]: string} {
+        return this.data.source;
     }
 
     private genId(): string {

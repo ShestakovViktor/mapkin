@@ -1,10 +1,11 @@
-import {Node, Entity} from "@type";
+import {Node, Entity, Asset} from "@type";
 
 export type Data = {
     name: string;
     size: {width: number; height: number};
     grid: {rows: number; cols: number};
-    layout: Node;
+    source: {[key: string]: string};
     entity: {[key: string]: Entity};
-    assets: {[key: string]: string};
+    asset: {[key: string]: Asset};
+    layout: Node | undefined;
 };

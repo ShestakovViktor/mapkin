@@ -34,30 +34,25 @@ export class MarkerMode extends Mode {
         });
         this.modal.hide();
 
-        // if (res) {
-        //     const map = this.core.viewer.map;
+        if (res) {
+            const [x, y] = this.viewer
+                .getRelativeCoordinates([event.pageX, event.pageY]);
 
-        //     const rect = map.getBoundingClientRect();
+            const markerData: Marker = {
+                type: "marker", x, y, source: "marker", text: res.text,
+            };
 
-        //     const markerData: Marker = {
-        //         type: "marker",
-        //         x: (Math.abs(rect.x) + event.pageX) / this.core.viewer.scale,
-        //         y: (Math.abs(rect.y) + event.pageY) / this.core.viewer.scale,
-        //         asset: "marker",
-        //         text: res.text,
-        //     };
+            const layerId = this.core.project.getEntityId({name: OVERLAY});
 
-        //     const layerId = this.core.project.getEntityId({name: OVERLAY});
+            if (!layerId) throw new Error("There is no ovelay layer");
 
-        //     if (!layerId) throw new Error("There is no ovelay layer");
+            const addEntityAction = new AddEntityAction(
+                this.core,
+                markerData,
+                layerId
+            );
 
-        //     const addEntityAction = new AddEntityAction(
-        //         this.core,
-        //         markerData,
-        //         layerId
-        //     );
-
-        //     this.core.invoker.execute(addEntityAction);
-        // }
+            this.core.invoker.execute(addEntityAction);
+        }
     }
 }

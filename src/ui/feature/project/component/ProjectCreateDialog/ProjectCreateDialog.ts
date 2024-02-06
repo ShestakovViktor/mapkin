@@ -1,4 +1,4 @@
-import styles from "./CreateProjectDialog.module.scss";
+import styles from "./ProjectCreateDialog.module.scss";
 import en from "./string/en.json";
 
 import i18next from "i18next";

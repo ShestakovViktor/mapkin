@@ -12,5 +12,5 @@ document.body.appendChild(root);
 
 const viewer = new Viewer(root);
 const core = new Core(viewer);
-new UI(root, core);
+new UI(root, viewer, core);
 

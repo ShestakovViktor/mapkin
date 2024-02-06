@@ -8,14 +8,14 @@ export class AddEntityAction extends Action {
     constructor(
         private core: Core,
         private data: Entity,
-        private layerId: string
+        private parentId: string
     ) {
         super();
     }
 
     execute(): void {
         this.entityId = this.core.project.addEntity(this.data);
-        this.core.project.appendChild(this.entityId, this.layerId);
+        this.core.project.appendChild(this.entityId, this.parentId);
         this.core.viewer.render();
     }
 }

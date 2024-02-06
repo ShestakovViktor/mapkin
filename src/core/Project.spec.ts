@@ -14,12 +14,12 @@ describe("Project", () => {
 
     });
 
-    it("Add asset", () => {
+    it("Add source", () => {
         const project = new Project();
 
-        const assetId = project.addAsset("qwe");
+        const sourceId = project.addSource("qwe");
 
-        assert.notEqual(assetId, undefined);
+        assert.notEqual(sourceId, undefined);
     });
 
     it("Add entity", () => {
@@ -30,7 +30,7 @@ describe("Project", () => {
             x: 0,
             y: 0,
             text: "",
-            asset: "",
+            source: "",
         };
 
         const entityId = project.addEntity(entityData);

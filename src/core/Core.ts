@@ -59,19 +59,18 @@ export class Core {
 
         const project = new Project(data);
 
-        const mapEntity: Entity = {type: "group"};
-        const mapId = project.addEntity(mapEntity);
-        project.appendChild(mapId);
+        const mapId = project.getEntityId({name: "map"});
+        if (!mapId) throw new Error("No map");
 
         const promises = tiles.map((data) => {
-            const assetId = project.addAsset(data.base64);
+            const sourceId = project.addSource(data.base64);
             const tile: Tile = {
                 type: "tile",
                 x: data.x,
                 y: data.y,
                 width: data.width,
                 height: data.height,
-                asset: assetId,
+                source: sourceId,
             };
 
             const entityId = project.addEntity(tile);

@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg version="1.1" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" stroke="#000" stroke-width="1px">
+    <g fill="none" stroke="currentColor" stroke-width="1px">
         <path d="m15.5 0.5v15h-15v-15z" stroke-linecap="square" stroke-linejoin="round"/>
-        <path d="m0.5 3.5h15" stroke-linejoin="round"/>
+        <path d="m0.5 4.5h15" stroke-linejoin="round"/>
         <g stroke-linecap="round">
             <g transform="translate(0 -.5)">
-                <path d="m8 7v5.5"/>
-                <path d="m5.5 10.5 2.5 2.5 2.5-2.5" stroke-linejoin="round"/>
+                <path d="m7.5 7v6.5"/>
+                <path d="m4.5 11 3 3 3-3" stroke-linejoin="round"/>
             </g>
-            <path d="m2 2h3.5"/>
-            <path d="m13 2h1"/>
+            <path d="m2.5 2.5h5"/>
+            <path d="m11.5 2.5h2"/>
         </g>
     </g>
 </svg>

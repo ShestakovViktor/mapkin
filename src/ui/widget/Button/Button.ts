@@ -1,16 +1,19 @@
 import styles from "./Button.module.scss";
 
-
 type Props = {
     class?: string;
     label?: string;
     tooltip?: string;
     icon?: SVGElement;
+    type?: "PanelButton" | "DialogButton";
     onClick?: () => void;
-}
+};
 export function Button(props: Props): HTMLButtonElement {
     const button = document.createElement("button");
+
     button.classList.add(styles.Button);
+
+    if (props.type) button.classList.add(styles[props.type]);
 
     if (props.tooltip) button.title = props.tooltip;
 
