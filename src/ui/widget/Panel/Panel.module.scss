@@ -3,5 +3,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+
+    .PanelButton {
+        padding: 8px;
+        aspect-ratio: 1;
+        width: 42px;
+        background-color: white;
+        box-shadow: 0px 2px 4px 0px hsla(0, 0%, 30%, 0.8);
+
+        * {
+            width: 16px;
+            height: 16px;
+        }
+    }
 }
     

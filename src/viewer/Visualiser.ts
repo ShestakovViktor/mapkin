@@ -1,8 +1,16 @@
 import gsap from "gsap";
 
 import {Pivot} from "@viewer";
-import {Tile as TileComp} from "@viewer/component";
-import {Tile as TileData, Entity, Node} from "@src/type";
+import {
+    Tile as TileComp,
+    Marker as MarkerComp,
+} from "@viewer/component";
+import {
+    Tile as TileData,
+    Marker as MarkerData,
+    Entity,
+    Node,
+} from "@src/type";
 import {Project} from "@core";
 
 export class Visualiser {
@@ -53,9 +61,27 @@ export class Visualiser {
         const entity = data.entity[node.id];
 
         if (this.isTile(entity)) this.renderTile(entity);
+        else if (this.isMarker(entity)) this.renderMarker(entity);
         else if (node.childs) {
             node.childs.forEach(child => this.renderNode(child));
         }
+    }
+
+    private isMarker(pet: Entity): pet is MarkerData {
+        return pet.type == "marker";
+    }
+
+    private renderMarker(markerData: MarkerData): HTMLImageElement {
+        const tileElement = MarkerComp({
+            x: markerData.x,
+            y: markerData.y,
+            text: markerData.text,
+            src: this.project.getSource(markerData.sourceId),
+        });
+
+        this.map.appendChild(tileElement);
+
+        return tileElement;
     }
 
     private isTile(pet: Entity): pet is TileData {
@@ -68,7 +94,7 @@ export class Visualiser {
             y: tileData.y,
             width: tileData.width,
             height: tileData.height,
-            src: this.project.getSources()[tileData.source],
+            src: this.project.getSource(tileData.sourceId),
         });
 
         this.map.appendChild(tileElement);

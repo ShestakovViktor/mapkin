@@ -13,6 +13,4 @@ declare module "*.module.scss" {
     export default content;
 }
 
-declare const ENV: string = undefined;
-
 declare const json: string = undefined;

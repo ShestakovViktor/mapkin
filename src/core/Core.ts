@@ -36,6 +36,16 @@ export class Core {
         this.viewer.render();
     }
 
+    async initAsset({name, file}: {
+        name: string;
+        file: File;
+    }): Promise<string> {
+        const base64 = await this.imageDriver.fooImage(file);
+        const source = this.project.addSource(base64);
+        const asset = this.project.addAsset({name, sourceId: source});
+        return asset;
+    }
+
     async initProject(params: {
         projectName: string;
         mapFile: File;
@@ -70,7 +80,7 @@ export class Core {
                 y: data.y,
                 width: data.width,
                 height: data.height,
-                source: sourceId,
+                sourceId,
             };
 
             const entityId = project.addEntity(tile);

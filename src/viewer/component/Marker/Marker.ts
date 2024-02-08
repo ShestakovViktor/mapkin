@@ -5,7 +5,8 @@ type Props = {
     y: number;
     text: string;
     src: string;
-}
+};
+
 export function Marker(props: Props): HTMLImageElement {
     const marker = document.createElement("img");
     marker.classList.add(styles.Marker);

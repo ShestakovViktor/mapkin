@@ -19,9 +19,6 @@ export default merge<Configuration>(common, {
         clean: true,
     },
     plugins: [
-        new webpack.DefinePlugin({
-            "ENV": JSON.stringify("production"),
-        }),
         new HtmlWebpackPlugin({
             template: "./src/index.html",
         }),

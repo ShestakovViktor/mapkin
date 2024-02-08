@@ -4,6 +4,7 @@ import en from "./string/en.json";
 import {Icon, Button} from "@ui/widget";
 import i18next from "i18next";
 import {useContext} from "@ui/context";
+import {ProjectMenu} from "@ui/feature/project/component";
 
 i18next.addResourceBundle("en", "layout", {SystemBar: en}, true, true);
 
@@ -18,7 +19,7 @@ export function ProjectMenuButton(): HTMLButtonElement {
             {postProcess: ["capitalize"]}
         ),
         onClick: (): void => {
-            console.log("qweq");
+            context.modal.show(ProjectMenu());
         },
     });
 }

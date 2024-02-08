@@ -1,12 +1,17 @@
-@use "mixins";
+@use "mixin";
 
 .TabView {
     display: flex;
     flex-direction: column;
+    background-color: var(--grey-90);
+    padding: 16px;
+    border-radius: 8px;
+
 
     .TabBar {
         display: flex;
         flex-direction: row;
+        border: 1px solid var(--grey-60);
     }
 
     .TabArea {

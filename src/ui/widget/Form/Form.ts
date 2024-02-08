@@ -5,7 +5,8 @@ type Props = {
     id?: string;
     class?: string;
     onSubmit?: (event: SubmitEvent) => void;
-}
+};
+
 export function Form(props: Props): HTMLFormElement {
     const form = document.createElement("form");
     form.classList.add(styles.Form);

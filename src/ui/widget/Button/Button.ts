@@ -6,8 +6,9 @@ type Props = {
     tooltip?: string;
     icon?: SVGElement;
     type?: "PanelButton" | "DialogButton";
-    onClick?: () => void;
+    onClick?: (event?: MouseEvent) => void;
 };
+
 export function Button(props: Props): HTMLButtonElement {
     const button = document.createElement("button");
 
@@ -22,7 +23,7 @@ export function Button(props: Props): HTMLButtonElement {
     if (props.onClick) {
         button.addEventListener("click", (event) => {
             event.stopPropagation();
-            if (props.onClick) props.onClick();
+            if (props.onClick) props.onClick(event);
         });
     }
 

@@ -22,9 +22,6 @@ export default merge<Configuration>(common, {
         filename: "[name].[fullhash].js",
     },
     plugins: [
-        new webpack.DefinePlugin({
-            "ENV": JSON.stringify("development"),
-        }),
         new HtmlWebpackPlugin({
             template: "/src/index.html",
         }),

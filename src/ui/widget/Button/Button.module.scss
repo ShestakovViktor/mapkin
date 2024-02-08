@@ -1,27 +1,19 @@
+@use "mixin";
+
 .Button {
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
     border-radius: 8px;
-    background-color: white;
+    background-color: transparent;
 
     cursor: pointer;
 
     * {
         color: var(--grey-30);
     }
-
 }
 
-.PanelButton {
-    padding: 8px;
-    aspect-ratio: 1;
-    width: 42px;
 
-    * {
-        width: 16px;
-        height: 16px;
-    }
-}
 

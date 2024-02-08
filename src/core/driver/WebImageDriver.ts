@@ -2,6 +2,33 @@ import {ImageDriver, ImageTile} from "@src/interface";
 
 export class WebImageDriver implements ImageDriver {
 
+    async fooImage(
+        file: File
+    ): Promise<string> {
+        const image = document.createElement("img");
+        image.src = URL.createObjectURL(file);
+        await new Promise(resolve => image.onload = resolve);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const context = canvas.getContext("2d");
+        if (!context) throw new Error();
+
+        context.drawImage(
+            image,
+            0, 0, image.width, image.height,
+            0, 0, canvas.width, canvas.height
+        );
+
+        const base64 = canvas.toDataURL("image/png");
+
+        image.remove();
+        canvas.remove();
+
+        return base64;
+    }
+
     async initImage(blob: Blob, rows: number, cols: number): Promise<{
         width: number;
         height: number;

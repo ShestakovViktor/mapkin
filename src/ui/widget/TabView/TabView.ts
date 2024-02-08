@@ -4,6 +4,7 @@ type Props = {
     children?: {[key: string]: Element};
     id?: string;
     class?: string;
+    selected?: number;
 };
 
 export function TabView(props: Props): HTMLDivElement {

@@ -2,7 +2,7 @@ import styles from "./ProjectCreateDialog.module.scss";
 import en from "./string/en.json";
 
 import i18next from "i18next";
-import {Dialog, Form, Input, Label} from "@ui/widget";
+import {Dialog, Form, Input, Label, Row} from "@ui/widget";
 import {useContext} from "@ui/context";
 
 i18next.addResourceBundle(
@@ -13,7 +13,7 @@ i18next.addResourceBundle(
     true
 );
 
-export function CreateProjectDialog(): HTMLDivElement {
+export function ProjectCreateDialog(): HTMLDivElement {
     const context = useContext();
 
     function handleSubmit(event: SubmitEvent): void {
@@ -45,8 +45,6 @@ export function CreateProjectDialog(): HTMLDivElement {
 
         context.core.initProject(projectData)
             .catch(error => console.log(error));
-
-        context.modal.hide();
     }
 
     return Dialog({
@@ -56,55 +54,67 @@ export function CreateProjectDialog(): HTMLDivElement {
                 onSubmit: handleSubmit,
                 class: styles.ResourceForm,
                 children: [
-                    Label({
-                        htmlFor: "projectName",
-                        innerText: i18next.t(
-                            "project:CreateProjectDialog.projectName",
-                            {postProcess: ["capitalize"]}
-                        ),
-                    }),
-                    Input({
-                        type: "text",
-                        id: "projectName",
-                        value: "New project",
-                        name: "projectName",
-                    }),
-
+                    Row({children: [
+                        Label({
+                            htmlFor: "projectName",
+                            innerText: i18next.t(
+                                "project:CreateProjectDialog.projectName",
+                                {postProcess: ["capitalize"]}
+                            ),
+                        }),
+                        Input({
+                            type: "text",
+                            id: "projectName",
+                            value: "New project",
+                            name: "projectName",
+                        }),
+                    ]}),
                     Input({
                         type: "file",
                         name: "mapFile",
                         accept: "image/*",
                     }),
 
-                    Label({
-                        htmlFor: "horizontalTilesNumber",
-                        innerText: i18next.t(
-                            "project:CreateProjectDialog.horizontalTilesNumber",
-                            {postProcess: ["capitalize"]}
-                        ) + ":",
-                    }),
-                    Input({
-                        type: "text",
-                        id: "horizontalTilesNumber",
-                        name: "horizontalTilesNumber",
-                        value: "5",
-                    }),
+                    Row({children: [
+                        Label({
+                            htmlFor: "horizontalTilesNumber",
+                            innerText: i18next.t(
+                                "project:CreateProjectDialog.horizontalTilesNumber",
+                                {postProcess: ["capitalize"]}
+                            ),
+                        }),
+                        Input({
+                            type: "text",
+                            id: "horizontalTilesNumber",
+                            name: "horizontalTilesNumber",
+                            value: "5",
+                        }),
+                    ]}),
 
-                    Label({
-                        htmlFor: "verticalTilesNumber",
-                        innerText: i18next.t(
-                            "project:CreateProjectDialog.verticalTilesNumber",
-                            {postProcess: ["capitalize"]}
-                        ) + ":",
-                    }),
-                    Input({
-                        type: "text",
-                        id: "verticalTilesNumber",
-                        name: "verticalTilesNumber",
-                        value: "5",
-                    }),
+                    Row({children: [
 
-                    Input({type: "submit"}),
+                        Label({
+                            htmlFor: "verticalTilesNumber",
+                            innerText: i18next.t(
+                                "project:CreateProjectDialog.verticalTilesNumber",
+                                {postProcess: ["capitalize"]}
+                            ),
+                        }),
+                        Input({
+                            type: "text",
+                            id: "verticalTilesNumber",
+                            name: "verticalTilesNumber",
+                            value: "5",
+                        }),
+                    ]}),
+
+                    Input({
+                        type: "submit",
+                        value: i18next.t(
+                            "project:CreateProjectDialog.create",
+                            {postProcess: ["capitalize"]}
+                        ),
+                    }),
                 ],
             }),
         ],

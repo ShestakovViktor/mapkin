@@ -1,4 +1,4 @@
-import {Data, Node, Entity, Asset} from "@src/type";
+import {Data, Node, Entity, Asset, Group} from "@src/type";
 
 export const MAP = "map";
 export const OVERLAY = "overlay";
@@ -17,13 +17,13 @@ export class Project {
             layout: undefined,
         };
 
-        const rootId = this.addEntity({type: "group", name: "root"});
+        const rootId = this.addEntity({type: "group", name: "root"} as Group);
         this.appendChild(rootId);
 
-        const mapId = this.addEntity({type: "group", name: "map"});
+        const mapId = this.addEntity({type: "group", name: "map"} as Group);
         this.appendChild(mapId, rootId);
 
-        const overlayId = this.addEntity({type: "group", name: OVERLAY});
+        const overlayId = this.addEntity({type: "group", name: OVERLAY} as Group);
         this.appendChild(overlayId, rootId);
 
         this.data = Object.assign(this.data, params);
@@ -73,25 +73,43 @@ export class Project {
         return this.data.entity[id];
     }
 
-    getEntityId(params: Partial<Entity>): string | undefined {
-        for (const key in this.data.entity) {
-            const entity = this.data.entity[key];
-            if (params.name && entity.name == params.name) {
-                return key;
+    getEntityId(params: {[key: string]: any}): string | undefined {
+        for (const entityId in this.data.entity) {
+            const entity = this.data.entity[entityId];
+
+            for (const prop in params) {
+                if (!(prop in entity)) break;
+                if (params[prop] == (entity as any)[prop]) {
+                    return entityId;
+                }
             }
         }
         return undefined;
+    }
+
+    addAsset(data: Asset): string {
+        const id = this.genId();
+        this.data.asset[id] = {...data};
+        return id;
+    }
+
+    getAsset(id: string): Asset {
+        return this.data.asset[id];
     }
 
     getAssets(): {[key: string]: Asset} {
         return this.data.asset;
     }
 
-    getAssetId(params: Partial<Asset>): string | undefined {
-        for (const key in this.data.asset) {
-            const asset = this.data.asset[key];
-            if (params.name && asset.name == params.name) {
-                return key;
+    getAssetId(params: {[key: string]: any}): string | undefined {
+        for (const assetId in this.data.asset) {
+            const asset = this.data.asset[assetId];
+
+            for (const prop in params) {
+                if (!(prop in asset)) break;
+                if (params[prop] == (asset as any)[prop]) {
+                    return assetId;
+                }
             }
         }
         return undefined;
@@ -101,6 +119,10 @@ export class Project {
         const id = this.genId();
         this.data.source[id] = base64;
         return id;
+    }
+
+    getSource(id: string): string {
+        return this.data.source[id];
     }
 
     getSources(): {[key: string]: string} {

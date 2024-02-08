@@ -4,7 +4,8 @@ type Props = {
     id?: string;
     name?: string;
     value?: string;
-}
+};
+
 export function TextArea(props: Props): HTMLTextAreaElement {
     const textarea = document.createElement("textarea");
     textarea.classList.add(styles.TextArea);

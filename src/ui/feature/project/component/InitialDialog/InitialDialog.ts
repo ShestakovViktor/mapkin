@@ -1,7 +1,7 @@
 import styles from "./InitialDialog.module.scss";
 import en from "./string/en.json";
 
-import {CreateProjectDialog} from "@ui/feature/project/component";
+import {ProjectCreateDialog} from "@ui/feature/project/component";
 
 import {Button, Dialog} from "@ui/widget";
 import {useContext} from "@ui/context";
@@ -14,7 +14,7 @@ export function InitialDialog(): HTMLDivElement {
     const context = useContext();
 
     function handleProjectCreation(): void {
-        context.modal.show(CreateProjectDialog());
+        context.modal.show(ProjectCreateDialog());
     }
 
     function handleProjectUpload(): void {
@@ -28,8 +28,6 @@ export function InitialDialog(): HTMLDivElement {
 
             context.core.importProject(file).catch(error => console.log(error));
         });
-
-        context.modal.hide();
     }
 
     return Dialog({

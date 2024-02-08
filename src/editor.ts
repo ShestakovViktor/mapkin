@@ -14,13 +14,9 @@ const viewer = new Viewer(root);
 const core = new Core(viewer);
 const ui = new UI(root, viewer, core);
 
-if (ENV == "development") {
-    fetch("/project.mp")
-        .then((response) => response.blob())
-        .then(file => core.importProject(file))
-        .catch(err => {throw new Error("Project init error: " + err);});
-}
-else {
-    ui.showInitialDialog();
-}
+// fetch("/project.mp")
+//     .then((response) => response.blob())
+//     .then(file => core.importProject(file))
+//     .catch(err => {throw new Error("Project init error: " + err);});
+ui.showInitialDialog();
 

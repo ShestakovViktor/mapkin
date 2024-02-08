@@ -9,7 +9,10 @@ export class MarkerMode extends Mode {
 
     async onMouseClick(event: MouseEvent): Promise<void> {
 
-        const res: {text: string} | undefined = await new Promise((resolve) => {
+        const res: {
+            text: string;
+            source: string;
+        } | undefined = await new Promise((resolve) => {
             const dialog = CreateMarkerDialog({
                 onSubmit: (event) => {
                     event.preventDefault();
@@ -24,22 +27,30 @@ export class MarkerMode extends Mode {
                         const formData = new FormData(form);
 
                         const text = String(formData.get("markerText"));
+                        const assetId = String(formData.get("assetId"));
 
-                        resolve({text});
+                        const asset = this.core.project.getAsset(assetId);
+
+                        resolve({text, source: asset.sourceId});
                     }
+
+                    dialog.remove();
                 },
             });
 
             this.modal.show(dialog);
         });
-        this.modal.hide();
 
         if (res) {
             const [x, y] = this.viewer
                 .getRelativeCoordinates([event.pageX, event.pageY]);
 
             const markerData: Marker = {
-                type: "marker", x, y, source: "marker", text: res.text,
+                type: "marker",
+                x,
+                y,
+                sourceId: res.source,
+                text: res.text,
             };
 
             const layerId = this.core.project.getEntityId({name: OVERLAY});

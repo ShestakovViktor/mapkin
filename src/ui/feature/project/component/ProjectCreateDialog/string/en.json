@@ -1,5 +1,6 @@
 {
     "projectName": "project name",
-    "verticalTilesNumber": "vertical tiles number",
-    "horizontalTilesNumber": "horizontal tiles number"
+    "verticalTilesNumber": "vertical \n tiles number",
+    "horizontalTilesNumber": "horizontal \n tiles number",
+    "create": "create project"
 }

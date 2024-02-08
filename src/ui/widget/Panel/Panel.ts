@@ -12,7 +12,10 @@ export function Panel(props: Props): HTMLDivElement {
     if (props.class) panel.classList.add(props.class);
 
     if (props.children) {
-        props.children.forEach(child => panel.appendChild(child));
+        props.children.forEach(child => {
+            child.classList.add(styles.PanelButton);
+            panel.appendChild(child);
+        });
     }
 
     return panel;
