@@ -1,4 +1,5 @@
 {
+    "dialogTitle": "marker create",
     "text": "marker text",
     "createMarker": "create marker",
     "chooseAsset": "choose asset",

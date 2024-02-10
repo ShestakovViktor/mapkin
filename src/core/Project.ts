@@ -101,6 +101,13 @@ export class Project {
         return this.data.asset;
     }
 
+    delAsset(id: string): void {
+        const entityId = this.getEntityId({sourceId: id});
+        if (entityId) throw new Error("Can't delete asset");
+
+        delete this.data.asset[id];
+    }
+
     getAssetId(params: {[key: string]: any}): string | undefined {
         for (const assetId in this.data.asset) {
             const asset = this.data.asset[assetId];

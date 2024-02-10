@@ -1,6 +1,6 @@
 export * from "./Icon";
 export * from "./Button";
-export * from "./Field";
+export * from "./Area";
 export * from "./Dialog";
 export * from "./Form";
 export * from "./Input";
@@ -8,5 +8,6 @@ export * from "./Label";
 export * from "./Panel";
 export * from "./Column";
 export * from "./Row";
+export * from "./Image";
 export * from "./TabView";
 export * from "./TextArea";

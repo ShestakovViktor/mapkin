@@ -1,5 +1,5 @@
 import styles from "./CreateMarkerDialog.module.scss";
-import {Dialog, Label, Form, TextArea, Input, Field, Column, Row} from "@ui/widget";
+import {Dialog, Label, Form, TextArea, Input, Column, Row} from "@ui/widget";
 import en from "./string/en.json";
 
 import i18next from "i18next";
@@ -27,16 +27,26 @@ export function CreateMarkerDialog(props: Props): HTMLDivElement {
             {postProcess: ["capitalize"]}
         ),
         onClick: () => {
+
+            let dialog: HTMLElement | undefined = undefined;
+
             function onAssetSelect(asset: string): void {
                 assetInput.value = asset;
+                if (dialog) dialog.remove();
             }
+            dialog = AssetSelectDialog({onSelect: onAssetSelect});
 
-            context.modal.show(AssetSelectDialog({onSelect: onAssetSelect}));
+            context.modal.show(dialog);
+
         },
     });
 
     return Dialog({
         class: styles.CreateMarkerDialog,
+        title: i18next.t(
+            "marker:CreateMarkerDialog.dialogTitle",
+            {postProcess: ["capitalize"]}
+        ),
         children: [
             Form({
                 onSubmit: props.onSubmit,
@@ -49,7 +59,7 @@ export function CreateMarkerDialog(props: Props): HTMLDivElement {
                                 innerText: i18next.t(
                                     "marker:CreateMarkerDialog.text",
                                     {postProcess: ["capitalize"]}
-                                ) + ":",
+                                ),
                             }),
                             TextArea({
                                 id: "markerText",

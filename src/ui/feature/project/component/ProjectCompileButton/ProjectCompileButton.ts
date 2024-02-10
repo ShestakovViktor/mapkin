@@ -1,7 +1,7 @@
 import DownloadIconSvg from "@public/icon/download.svg";
 import en from "./string/en.json";
 
-import {Icon, Button} from "@ui/widget";
+import {Button} from "@ui/widget";
 import i18next from "i18next";
 import {useContext} from "@ui/context";
 
@@ -23,8 +23,7 @@ export function ProjectCompileButton(): HTMLButtonElement {
     }
 
     return Button({
-        type: "PanelButton",
-        icon: Icon(DownloadIconSvg),
+        icon: DownloadIconSvg,
         tooltip: i18next.t(
             "layout:SystemBar.compileProject",
             {postProcess: ["capitalize"]}

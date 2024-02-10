@@ -1,3 +1,5 @@
 {
-    "name": "asset name"
+    "dialogTitle": "asset create",
+    "name": "asset name",
+    "file": "asset file"
 }

@@ -1,10 +1,17 @@
 import styles from "./Icon.module.scss";
 
-export function Icon(svg: string): SVGElement {
+type Props = {
+    class?: string;
+    svg: string;
+};
+
+export function Icon(props: Props): SVGElement {
     const template = document.createElement("template");
-    template.innerHTML = svg;
+    if (props.svg) template.innerHTML = props.svg;
     const icon = template.content.children[0] as SVGElement;
+
     icon.classList.add(styles.Icon);
+    if (props.class) icon.classList.add(props.class);
 
     return icon;
 }

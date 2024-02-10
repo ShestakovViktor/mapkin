@@ -4,9 +4,10 @@ import {Input, Modal} from "@ui";
 import {Context, createContext} from "@ui/context";
 import {Core} from "@core";
 import {Viewer} from "@viewer";
+import {AssetSelectDialog} from "./feature/asset/component";
 
 export class UI {
-    private context: Context;
+    context: Context;
 
     constructor(root: HTMLElement, viewer: Viewer, core: Core) {
         const modalLayer = ModalLayer();

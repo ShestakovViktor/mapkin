@@ -32,6 +32,10 @@ export function InitialDialog(): HTMLDivElement {
 
     return Dialog({
         class: styles.InitialDialog,
+        title: i18next.t(
+            "project:InitialDialog.dialogTitle",
+            {postProcess: ["capitalize"]}
+        ),
         children: [
             Button({
                 label: i18next.t(

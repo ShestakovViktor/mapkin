@@ -1,6 +1,6 @@
 import DisketteIconSvg from "@public/icon/diskette.svg";
 
-import {Icon, Button} from "@ui/widget";
+import {Button} from "@ui/widget";
 import i18next from "i18next";
 import {useContext} from "@ui/context";
 
@@ -20,8 +20,7 @@ export function ProjectExportButton(): HTMLButtonElement {
     }
 
     return Button({
-        type: "PanelButton",
-        icon: Icon(DisketteIconSvg),
+        icon: DisketteIconSvg,
         tooltip: i18next.t(
             "layout:SystemBar.exportProject",
             {postProcess: ["capitalize"]}

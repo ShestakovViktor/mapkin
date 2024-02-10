@@ -1,7 +1,7 @@
 import GearIconSvg from "@public/icon/gear.svg";
 import en from "./string/en.json";
 
-import {Icon, Button} from "@ui/widget";
+import {Button} from "@ui/widget";
 import i18next from "i18next";
 import {useContext} from "@ui/context";
 import {ProjectMenu} from "@ui/feature/project/component";
@@ -12,8 +12,7 @@ export function ProjectMenuButton(): HTMLButtonElement {
     const context = useContext();
 
     return Button({
-        type: "PanelButton",
-        icon: Icon(GearIconSvg),
+        icon: GearIconSvg,
         tooltip: i18next.t(
             "layout:SystemBar.projectSettings",
             {postProcess: ["capitalize"]}

@@ -2,14 +2,18 @@ import styles from "./AssetCreateDialog.module.scss";
 import en from "./string/en.json";
 
 import i18next from "i18next";
-import {Dialog, Form, Input, Label} from "@ui/widget";
+import {Dialog, Form, Input, Label, Row} from "@ui/widget";
 import {useContext} from "@ui/context";
 
 i18next.addResourceBundle(
     "en", "asset", {AssetCreateDialog: en}, true, true
 );
 
-export function AssetCreateDialog(): HTMLDivElement {
+type Props = {
+    onSubmit?: (assetId: string) => void;
+};
+
+export function AssetCreateDialog(props?: Props): HTMLDivElement {
     const context = useContext();
 
     async function handleSubmit(event: SubmitEvent): Promise<void> {
@@ -22,36 +26,53 @@ export function AssetCreateDialog(): HTMLDivElement {
 
         const file = formData.get("assetFile") as File;
 
-        await context.core.initAsset({name, file});
+        const assetId = await context.core.initAsset({name, file});
 
-        form.parentElement?.remove();
+        if (props?.onSubmit) props.onSubmit(assetId);
     }
 
     return Dialog({
-        class: styles.CreateProjectDialog,
+        class: styles.AssetCreateDialog,
+        title: i18next.t(
+            "asset:AssetCreateDialog.dialogTitle",
+            {postProcess: ["capitalize"]}
+        ),
         children: [
             Form({
                 onSubmit: (event) => {void handleSubmit(event);},
                 class: styles.ResourceForm,
                 children: [
-                    Label({
-                        htmlFor: "assetName",
-                        innerText: i18next.t(
-                            "asset:AssetCreateDialog.name",
-                            {postProcess: ["capitalize"]}
-                        ),
+                    Row({
+                        children: [
+                            Label({
+                                htmlFor: "assetName",
+                                innerText: i18next.t(
+                                    "asset:AssetCreateDialog.name",
+                                    {postProcess: ["capitalize"]}
+                                ),
+                            }),
+                            Input({
+                                type: "text",
+                                id: "assetName",
+                                name: "assetName",
+                            }),
+                        ],
                     }),
-                    Input({
-                        type: "text",
-                        id: "assetName",
-                        value: "New project",
-                        name: "assetName",
-                    }),
-
-                    Input({
-                        type: "file",
-                        name: "assetFile",
-                        accept: "image/*",
+                    Row({
+                        children: [
+                            Label({
+                                htmlFor: "assetFile",
+                                innerText: i18next.t(
+                                    "asset:AssetCreateDialog.file",
+                                    {postProcess: ["capitalize"]}
+                                ),
+                            }),
+                            Input({
+                                type: "file",
+                                name: "assetFile",
+                                accept: "image/*",
+                            }),
+                        ],
                     }),
 
                     Input({type: "submit"}),

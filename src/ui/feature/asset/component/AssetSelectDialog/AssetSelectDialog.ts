@@ -1,50 +1,69 @@
 import en from "./string/en.json";
 import styles from "./AssetSelectDialog.module.scss";
-import {Dialog, Field, Input} from "@src/ui/widget";
+import SaltireIconSvg from "@public/icon/saltire.svg";
+
+import {Area, Button, Dialog, Image} from "@src/ui/widget";
 import {useContext} from "@ui/context";
 import {AssetCreateDialog} from "../AssetCreateDialog";
 import i18next from "i18next";
 
-i18next.addResourceBundle("en", "asset", {"AssetManager": en}, true, true);
+i18next.addResourceBundle("en", "asset", {"AssetSelectDialog": en}, true, true);
 
 type Props = {
-    onSelect: (asset: string) => void;
+    onSelect?: (asset: string) => void;
 };
 
-export function AssetSelectDialog(props: Props): HTMLDivElement {
+export function AssetSelectDialog(props?: Props): HTMLDivElement {
     const context = useContext();
 
-    const assets = context.core.project.getAssets();
-    const assetsElements: HTMLElement[] = [];
+    const collection = context.core.project.getAssets();
+    const assets: HTMLElement[] = [];
 
-    for (const id in assets) {
-        const asset = assets[id];
-        const image = document.createElement("img");
-        image.src = context.core.project.getSource(asset.sourceId);
-        image.onclick = (event: MouseEvent): void => {
-            props.onSelect(id);
-            const target = event.currentTarget as HTMLElement;
-            target.parentElement?.parentElement?.remove();
-        };
-        assetsElements.push(image);
+    for (const id in collection) {
+        const data = collection[id];
+
+        const deleteAssetButton = Button({
+            class: styles.CloseButton,
+            icon: SaltireIconSvg,
+            onClick: () => {
+                context.core.project.delAsset(id);
+            },
+        });
+
+        const assetPreviewImage = Image({
+            src: context.core.project.getSource(data.sourceId),
+            onClick: () => {
+                if (props?.onSelect) props.onSelect(id);
+            },
+        });
+
+        const asset = Area({
+            class: styles.AssetArea,
+            children: [deleteAssetButton, assetPreviewImage],
+        });
+
+        assets.push(asset);
     }
+
+    const assetCreateButton = Button({
+        label: i18next.t(
+            "asset:AssetSelectDialog.create",
+            {postProcess: ["capitalize"]}
+        ),
+        onClick: () => {
+            context.modal.show(AssetCreateDialog());
+        },
+    });
 
     return Dialog({
         class: styles.AssetSelectDialog,
+        title: i18next.t(
+            "asset:AssetSelectDialog.dialogTitle",
+            {postProcess: ["capitalize"]}
+        ),
         children: [
-            Field({
-                children: [
-                    Input({
-                        type: "button",
-                        value: i18next.t(
-                            "asset:AssetManager.create",
-                            {postProcess: ["capitalize"]}
-                        ),
-                        onClick: (event) => context.modal.show(AssetCreateDialog()),
-                    }),
-                ],
-            }),
-            Field({children: assetsElements}),
+            Area({children: [assetCreateButton]}),
+            Area({children: assets}),
         ],
     });
 }
