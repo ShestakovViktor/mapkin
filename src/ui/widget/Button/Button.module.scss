@@ -13,9 +13,14 @@
     cursor: pointer;
 
     .Icon {
+        cursor: pointer;
         width: 16px;
         height: 16px;
         color: var(--grey-30);
+    }
+
+    .Label {
+        cursor: pointer;
     }
 }
 

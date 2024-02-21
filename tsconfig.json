@@ -3,7 +3,8 @@
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
         "checkJs": true,
-        "jsx": "react",
+        "jsx": "preserve",
+        "jsxImportSource": "solid-js",
         "strictNullChecks": true,
         "sourceMap": true,
         "esModuleInterop": true,
@@ -21,29 +22,23 @@
         "module": "CommonJs",
         "outDir": "./build",
         "paths": {
-            "@src": [
-                "src",
-            ],
-            "@src/*": [
-                "src/*"
-            ],
             "@core": [
                 "src/core"
             ],
             "@core/*": [
                 "src/core/*"
             ],
-            "@viewer": [
-                "src/viewer"
-            ],
-            "@viewer/*": [
-                "src/viewer/*"
-            ],
             "@ui": [
                 "src/ui"
             ],
             "@ui/*": [
                 "src/ui/*"
+            ],
+            "@project": [
+                "src/project"
+            ],
+            "@project/*": [
+                "src/project/*"
             ],
             "@style": [
                 "src/style"
@@ -57,6 +52,12 @@
             "@type/*": [
                 "src/type/*"
             ],
+            "@src": [
+                "src",
+            ],
+            "@src/*": [
+                "src/*"
+            ],
             "@public": [
                 "public"
             ],
@@ -67,10 +68,12 @@
         "resolveJsonModule": true,
         "rootDir": ".",
         "strict": true,
-        "target": "ES6"
+        "target": "ESNext"
     },
     "include": [
         "./**/*.ts",
+        "./**/*.tsx",
+        "./**/*.d.ts",
     ],
     "exclude": [
         "node_modules"

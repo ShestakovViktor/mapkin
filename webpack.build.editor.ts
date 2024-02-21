@@ -5,12 +5,11 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import {Configuration} from "webpack";
 import {merge} from "webpack-merge";
 import common from "./webpack.config";
-import webpack from "webpack";
 
 export default merge<Configuration>(common, {
     mode: "production",
     entry: {
-        editor: "./src/editor.ts",
+        editor: "./src/editor.tsx",
     },
     output: {
         filename: "[name].js",

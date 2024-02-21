@@ -16,7 +16,7 @@ interface Configuration extends WebpackConfiguration {
 export default merge<Configuration>(common, {
     mode: "development",
     entry: {
-        editor: "/src/editor.ts",
+        editor: "/src/editor.tsx",
     },
     output: {
         filename: "[name].[fullhash].js",

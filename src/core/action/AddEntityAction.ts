@@ -1,12 +1,12 @@
 import {Action} from "@core/action";
-import {Core} from "@core";
 import {Entity} from "@src/type";
+import {Project} from "@project";
 
 export class AddEntityAction extends Action {
     private entityId?: string;
 
     constructor(
-        private core: Core,
+        private project: Project,
         private data: Entity,
         private parentId: string
     ) {
@@ -14,8 +14,8 @@ export class AddEntityAction extends Action {
     }
 
     execute(): void {
-        this.entityId = this.core.project.addEntity(this.data);
-        this.core.project.appendChild(this.entityId, this.parentId);
-        this.core.viewer.render();
+        this.entityId = this.project.addEntity(this.data);
+        this.project.appendChild(this.entityId, this.parentId);
+        //this.core.viewer.render();
     }
 }

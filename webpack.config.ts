@@ -8,9 +8,29 @@ export default {
     module: {
         rules: [
             {
-                test: /\.ts$/,
-                use: "ts-loader",
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
+                use: [
+                    {
+                        "loader": "babel-loader",
+                        "options": {
+                            presets: [
+                                [
+                                    "@babel/preset-env",
+                                    {
+                                        "targets": ">0.25%",
+                                        "modules": "commonjs",
+                                    },
+                                ],
+                                "solid",
+                            ],
+                        },
+                    },
+                    {
+                        loader: "ts-loader",
+                    },
+
+                ],
             },
             {
                 test: /\.svg$/,
@@ -47,7 +67,7 @@ export default {
     },
 
     resolve: {
-        extensions: [".ts", ".js"],
+        extensions: [".ts", ".tsx", ".js"],
         plugins: [new TsconfigPathsWebpackPlugin()],
     },
 };

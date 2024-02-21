@@ -29,10 +29,7 @@
             2,
             "multi-line"
         ],
-        "init-declarations": [
-            "error",
-            "always"
-        ],
+        "init-declarations": "off",
         "no-console": "warn",
         "no-case-declarations": "error",
         "no-dupe-class-members": "error",
@@ -133,7 +130,7 @@
         "@typescript-eslint/no-misused-promises": "error",
         "@typescript-eslint/no-namespace": "error",
         "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
-        "@typescript-eslint/no-non-null-assertion": "error",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-parameter-properties": "off",
         "@typescript-eslint/no-redeclare": "error",
         "@typescript-eslint/no-require-imports": "error",

@@ -4,7 +4,7 @@
     justify-content: center;
     gap: 8px;
 
-    .PanelButton {
+    > * {
         padding: 8px;
         aspect-ratio: 1;
         width: 42px;
