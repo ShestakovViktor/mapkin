@@ -1,29 +1,35 @@
-import {JSXElement, onMount} from "solid-js";
+import {JSXElement, createEffect, on, onMount} from "solid-js";
 import styles from "./Editor.module.scss";
 import {
     ToolBar,
     SystemBar,
     StatusBar,
     TitleBar,
+    ModalLayer,
 } from "@src/ui/editor/widget";
-import {InitialDialog} from "@src/ui/project/widget/InitialDialog";
-import {createModalWidget} from "../../../modal/utility";
-import {ModalLayer} from "@src/ui/modal/widget";
-import {MarkerMode} from "@src/ui/marker/utility";
-import {useEditorContext} from "@src/ui/context";
+import {InitialDialog} from "@ui/project/widget";
+import {Modal} from "@ui/widget/Modal";
+import {useEditorContext} from "@ui/editor/context";
 
 export function Editor(): JSXElement {
     const context = useEditorContext();
     let ref: HTMLDivElement;
-    const mode = MarkerMode(context.project, context.core);
+
+    createEffect(on(context.project, () => {
+        const map = document.querySelector("#root");
+        if (!map) throw new Error();
+
+        map.addEventListener("click",  (e) => {
+            context.mode().onMouseClick(e as MouseEvent);
+        });
+    }));
 
     onMount(() => {
-        const modal = createModalWidget();
-        modal.render(<InitialDialog onComplete={modal.hide}/>);
-        //modal.show();
-
-        ref.addEventListener("click",  mode.onMouseClick);
-
+        const initialDialogModal = new Modal("#modal");
+        initialDialogModal.render(
+            <InitialDialog onComplete={initialDialogModal.hide}/>
+        );
+        // initialDialogModal.show();
     });
 
     return (

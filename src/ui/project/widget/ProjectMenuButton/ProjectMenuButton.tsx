@@ -3,7 +3,7 @@ import en from "./string/en.json";
 
 import {Button} from "@ui/widget";
 import i18next from "i18next";
-import {useEditorContext} from "@src/ui/context";
+import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
 
 i18next.addResourceBundle("en", "layout", {SystemBar: en}, true, true);

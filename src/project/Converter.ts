@@ -12,8 +12,11 @@ export class Converter {
         source: "source.json",
         data: "data.json",
 
-        template: "website.html",
-        bundle: "website.js",
+        website: {
+            template: "website.html",
+            bundle: "website.js",
+            data: "data.js",
+        },
     };
 
     constructor(private archiveDriver: ArchiveDriver) {
@@ -86,8 +89,9 @@ export class Converter {
         const data = {...projectData, source};
 
         return {
-            [this.paths.template]: await this.getTemplate(data),
-            [this.paths.bundle]: await this.getBundle(),
+            [this.paths.website.template]: await this.getTemplate(),
+            [this.paths.website.bundle]: await this.getBundle(),
+            [this.paths.website.data]: this.getData(data),
             ...blobs,
         };
     }
@@ -129,17 +133,12 @@ export class Converter {
         return byteArray;
     }
 
-    private async getTemplate(data: Data): Promise<Blob> {
+    private async getTemplate(): Promise<Blob> {
         const fileName = "website.html";
         const response = await fetch(fileName);
+        const templateBlob = await response.blob();
+        return templateBlob;
 
-        const dataString = JSON.stringify(data);
-        const dataTemplate = `const json = '${dataString}';`;
-
-        let template = await response.text();
-        template = template.replace("/**/", dataTemplate);
-
-        return new Blob([template], {type: "text/html"});
     }
 
     private async getBundle(): Promise<Blob> {
@@ -148,5 +147,11 @@ export class Converter {
         const viewerBundle = await response.blob();
 
         return viewerBundle;
+    }
+
+    private getData(data: Data): Blob {
+        const dataString = JSON.stringify(data, null, 4);
+        const dataTemplate = `const qwerty = \`${dataString}\`;`;
+        return new Blob([dataTemplate], {type: "text/javascript"});
     }
 }

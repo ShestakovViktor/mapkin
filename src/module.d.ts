@@ -13,4 +13,4 @@ declare module "*.module.scss" {
     export default content;
 }
 
-declare const json: string = undefined;
+declare const qwerty: string = undefined;

@@ -2,12 +2,12 @@ import en from "./string/en.json";
 import styles from "./AssetSelectDialog.module.scss";
 import SaltireIconSvg from "@public/icon/saltire.svg";
 
-import {Button, Dialog} from "@src/ui/widget";
-import {useEditorContext} from "@src/ui/context";
-import {AssetCreateDialog} from "../AssetCreateDialog";
+import {Button, Dialog} from "@ui/widget";
+import {useEditorContext} from "@ui/editor/context";
+import {AssetCreateDialog} from "@ui/asset/widget/AssetCreateDialog";
 import i18next from "i18next";
 import {For, JSXElement, createEffect, createResource, on} from "solid-js";
-import {createModalWidget} from "@src/ui/modal/utility";
+import {Modal} from "@ui/widget/Modal";
 
 i18next.addResourceBundle("en", "asset", {"AssetSelectDialog": en}, true, true);
 
@@ -20,14 +20,14 @@ export function AssetSelectDialog(props: Props): JSXElement {
     const context = useEditorContext();
 
     const [assets, {refetch}] = createResource(() => {
-        return Object.entries(context.foo().getAssets());
+        return Object.entries(context.project().getAssets());
     });
 
-    createEffect(on(context.foo, async () => {
+    createEffect(on(context.project, async () => {
         await refetch();
     }));
 
-    const assetCreateModal = createModalWidget();
+    const assetCreateModal = new Modal("#modal");
     assetCreateModal.render(
         <AssetCreateDialog
             onComplete={() => {
@@ -65,11 +65,11 @@ export function AssetSelectDialog(props: Props): JSXElement {
                                 class={styles.CloseButton}
                                 icon={SaltireIconSvg}
                                 onClick={() => {
-                                    context.project.delAsset(id);
+                                    context.project().delAsset(id);
                                 }}
                             />
                             <img
-                                src={context.project.getSource(data.sourceId)}
+                                src={context.project().getSource(data.sourceId)}
                                 onClick={() => {
                                     if (props.onSelect) props.onSelect(id);
                                     props.onComplete();

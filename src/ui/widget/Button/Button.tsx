@@ -7,13 +7,18 @@ type Props = {
     label?: string;
     tooltip?: string;
     icon?: string;
+    pressed?: boolean;
     onClick?: (event?: MouseEvent) => void;
 };
 
 export function Button(props: Props): JSXElement {
     return (
         <button
-            class={`${styles.Button} ${props.class ?? ""}`}
+            classList={{
+                [styles.Button]: true,
+                [styles.Pressed]: props.pressed,
+                [props.class ?? ""]: Boolean(props.class),
+            }}
             title={props.tooltip}
             onClick={props.onClick}
         >

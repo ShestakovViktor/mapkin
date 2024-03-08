@@ -3,7 +3,7 @@ import styles from "./Panel.module.scss";
 
 type Props = {
     class?: string;
-    children?: JSXElement[];
+    children?: JSXElement | JSXElement[];
 };
 
 export function Panel(props: Props): JSXElement {

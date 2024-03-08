@@ -3,7 +3,7 @@ import en from "./string/en.json";
 
 import i18next from "i18next";
 import {Dialog, Form, Row} from "@ui/widget";
-import {useEditorContext} from "@src/ui/context";
+import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
 
 i18next.addResourceBundle(
@@ -48,7 +48,7 @@ export function ProjectCreateDialog(props: Props): JSXElement {
             verticalTilesNumber,
         };
 
-        context.project.initProject(projectData)
+        context.project().initProject(projectData)
             .catch(error => console.log(error));
 
         props.onComplete();

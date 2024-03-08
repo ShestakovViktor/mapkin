@@ -4,11 +4,11 @@ import en from "./string/en.json";
 import {ProjectCreateDialog} from "@src/ui/project/widget";
 
 import {Button, Dialog} from "@ui/widget";
-import {useEditorContext} from "@src/ui/context";
+import {useEditorContext} from "@ui/editor/context";
 
 import i18next from "i18next";
 import {JSXElement} from "solid-js";
-import {createModalWidget} from "@src/ui/modal/utility";
+import {Modal} from "@ui/widget/Modal";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
@@ -28,12 +28,16 @@ export function InitialDialog(props: Props): JSXElement {
             if (!input.files?.length) return;
             const file = input.files[0];
 
-            context.project.import(file).catch(error => console.log(error));
+            context.project().import(file)
+                .then(() => {
+                    context.project().render();
+                })
+                .catch(error => console.log(error));
             props.onComplete();
         });
     }
 
-    const projectCreateModal = createModalWidget();
+    const projectCreateModal = new Modal("#modal");
     projectCreateModal.render(
         <ProjectCreateDialog
             onComplete={() => {

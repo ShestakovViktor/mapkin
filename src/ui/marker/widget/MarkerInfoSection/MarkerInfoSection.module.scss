@@ -1,0 +1,11 @@
+.MarkerInfoSection {
+    position: absolute;
+    transform: translate(-50%, -50%);
+
+    transition: transform .1s;
+
+    cursor: pointer;
+
+
+    background: var(--white);
+}

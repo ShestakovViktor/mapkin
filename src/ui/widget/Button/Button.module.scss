@@ -1,5 +1,3 @@
-@use "mixin";
-
 .Button {
     display: flex;
     align-items: center;
@@ -11,6 +9,10 @@
     color: inherit;
 
     cursor: pointer;
+
+    &.Pressed {
+        background-color: var(--grey-80);
+    }
 
     .Icon {
         cursor: pointer;

@@ -8,7 +8,7 @@ import common from "./webpack.config";
 export default merge<Configuration>(common, {
     mode: "production",
     entry: {
-        website: "./src/website.ts",
+        website: "./src/website.tsx",
     },
     output: {
         filename: "[name].js",
@@ -16,8 +16,9 @@ export default merge<Configuration>(common, {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./src/index.html",
+            template: "./src/website.html",
             filename: "website.html",
+            minify: false,
         }),
     ],
 });

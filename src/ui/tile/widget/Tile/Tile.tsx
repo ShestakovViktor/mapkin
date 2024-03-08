@@ -1,7 +1,7 @@
 import styles from "./Tile.module.scss";
 import {JSXElement} from "solid-js";
 import {Tile as TileData} from "@src/type";
-import {useViewerContext} from "@ui/context";
+import {useViewerContext} from "@ui/viewer/context";
 
 type Props = {
     entityId: string;
@@ -9,8 +9,8 @@ type Props = {
 
 export function Tile(props: Props): JSXElement {
     const context = useViewerContext();
-    const entity = context.project.getEntity(props.entityId) as TileData;
-    const src = context.project.getSource(entity.sourceId);
+    const entity = context.project().getEntity(props.entityId) as TileData;
+    const src = context.project().getSource(entity.sourceId);
 
     return (
         <img

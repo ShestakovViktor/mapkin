@@ -2,14 +2,14 @@ import DisketteIconSvg from "@public/icon/diskette.svg";
 
 import {Button} from "@ui/widget";
 import i18next from "i18next";
-import {useEditorContext} from "@src/ui/context";
+import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
 
 export function ProjectExportButton(): JSXElement {
     const context = useEditorContext();
 
     async function handleProjectExport(): Promise<void> {
-        const projectFile = await context.project.export();
+        const projectFile = await context.project().export();
 
         const projectFileUrl = URL.createObjectURL(projectFile);
 

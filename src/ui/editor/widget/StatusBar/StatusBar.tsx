@@ -1,11 +1,8 @@
+import {JSXElement} from "solid-js";
 import styles from "./StatusBar.module.scss";
 
-
-export function StatusBar(): HTMLDivElement {
-    const statusBar = document.createElement("div");
-    statusBar.classList.add(styles.StatusBar);
-
-    statusBar.innerText = "Status bar";
-
-    return statusBar;
+export function StatusBar(): JSXElement {
+    return (
+        <div class={styles.StatusBar}></div>
+    );
 }

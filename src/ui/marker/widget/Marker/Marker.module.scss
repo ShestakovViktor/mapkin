@@ -1,6 +1,8 @@
 .Marker {
     position: absolute;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -50%);
+
+    transition: transform .1s;
 
     cursor: pointer;
 }

@@ -43,7 +43,7 @@ export class Project {
             source: {},
             entity: {
                 [rootId]: {type: "group", name: "root"},
-                [mapId]: {type: "group", name: "map"},
+                [mapId]: {type: "group", name: MAP},
                 [overlayId]: {type: "group", name: OVERLAY},
             },
             asset: {},
@@ -201,44 +201,42 @@ export class Project {
         horizontalTilesNumber: number;
         verticalTilesNumber: number;
     }): Promise<void> {
-        // const {width, height, tiles} = await this.imageDriver.initImage(
-        //     params.mapFile,
-        //     params.horizontalTilesNumber,
-        //     params.verticalTilesNumber
-        // );
+        const {width, height, tiles} = await this.imageDriver.initImage(
+            params.mapFile,
+            params.horizontalTilesNumber,
+            params.verticalTilesNumber
+        );
 
-        // const data: Partial<Data> = {
-        //     name: params.projectName,
-        //     size: {width, height},
-        //     grid: {
-        //         rows: params.verticalTilesNumber,
-        //         cols: params.horizontalTilesNumber,
-        //     },
-        // };
+        this.data = this.initData({
+            name: params.projectName,
+            size: {width, height},
+            grid: {
+                rows: params.verticalTilesNumber,
+                cols: params.horizontalTilesNumber,
+            },
+        });
 
-        // const project = new Project(data);
+        const mapId = this.getEntityId({name: "map"});
+        if (!mapId) throw new Error("No map");
 
-        // const mapId = project.getEntityId({name: "map"});
-        // if (!mapId) throw new Error("No map");
+        const promises = tiles.map((data) => {
+            const sourceId = this.addSource(data.base64);
+            const tile: Tile = {
+                type: "tile",
+                x: data.x,
+                y: data.y,
+                width: data.width,
+                height: data.height,
+                sourceId,
+            };
 
-        // const promises = tiles.map((data) => {
-        //     const sourceId = project.addSource(data.base64);
-        //     const tile: Tile = {
-        //         type: "tile",
-        //         x: data.x,
-        //         y: data.y,
-        //         width: data.width,
-        //         height: data.height,
-        //         sourceId,
-        //     };
+            const entityId = this.addEntity(tile);
 
-        //     const entityId = project.addEntity(tile);
+            this.appendChild(entityId, mapId);
+        });
 
-        //     project.appendChild(entityId, mapId);
-        // });
+        await Promise.all(promises);
 
-        // await Promise.all(promises);
-
-        // this.project = project;
+        this.render();
     }
 }

@@ -3,7 +3,7 @@ import en from "./string/en.json";
 
 import i18next from "i18next";
 import {Dialog, Form, Row} from "@ui/widget";
-import {useEditorContext} from "@src/ui/context";
+import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
 
 i18next.addResourceBundle(
@@ -28,7 +28,7 @@ export function AssetCreateDialog(props?: Props): JSXElement {
 
         const file = formData.get("assetFile") as File;
 
-        const assetId = await context.project.initAsset({name, file});
+        const assetId = await context.project().initAsset({name, file});
 
         if (props?.onComplete) props.onComplete(assetId);
     }
