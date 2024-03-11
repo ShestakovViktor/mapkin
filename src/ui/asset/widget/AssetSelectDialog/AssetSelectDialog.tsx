@@ -3,11 +3,12 @@ import styles from "./AssetSelectDialog.module.scss";
 import SaltireIconSvg from "@public/icon/saltire.svg";
 
 import {Button, Dialog} from "@ui/widget";
-import {useEditorContext} from "@ui/editor/context";
 import {AssetCreateDialog} from "@ui/asset/widget/AssetCreateDialog";
 import i18next from "i18next";
-import {For, JSXElement, createEffect, createResource, on} from "solid-js";
+import {For, JSXElement, createSignal} from "solid-js";
 import {Modal} from "@ui/widget/Modal";
+import {useViewerContext} from "@ui/viewer/context";
+import {Asset} from "@type";
 
 i18next.addResourceBundle("en", "asset", {"AssetSelectDialog": en}, true, true);
 
@@ -17,25 +18,20 @@ type Props = {
 };
 
 export function AssetSelectDialog(props: Props): JSXElement {
-    const context = useEditorContext();
+    const context = useViewerContext();
 
-    const [assets, {refetch}] = createResource(() => {
-        return Object.entries(context.project().getAssets());
-    });
-
-    createEffect(on(context.project, async () => {
-        await refetch();
-    }));
+    const [assets, setAssets] = createSignal(
+        Object.entries(context.project().getAssets())
+    );
 
     const assetCreateModal = new Modal("#modal");
     assetCreateModal.render(
         <AssetCreateDialog
             onComplete={() => {
                 assetCreateModal.hide();
-                Promise.resolve(refetch())
-                    .catch(err => console.log());
+                setAssets(Object.entries(context.project().getAssets()));
             }}
-            onClose={assetCreateModal.hide}
+            onClose={() => assetCreateModal.hide()}
         />
     );
 
@@ -54,7 +50,7 @@ export function AssetSelectDialog(props: Props): JSXElement {
                         "asset:AssetSelectDialog.create",
                         {postProcess: ["capitalize"]}
                     )}
-                    onClick={assetCreateModal.show}
+                    onClick={() => assetCreateModal.show()}
                 />
             </div>
             <div>

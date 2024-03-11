@@ -2,11 +2,11 @@ import DisketteIconSvg from "@public/icon/diskette.svg";
 
 import {Button} from "@ui/widget";
 import i18next from "i18next";
-import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
+import {useViewerContext} from "@ui/viewer/context";
 
 export function ProjectExportButton(): JSXElement {
-    const context = useEditorContext();
+    const context = useViewerContext();
 
     async function handleProjectExport(): Promise<void> {
         const projectFile = await context.project().export();

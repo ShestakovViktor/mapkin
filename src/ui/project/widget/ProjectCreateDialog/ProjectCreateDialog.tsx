@@ -5,6 +5,8 @@ import i18next from "i18next";
 import {Dialog, Form, Row} from "@ui/widget";
 import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
+import {useViewerContext} from "@ui/viewer/context";
+import {Project} from "@project";
 
 i18next.addResourceBundle(
     "en",
@@ -19,13 +21,14 @@ type Props = {
 };
 
 export function ProjectCreateDialog(props: Props): JSXElement {
-    const context = useEditorContext();
+    const context = useViewerContext();
 
     function handleSubmit(event: SubmitEvent): void {
         event.preventDefault();
 
         const form = event.target as HTMLFormElement;
         const formData = new FormData(form);
+        form.reset();
 
         const mapFile = formData.get("mapFile") as File;
 
@@ -48,7 +51,10 @@ export function ProjectCreateDialog(props: Props): JSXElement {
             verticalTilesNumber,
         };
 
-        context.project().initProject(projectData)
+        const project = new Project();
+        project.initProject(projectData)
+            .then(() => context.setProject(project))
+            .then(() => context.reRender())
             .catch(error => console.log(error));
 
         props.onComplete();

@@ -16,21 +16,38 @@ if (!app) throw new Error("There is no element with \"app\" id");
 const project = new Project();
 const core = new Core();
 
+// fetch("/project.mp")
+//     .then((response) => response.blob())
+//     .then(async (file) => {
+//         const project = new Project();
+//         await project.import(file);
+
+//         render(() => {
+//             return (
+//                 <>
+//                     <ViewerProvider value={{project}}>
+//                         <Viewer/>
+//                         <EditorProvider value={{core}}>
+//                             <Editor/>
+//                         </EditorProvider>
+//                     </ViewerProvider>
+//                 </>
+//             );
+//         }, app);
+
+//     })
+//     .catch((err) => {
+//         throw new Error(err);
+//     });
+
 render(() => {
     return (
-        <>
-            <ViewerProvider value={{project}}>
-                <Viewer/>
-            </ViewerProvider>
-            <EditorProvider value={{project, core}}>
+        <ViewerProvider project={project}>
+            <Viewer/>
+            <EditorProvider value={{core}}>
                 <Editor/>
             </EditorProvider>
-        </>
+        </ViewerProvider>
     );
 }, app);
 
-fetch("/project.mp")
-    .then((response) => response.blob())
-    .then(file => project.import(file))
-    .then(() => project.render())
-    .catch(err => {throw new Error("Project init error: " + err);});

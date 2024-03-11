@@ -4,11 +4,11 @@ import en from "./string/en.json";
 import {ProjectCreateDialog} from "@src/ui/project/widget";
 
 import {Button, Dialog} from "@ui/widget";
-import {useEditorContext} from "@ui/editor/context";
 
 import i18next from "i18next";
 import {JSXElement} from "solid-js";
 import {Modal} from "@ui/widget/Modal";
+import {useViewerContext} from "@ui/viewer/context";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export function InitialDialog(props: Props): JSXElement {
-    const context = useEditorContext();
+    const context = useViewerContext();
 
     function handleProjectUpload(): void {
         const input = document.createElement("input");
@@ -30,7 +30,7 @@ export function InitialDialog(props: Props): JSXElement {
 
             context.project().import(file)
                 .then(() => {
-                    context.project().render();
+                    context.reRender();
                 })
                 .catch(error => console.log(error));
             props.onComplete();
@@ -61,7 +61,7 @@ export function InitialDialog(props: Props): JSXElement {
                     "project:InitialDialog.create",
                     {postProcess: ["capitalize"]}
                 )}
-                onClick={projectCreateModal.show}
+                onClick={() => projectCreateModal.show()}
             />
 
             <Button

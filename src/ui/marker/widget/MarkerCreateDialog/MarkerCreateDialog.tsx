@@ -36,16 +36,10 @@ export function MarkerCreateDialog(props: Props): JSXElement {
                 {postProcess: ["capitalize"]}
             )}
         >
-            <Form class={styles.MarkerForm}>
-                <Column>
-                    <label for="markerText">
-                        {i18next.t(
-                            "marker:CreateMarkerDialog.text",
-                            {postProcess: ["capitalize"]}
-                        )}
-                    </label>
-                    <textarea id="markerText" name="markerText"/>
-                </Column>
+            <Form
+                class={styles.MarkerForm}
+                onSubmit={props.onSubmit}
+            >
 
                 <Row>
                     <input
@@ -55,11 +49,32 @@ export function MarkerCreateDialog(props: Props): JSXElement {
                                 "marker:CreateMarkerDialog.chooseAsset",
                                 {postProcess: ["capitalize"]}
                             )}
-                        onClick={assetSelectModal.show}
+                        onClick={() => assetSelectModal.show()}
                     />
                     <input type="text" name="assetId" ref={assetInput}/>
                 </Row>
-
+                <Column>
+                    <label for="markerText">
+                        {i18next.t(
+                            "marker:CreateMarkerDialog.text",
+                            {postProcess: ["capitalize"]}
+                        )}
+                    </label>
+                    <textarea id="markerText" name="text"/>
+                </Column>
+                {/* <Row>
+                    <label for="illustrationFile">
+                        {i18next.t(
+                            "marker:CreateMarkerDialog.illustration",
+                            {postProcess: ["capitalize"]}
+                        )}
+                    </label>
+                    <input
+                        type="file"
+                        name="illustrationFile"
+                        accept="image/*"
+                    />
+                </Row> */}
                 <input
                     type="submit"
                     value={i18next.t(

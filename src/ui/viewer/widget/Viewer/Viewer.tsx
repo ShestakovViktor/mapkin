@@ -1,110 +1,55 @@
-import {JSXElement, createEffect, createResource, on, onMount} from "solid-js";
-import styles from "./Viewer.module.scss";
+import {JSXElement, createEffect, createRenderEffect, createSignal, on, onMount} from "solid-js";
 
-import {Node} from "@ui/viewer/widget";
+import {Entity} from "@ui/viewer/widget";
 
 import {useViewerContext} from "@ui/viewer/context";
-import {Node as NodeData} from "@type";
 import {Viewport} from "@ui/viewer/utility";
 
-const LMB = 1;
-
-function pinchOut(el: HTMLElement, startX = 0, startY = 0): void {
-    const f1 = new Touch({
-        identifier: 1,
-        target: el,
-        clientX: startX,
-        clientY: startY,
-    });
-    const f2 = new Touch({
-        identifier: 2,
-        target: el,
-        clientX: startX,
-        clientY: startY,
-    });
-
-    const pinchStart = new TouchEvent("touchstart", {touches: [f1, f2]});
-    el.dispatchEvent(pinchStart);
-
-    let delta = 0;
-    const interval = setInterval(() => {
-        if (delta > 5) clearInterval(interval);
-
-        const f1 = new Touch({
-            identifier: 1,
-            target: el,
-            clientX: startX + delta,
-            clientY: startY,
-        });
-
-        const f2 = new Touch({
-            identifier: 2,
-            target: el,
-            clientX: startX - delta,
-            clientY: startY,
-        });
-
-        const pinchMove = new TouchEvent("touchmove", {touches: [f1, f2]});
-        el.dispatchEvent(pinchMove);
-
-        delta++;
-    }, 100);
-}
-
 export function Viewer(): JSXElement {
-    const context = useViewerContext();
+    const viewerCtx = useViewerContext();
 
-    let rootEl: HTMLDivElement;
+    const [rootId, setRootId] = createSignal("", {equals: false});
 
-    const [root, {refetch}] = createResource<NodeData>(() => {
-        const size = context.project().getData().size;
-        context.setBrect(size);
+    createEffect(on(viewerCtx.project, () => {
+        const size = viewerCtx.project().getData().size;
 
-        return context.project().getRoot();
-    });
-
-    context.project().onRender(() => {
-        void refetch();
-    });
-
-    createEffect(on(root, () => {
-        const root = document.querySelector("#root") as HTMLElement;
-        root.classList.add(styles.Viewer);
-        // new Pivot(root, context.setPivot);
+        viewerCtx.setMapCtx({
+            x: 0,
+            y: 0,
+            width: size.width,
+            height: size.height,
+            scale: 1,
+        });
     }));
 
-    onMount(() => {
-        const rootBrect = rootEl.getBoundingClientRect();
-        const viewport = new Viewport(
-            {
-                x: 0,
-                y: 0,
-                width: rootBrect.width,
-                height: rootBrect.height,
-                scale: 1,
-            },
-            context.brect,
-            context.setBrect
-        );
+    createEffect(on(viewerCtx.render, () => {
+        setRootId(viewerCtx.project().getRootId());
+    }));
 
-        rootEl.addEventListener("click", (e) => {
-            if (e.buttons == 1) {
-                pinchOut(rootEl, e.x, e.y);
-            }
+    createEffect(() => {
+        const rootBCR = viewerCtx.root()?.getBoundingClientRect();
+        if (!rootBCR) return;
+
+        viewerCtx.setRootCtx({
+            width: rootBCR.width,
+            height: rootBCR.height,
         });
-        rootEl.addEventListener("mousedown", (e) => viewport.onMouseDown(e));
-        rootEl.addEventListener("mousemove", (e) => viewport.onMouseMove(e));
-        rootEl.addEventListener("mouseup", () => viewport.onMouseUp());
-        rootEl.addEventListener("mouseleave", () => viewport.onMouseLeave());
-        rootEl.addEventListener("wheel", (e) => viewport.onMouseWheel(e));
-        rootEl.addEventListener("touchstart", (e) => viewport.onTouchStart(e));
-        rootEl.addEventListener("touchmove", (e) => viewport.onTouchMove(e));
-        rootEl.addEventListener("touchend", () => viewport.onTouchEnd());
     });
 
-    return (
-        <>
-            <Node data={root() as unknown as NodeData} ref={rootEl!}/>
-        </>
-    );
+    function setupRoot(el: HTMLElement): void {
+        const viewport = new Viewport();
+
+        el.addEventListener("mousedown", (e) => viewport.onMouseDown(e));
+        el.addEventListener("mousemove", (e) => viewport.onMouseMove(e));
+        el.addEventListener("mouseup", () => viewport.onMouseUp());
+        el.addEventListener("mouseleave", () => viewport.onMouseLeave());
+        el.addEventListener("wheel", (e) => viewport.onMouseWheel(e));
+        el.addEventListener("touchstart", (e) => viewport.onTouchStart(e));
+        el.addEventListener("touchmove", (e) => viewport.onTouchMove(e));
+        el.addEventListener("touchend", () => viewport.onTouchEnd());
+
+        viewerCtx.setRoot(el);
+    }
+
+    return (<Entity entityId={rootId()} ref={setupRoot} />);
 }

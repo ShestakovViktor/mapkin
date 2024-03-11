@@ -1,6 +1,9 @@
 {
     "dialogTitle": "marker create",
-    "text": "marker text",
+    "width": "width",
+    "height": "height",
+    "text": "text",
+    "illustration": "illustration",
     "createMarker": "create marker",
     "chooseAsset": "choose asset",
     "cancel": "cancel"

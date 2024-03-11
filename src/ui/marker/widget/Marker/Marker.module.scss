@@ -4,5 +4,17 @@
 
     transition: transform .1s;
 
-    cursor: pointer;
+    .Mark {
+        cursor: pointer;
+    }
+
+    .Info {
+        background: var(--white);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translate(-50%, 0px);
+        padding: 1em;
+        border-radius: .25em;
+    }
 }

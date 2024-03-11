@@ -1,18 +1,16 @@
 import {createContext, useContext} from "solid-js";
 import {Core} from "@core";
-import {Project} from "@project";
 import {Mode} from "@ui/editor/utility";
 
-type Context = {
+export type EditorContexType = {
     core: Core;
-    project: () => Project;
     mode: () => Mode;
     setMode: (mode: Mode) => void;
 };
 
-export const EditorContext = createContext<Context | undefined>();
+export const EditorContext = createContext<EditorContexType | undefined>();
 
-export function useEditorContext(): Context {
+export function useEditorContext(): EditorContexType {
     const context = useContext(EditorContext);
 
     if (!context) {

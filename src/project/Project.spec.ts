@@ -29,13 +29,13 @@ describe("Project", () => {
             type: "marker",
             x: 0,
             y: 0,
-            text: "",
             sourceId: "",
+            text: "",
         };
 
         const entityId = project.addEntity(entityData);
 
-        const entityItem = project.getEntity(entityId);
+        const entityItem = project.getEntityById(entityId);
 
         assert.deepEqual(entityData, entityItem);
     });

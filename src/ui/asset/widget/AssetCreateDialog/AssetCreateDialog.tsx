@@ -3,8 +3,8 @@ import en from "./string/en.json";
 
 import i18next from "i18next";
 import {Dialog, Form, Row} from "@ui/widget";
-import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
+import {useViewerContext} from "@ui/viewer/context";
 
 i18next.addResourceBundle(
     "en", "asset", {AssetCreateDialog: en}, true, true
@@ -16,19 +16,22 @@ type Props = {
 };
 
 export function AssetCreateDialog(props?: Props): JSXElement {
-    const context = useEditorContext();
+    const context = useViewerContext();
 
     async function handleSubmit(event: SubmitEvent): Promise<void> {
         event.preventDefault();
 
         const form = event.target as HTMLFormElement;
         const formData = new FormData(form);
+        form.reset();
 
-        const name = String(formData.get("assetName")) || "Asset";
+        const name = String(formData.get("name")) || "Asset";
+        const width = Number(formData.get("width"));
+        const height = Number(formData.get("height"));
+        const file = formData.get("file") as File;
 
-        const file = formData.get("assetFile") as File;
-
-        const assetId = await context.project().initAsset({name, file});
+        const assetId = await context.project()
+            .initAsset({name, file, width, height});
 
         if (props?.onComplete) props.onComplete(assetId);
     }
@@ -46,9 +49,26 @@ export function AssetCreateDialog(props?: Props): JSXElement {
                 class={styles.ResourceForm}
                 onSubmit={(event) => {void handleSubmit(event);}}
             >
-
                 <Row>
-                    <label for="assetName">
+                    <label for="width">
+                        {i18next.t(
+                            "asset:AssetCreateDialog.width",
+                            {postProcess: ["capitalize"]}
+                        )}
+                    </label>
+                    <input id="width" type="text" name="width"/>
+                </Row>
+                <Row>
+                    <label for="height">
+                        {i18next.t(
+                            "asset:AssetCreateDialog.height",
+                            {postProcess: ["capitalize"]}
+                        )}
+                    </label>
+                    <input id="height" type="text" name="height"/>
+                </Row>
+                <Row>
+                    <label for="name">
                         {i18next.t(
                             "asset:AssetCreateDialog.name",
                             {postProcess: ["capitalize"]}
@@ -56,12 +76,12 @@ export function AssetCreateDialog(props?: Props): JSXElement {
                     </label>
                     <input
                         type="text"
-                        id="assetName"
-                        name="assetName"
+                        id="name"
+                        name="name"
                     />
                 </Row>
                 <Row>
-                    <label for="assetFile">
+                    <label for="file">
                         {i18next.t(
                             "asset:AssetCreateDialog.file",
                             {postProcess: ["capitalize"]}
@@ -69,7 +89,7 @@ export function AssetCreateDialog(props?: Props): JSXElement {
                     </label>
                     <input
                         type="file"
-                        name="assetFile"
+                        name="file"
                         accept="image/*"
                     />
                 </Row>

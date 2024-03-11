@@ -1,4 +1,4 @@
-import {Data, Node, Entity, Asset, Group, Tile} from "@src/type";
+import {Data, Entity, Asset, Group, Tile} from "@src/type";
 import {WebArchiveDriver, WebImageDriver} from "./driver";
 import {Converter} from "./Converter";
 
@@ -14,8 +14,6 @@ export class Project {
 
     private converter: Converter;
 
-    private onRenderListeners: (() => void)[] = [];
-
     constructor(params?: Partial<Data>) {
         this.converter = new Converter(this.archiveDriver);
 
@@ -26,9 +24,16 @@ export class Project {
         this.data = data;
     }
 
-    getRoot(): Node {
-        if (!this.data.layout) throw new Error();
-        return this.data.layout;
+    getRootId(): string {
+        const rootId = this.getEntityByParams({name: "root"});
+        if (!rootId) throw Error("There is no entity with such id");
+        return rootId;
+    }
+
+    getRootNode(): Entity {
+        const rootId = this.getRootId();
+        const rootNode = this.data.layout[rootId];
+        return rootNode;
     }
 
     initData(params?: Partial<Data>): Data {
@@ -41,13 +46,12 @@ export class Project {
             size: {width: 0, height: 0},
             grid: {rows: 0, cols: 0},
             source: {},
-            entity: {
-                [rootId]: {type: "group", name: "root"},
-                [mapId]: {type: "group", name: MAP},
-                [overlayId]: {type: "group", name: OVERLAY},
+            layout: {
+                [rootId]: {type: "group", name: "root", childs: [mapId, overlayId]},
+                [mapId]: {type: "group", name: MAP, childs: []},
+                [overlayId]: {type: "group", name: OVERLAY, childs: []},
             },
             asset: {},
-            layout: {id: rootId, childs:[{id: mapId}, {id: overlayId}]},
         };
 
         return Object.assign(data, params);
@@ -61,53 +65,24 @@ export class Project {
         this.data = data;
     }
 
-    onRender(f: () => void): void {
-        this.onRenderListeners.push(f);
-    }
-
-    render(): void {
-        this.onRenderListeners.forEach((func) => func());
-    }
-
-    private getNode(id: string, node: Node): Node | undefined {
-        if (node.id == id) return node;
-        else if (node.childs) {
-            return node.childs.find((child) => {
-                return this.getNode(id, child);
-            });
-        }
-        return;
-    }
-
-    appendChild(entityId: string, parentId?: string): void {
-        if (!parentId) {
-            this.data.layout = {id: entityId};
-            return;
-        }
-
-        if (!this.data.layout) throw new Error();
-
-        const parent = this.getNode(parentId, this.data.layout);
-
-        if (!parent) throw new Error("Parent node does not exist");
-        if (!parent.childs) parent.childs = [];
-
-        parent.childs.push({id: entityId});
+    appendChild(entityId: string, parentId: string): void {
+        const parent = this.data.layout[parentId] as Group;
+        parent.childs.push(entityId);
     }
 
     addEntity(data: Entity): string {
         const id = this.genId();
-        this.data.entity[id] = {...data};
+        this.data.layout[id] = {...data};
         return id;
     }
 
-    getEntity(id: string): Entity | undefined {
-        return this.data.entity[id];
+    getEntityById(id: string): Entity | undefined {
+        return this.data.layout[id];
     }
 
-    getEntityId(params: {[key: string]: any}): string | undefined {
-        for (const entityId in this.data.entity) {
-            const entity = this.data.entity[entityId];
+    getEntityByParams(params: {[key: string]: any}): string | undefined {
+        for (const entityId in this.data.layout) {
+            const entity = this.data.layout[entityId];
 
             for (const prop in params) {
                 if (!(prop in entity)) break;
@@ -134,7 +109,7 @@ export class Project {
     }
 
     delAsset(id: string): void {
-        const entityId = this.getEntityId({sourceId: id});
+        const entityId = this.getEntityByParams({sourceId: id});
         if (entityId) throw new Error("Can't delete asset");
 
         delete this.data.asset[id];
@@ -185,11 +160,13 @@ export class Project {
         this.data = await this.converter.importProject(blob);
     }
 
-    async initAsset({name, file}: {
+    async initAsset({name, file, width, height}: {
         name: string;
+        width: number;
+        height: number;
         file: File;
     }): Promise<string> {
-        const base64 = await this.imageDriver.fooImage(file);
+        const base64 = await this.imageDriver.fooImage(file, width, height);
         const source = this.addSource(base64);
         const asset = this.addAsset({name, sourceId: source});
         return asset;
@@ -216,7 +193,7 @@ export class Project {
             },
         });
 
-        const mapId = this.getEntityId({name: "map"});
+        const mapId = this.getEntityByParams({name: "map"});
         if (!mapId) throw new Error("No map");
 
         const promises = tiles.map((data) => {
@@ -236,7 +213,5 @@ export class Project {
         });
 
         await Promise.all(promises);
-
-        this.render();
     }
 }

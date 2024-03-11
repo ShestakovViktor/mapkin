@@ -1,5 +1,4 @@
-import {Brect} from "@type";
-import {SetStoreFunction} from "solid-js/store";
+import {useViewerContext} from "@ui/viewer/context";
 
 const LMB = 1;
 
@@ -8,11 +7,7 @@ export class Viewport {
 
     private touchEvent?: TouchEvent;
 
-    constructor(
-        private rootBrect: Brect,
-        private mapBrect: Brect,
-        private setBrect: SetStoreFunction<Brect>
-    ) {}
+    private viewerCtx = useViewerContext();
 
     onMouseClick(event: MouseEvent): void {
         //this.pinchOut(, event.x, event.y);
@@ -35,7 +30,11 @@ export class Viewport {
     }
 
     onMouseWheel(event: WheelEvent): void {
-        this.zoom(-Math.sign(event.deltaY), event.x, event.y);
+        const direction = -Math.sign(event.deltaY);
+        const intensity = 0.1;
+        const delta = Math.exp(direction * intensity);
+
+        this.zoom(delta, event.x, event.y);
     }
 
     onMouseUp(): void {this.correct();}
@@ -66,9 +65,11 @@ export class Viewport {
             const [oldDeltaX] = this.getDelta(x1, y1, x2, y2);
             const [newDeltaX] = this.getDelta(x3, y3, x4, y4);
 
-            const value = newDeltaX > oldDeltaX ? 1 : -1;
+            const direction = newDeltaX > oldDeltaX ? 1 : -1;
+            const intensity = 0.02;
+            const delta = Math.exp(direction * intensity);
 
-            this.zoom(value, midX, midY);
+            this.zoom(delta, midX, midY);
         }
 
         touchEvent.preventDefault();
@@ -77,29 +78,31 @@ export class Viewport {
     }
 
     onTouchEnd(): void {
+        this.touchEvent = undefined;
         this.correct();
     }
 
-    zoom(direction: number, clientX: number, clientY: number): void {
-        const intensity = 0.1;
-        let deltaScale = Math.exp(direction * intensity);
-        let newScale = this.mapBrect.scale * deltaScale;
+    zoom(delta: number, clientX: number, clientY: number): void {
+        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
+        let deltaScale = delta;
 
-        if (this.mapBrect.height * newScale < this.rootBrect.height) {
-            newScale = this.rootBrect.height / this.mapBrect.height;
-            deltaScale = newScale / this.mapBrect.scale;
+        let newScale = mapCtx.scale * deltaScale;
+
+        if (mapCtx.height * newScale < rootCtx.height) {
+            newScale = rootCtx.height / mapCtx.height;
+            deltaScale = newScale / mapCtx.scale;
         }
-        else if (this.mapBrect.width * newScale < this.rootBrect.width) {
-            newScale = this.rootBrect.width / this.mapBrect.width;
-            deltaScale = newScale / this.mapBrect.scale;
+        else if (mapCtx.width * newScale < rootCtx.width) {
+            newScale = rootCtx.width / mapCtx.width;
+            deltaScale = newScale / mapCtx.scale;
         }
 
-        const mouseX = clientX - this.rootBrect.x - this.mapBrect.x;
-        const mouseY = clientY - this.rootBrect.y - this.mapBrect.y;
+        const mouseX = clientX - rootCtx.x - mapCtx.x;
+        const mouseY = clientY - rootCtx.y - mapCtx.y;
 
-        this.setBrect({
-            x: this.mapBrect.x - mouseX * (deltaScale - 1),
-            y: this.mapBrect.y - mouseY * (deltaScale - 1),
+        setMapCtx({
+            x: mapCtx.x - mouseX * (deltaScale - 1),
+            y: mapCtx.y - mouseY * (deltaScale - 1),
             scale: newScale,
         });
 
@@ -107,50 +110,42 @@ export class Viewport {
     }
 
     move(shiftX: number, shiftY: number): void {
-        let newX = this.mapBrect.x + shiftX;
-        let newY = this.mapBrect.y + shiftY;
+        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
 
-        const mapRight = this.mapBrect.x + this.mapBrect.width * this.mapBrect.scale;
-        const mapBottom = this.mapBrect.y + this.mapBrect.height * this.mapBrect.scale;
+        let newX = mapCtx.x + shiftX;
+        let newY = mapCtx.y + shiftY;
 
-        if (this.mapBrect.x > 0) {
-            newX = this.mapBrect.x + shiftX / (this.mapBrect.x * .5);
-        }
-        else if (mapRight < this.rootBrect.width) {
-            newX = this.mapBrect.x + shiftX / (this.rootBrect.width - mapRight);
-        }
+        const mapRight = mapCtx.x + mapCtx.width * mapCtx.scale;
+        const mapBottom = mapCtx.y + mapCtx.height * mapCtx.scale;
 
-        if (this.mapBrect.y > 0) {
-            newY = this.mapBrect.y + shiftY / (this.mapBrect.y * .5);
+        if (mapCtx.x > 0) {
+            newX = mapCtx.x + shiftX / (mapCtx.x * .5);
         }
-        else if (mapBottom < this.rootBrect.height) {
-            newY = this.mapBrect.y + shiftY / (this.rootBrect.height - mapBottom);
+        else if (mapRight < rootCtx.width) {
+            newX = mapCtx.x + shiftX / (rootCtx.width - mapRight);
         }
 
-        this.setBrect({x: newX, y: newY});
+        if (mapCtx.y > 0) {
+            newY = mapCtx.y + shiftY / (mapCtx.y * .5);
+        }
+        else if (mapBottom < rootCtx.height) {
+            newY = mapCtx.y + shiftY / (rootCtx.height - mapBottom);
+        }
+
+        setMapCtx({x: newX, y: newY});
     }
 
     correct(): void {
-        if (this.mapBrect.x > 0) this.setBrect({x: 0});
-        else if (
-            this.mapBrect.x + this.mapBrect.width * this.mapBrect.scale
-                < this.rootBrect.width
-        ) {
-            this.setBrect({
-                x: this.rootBrect.width
-                    - this.mapBrect.width * this.mapBrect.scale,
-            });
+        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
+
+        if (mapCtx.x > 0) this.viewerCtx.setMapCtx({x: 0});
+        else if (mapCtx.x + mapCtx.width * mapCtx.scale < rootCtx.width) {
+            setMapCtx({x: rootCtx.width - mapCtx.width * mapCtx.scale});
         }
 
-        if (this.mapBrect.y > 0) this.setBrect({y: 0});
-        else if (
-            this.mapBrect.y + this.mapBrect.height * this.mapBrect.scale
-                < this.rootBrect.height
-        ) {
-            this.setBrect({
-                y: this.rootBrect.height
-                    - this.mapBrect.height * this.mapBrect.scale,
-            });
+        if (mapCtx.y > 0) setMapCtx({y: 0});
+        else if (mapCtx.y + mapCtx.height * mapCtx.scale < rootCtx.height) {
+            setMapCtx({y: rootCtx.height - mapCtx.height * mapCtx.scale});
         }
     }
 

@@ -1,17 +1,29 @@
-import {createContext, useContext} from "solid-js";
+import {Accessor, Setter, createContext, useContext} from "solid-js";
 import {Project} from "@project";
 import {SetStoreFunction} from "solid-js/store";
-import {Brect} from "@type";
+import {MapContext, RootContext} from "@ui/viewer/context";
 
-type Context = {
-    project: () => Project;
-    brect: Brect;
-    setBrect: SetStoreFunction<Brect>;
+export type ViewerContextType = {
+    project: Accessor<Project>;
+    setProject: Setter<Project>;
+
+    render: Accessor<undefined>;
+    reRender: Setter<undefined>;
+
+    root: Accessor<HTMLElement | undefined>;
+    setRoot: Setter<HTMLElement | undefined>;
+
+    mapCtx: MapContext;
+    setMapCtx: SetStoreFunction<MapContext>;
+
+    rootCtx: RootContext;
+    setRootCtx: SetStoreFunction<RootContext>;
+
 };
 
-export const ViewerContext = createContext<Context | undefined>();
+export const ViewerContext = createContext<ViewerContextType | undefined>();
 
-export function useViewerContext(): Context {
+export function useViewerContext(): ViewerContextType {
     const context = useContext(ViewerContext);
     if (!context) {
         throw new Error("There is no viewer context");

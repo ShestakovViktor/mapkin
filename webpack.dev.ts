@@ -31,6 +31,6 @@ export default merge<Configuration>(common, {
         port: 3000,
         hot: true,
         compress: true,
-        static: ["./build", "./public"],
+        static: ["./public", "./build"],
     },
 });

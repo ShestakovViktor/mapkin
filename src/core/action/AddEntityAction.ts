@@ -16,6 +16,5 @@ export class AddEntityAction extends Action {
     execute(): void {
         this.entityId = this.project.addEntity(this.data);
         this.project.appendChild(this.entityId, this.parentId);
-        //this.core.viewer.render();
     }
 }

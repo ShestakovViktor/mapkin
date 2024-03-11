@@ -1,5 +1,7 @@
 {
     "dialogTitle": "asset create",
-    "name": "asset name",
-    "file": "asset file"
+    "width": "width",
+    "height": "height",
+    "name": "name",
+    "file": "file"
 }

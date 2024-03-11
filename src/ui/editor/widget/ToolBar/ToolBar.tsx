@@ -4,12 +4,12 @@ import CursorIconSvg from "@public/icon/cursor.svg";
 
 import {Button, Icon, Panel} from "@ui/widget";
 import {For, JSXElement, createSignal} from "solid-js";
-import {useEditorContext} from "@ui/editor/context";
 import {MarkerMode} from "@ui/marker/utility";
 import {Mode} from "@ui/editor/utility";
+import {useEditorContext} from "@ui/editor/context";
 
 export function ToolBar(): JSXElement {
-    const context = useEditorContext();
+    const editorCtx = useEditorContext();
     const [selected, setSelected] = createSignal(0);
 
     const buttons = [
@@ -18,7 +18,7 @@ export function ToolBar(): JSXElement {
             icon: CursorIconSvg,
         },
         {
-            mode: new MarkerMode(context.project(), context.core),
+            mode: new MarkerMode(),
             icon: MarkerIconSvg,
         },
     ];
@@ -31,7 +31,7 @@ export function ToolBar(): JSXElement {
                         icon={item.icon}
                         pressed={index() == selected()}
                         onClick={() => {
-                            context.setMode(item.mode);
+                            editorCtx.setMode(item.mode);
                             setSelected(index());
                         }}
                     />

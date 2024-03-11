@@ -1,26 +1,31 @@
-import {AddEntityAction} from "@core/action";
-import {OVERLAY} from "@src/project";
 import {Marker} from "@src/type";
 
 import {Modal} from "@ui/widget";
 import {MarkerCreateDialog} from "@src/ui/marker/widget";
-import {Core} from "@src/core";
-import {Project} from "@project";
+import {OVERLAY} from "@project";
 import {Mode} from "@ui/editor/utility";
+import {ViewerContextType, useViewerContext} from "@ui/viewer/context";
+import {AddEntityAction} from "@core/action";
+import {EditorContexType, useEditorContext} from "@ui/editor/context";
 
 export class MarkerMode implements Mode {
     private click: [number, number] = [0, 0];
 
     private createMarkerModal: Modal;
 
-    constructor(project: Project, core: Core) {
-        const data: {text: string; sourceId: string} = {text: "", sourceId: ""};
+    private viewerCtx: ViewerContextType;
+
+    private editorCtx: EditorContexType;
+
+    constructor() {
+        this.viewerCtx = useViewerContext();
+        this.editorCtx = useEditorContext();
 
         this.createMarkerModal = new Modal("#modal");
         this.createMarkerModal.render(
             <MarkerCreateDialog
                 onClose={() => this.createMarkerModal.hide()}
-                onSubmit={ (event: SubmitEvent): void => {
+                onSubmit={(event: SubmitEvent): void => {
                     event.preventDefault();
 
                     const submitter = event.submitter as HTMLInputElement;
@@ -31,31 +36,35 @@ export class MarkerMode implements Mode {
                     else {
                         const form = event.target as HTMLFormElement;
                         const formData = new FormData(form);
+                        form.reset();
 
-                        data.text = String(formData.get("markerText"));
+                        const text = String(formData.get("text"));
                         const assetId = String(formData.get("assetId"));
 
-                        const asset = project.getAsset(assetId);
-                        data.sourceId = asset.sourceId;
+                        const {sourceId} = this.viewerCtx.project()
+                            .getAsset(assetId);
 
                         const markerData: Marker = {
                             type: "marker",
                             x: this.click[0],
                             y: this.click[1],
-                            sourceId: data.sourceId,
-                            text: data.text,
+                            sourceId,
+                            text,
                         };
 
-                        const layerId = project.getEntityId({name: OVERLAY});
+                        const layerId = this.viewerCtx.project()
+                            .getEntityByParams({name: OVERLAY});
 
-                        if (!layerId) throw new Error("There is no ovelay layer");
+                        if (!layerId) throw new Error("There is no overlay layer");
                         const addEntityAction = new AddEntityAction(
-                            project,
+                            this.viewerCtx.project(),
                             markerData,
                             layerId
                         );
 
-                        core.invoker.execute(addEntityAction);
+                        this.editorCtx.core.invoker.execute(addEntityAction);
+                        this.viewerCtx.reRender();
+                        this.createMarkerModal.hide();
                     }
                 }}
             />
@@ -63,7 +72,15 @@ export class MarkerMode implements Mode {
     }
 
     onMouseClick(event: MouseEvent): void {
-        this.click = [event.pageX, event.pageY];
+        const scale = this.viewerCtx.mapCtx.scale;
+
+        const root = event.currentTarget as HTMLElement;
+        const rootBCR = root.getBoundingClientRect();
+
+        this.click = [
+            (event.x - rootBCR.x - this.viewerCtx.mapCtx.x) / scale,
+            (event.y - rootBCR.y - this.viewerCtx.mapCtx.y) / scale,
+        ];
         this.createMarkerModal.show();
     }
 }

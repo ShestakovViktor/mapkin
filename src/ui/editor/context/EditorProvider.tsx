@@ -6,25 +6,15 @@ import {Mode} from "@ui/editor/utility";
 
 type Props = {
     value: {
-        project: Project;
         core: Core;
     };
     children: JSXElement | JSXElement[];
 };
 
 export function EditorProvider(props: Props): JSXElement {
-    const [project, setProject] = createSignal(
-        props.value.project,
-        {equals: false}
-    );
-
-    props.value.project.onRender(() => {
-        setProject(project());
-    });
-
     const [mode, setMode] = createSignal(new Mode());
 
-    const value = {...props.value, project, mode, setMode};
+    const value = {...props.value, mode, setMode};
 
     return (
         <EditorContext.Provider value={value}>

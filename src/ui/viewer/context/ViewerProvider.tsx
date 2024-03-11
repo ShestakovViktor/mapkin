@@ -1,27 +1,22 @@
 import {JSXElement, createSignal} from "solid-js";
-import {ViewerContext} from "@ui/viewer/context";
-import {Project} from "@src/project";
+import {MapContext, ViewerContext} from "@ui/viewer/context";
 import {createStore} from "solid-js/store";
-import {Brect} from "@type";
+import {Project} from "@project";
 
 type Props = {
-    value: {
-        project: Project;
-    };
+    project: Project;
     children: JSXElement | JSXElement[];
 };
 
 export function ViewerProvider(props: Props): JSXElement {
+    const [render, reRender] = createSignal(undefined, {equals: false});
+    const [root, setRoot] = createSignal<HTMLElement | undefined>();
+
     const [project, setProject] = createSignal(
-        props.value.project,
-        {equals: false}
+        props.project, {equals: false}
     );
 
-    props.value.project.onRender(() => {
-        setProject(project());
-    });
-
-    const [brect, setBrect] = createStore<Brect>({
+    const [mapCtx, setMapCtx] = createStore<MapContext>({
         x: 0,
         y: 0,
         width: 0,
@@ -29,8 +24,29 @@ export function ViewerProvider(props: Props): JSXElement {
         scale: 1,
     });
 
+    const [rootCtx, setRootCtx] = createStore<MapContext>({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        scale: 1,
+    });
+
+    const value = {
+        project,
+        setProject,
+        mapCtx,
+        setMapCtx,
+        rootCtx,
+        setRootCtx,
+        render,
+        reRender,
+        root,
+        setRoot,
+    };
+
     return (
-        <ViewerContext.Provider value={{project, brect, setBrect}}>
+        <ViewerContext.Provider value={value}>
             {props.children}
         </ViewerContext.Provider>
     );

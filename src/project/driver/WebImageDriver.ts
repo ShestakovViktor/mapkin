@@ -3,9 +3,13 @@ import {ImageDriver, ImageTile} from "@src/interface";
 export class WebImageDriver implements ImageDriver {
 
     async fooImage(
-        file: File
+        file: File,
+        width: number,
+        height: number
     ): Promise<string> {
         const image = document.createElement("img");
+        if (width) image.width = width;
+        if (height) image.height = height;
         image.src = URL.createObjectURL(file);
         await new Promise(resolve => image.onload = resolve);
 
@@ -15,11 +19,7 @@ export class WebImageDriver implements ImageDriver {
         const context = canvas.getContext("2d");
         if (!context) throw new Error();
 
-        context.drawImage(
-            image,
-            0, 0, image.width, image.height,
-            0, 0, canvas.width, canvas.height
-        );
+        context.drawImage(image, 0, 0, image.width, image.height);
 
         const base64 = canvas.toDataURL("image/png");
 

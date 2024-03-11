@@ -1,4 +1,4 @@
-export type Brect = {
+export type MapContext = {
     x: number;
     y: number;
     width: number;

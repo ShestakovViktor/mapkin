@@ -15,10 +15,8 @@ project.init(JSON.parse(qwerty));
 
 render(() => {
     return (
-        <>
-            <ViewerProvider value={{project}}>
-                <Viewer/>
-            </ViewerProvider>
-        </>
+        <ViewerProvider project={project}>
+            <Viewer/>
+        </ViewerProvider>
     );
 }, root);
