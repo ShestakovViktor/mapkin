@@ -1,4 +1,4 @@
-import {JSXElement, createEffect, createRenderEffect, createSignal, on, onMount} from "solid-js";
+import {JSXElement, createEffect, createSignal, on} from "solid-js";
 
 import {Entity} from "@ui/viewer/widget";
 
@@ -38,15 +38,11 @@ export function Viewer(): JSXElement {
 
     function setupRoot(el: HTMLElement): void {
         const viewport = new Viewport();
-
-        el.addEventListener("mousedown", (e) => viewport.onMouseDown(e));
-        el.addEventListener("mousemove", (e) => viewport.onMouseMove(e));
-        el.addEventListener("mouseup", () => viewport.onMouseUp());
-        el.addEventListener("mouseleave", () => viewport.onMouseLeave());
-        el.addEventListener("wheel", (e) => viewport.onMouseWheel(e));
-        el.addEventListener("touchstart", (e) => viewport.onTouchStart(e));
-        el.addEventListener("touchmove", (e) => viewport.onTouchMove(e));
-        el.addEventListener("touchend", () => viewport.onTouchEnd());
+        el.addEventListener("pointerdown", (e) => viewport.onPointerDown(e));
+        el.addEventListener("pointermove", (e) => viewport.onPointerMove(e));
+        el.addEventListener("pointerup", (e) => viewport.onPointerUp(e));
+        el.addEventListener("pointercancel", (e) => viewport.onPointerCancel(e));
+        el.addEventListener("wheel", (e) => viewport.onWheel(e));
 
         viewerCtx.setRoot(el);
     }

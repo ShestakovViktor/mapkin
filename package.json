@@ -12,7 +12,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "gsap": "^3.12.2",
         "i18next": "^23.7.6",
         "jszip": "^3.10.1"
     },
@@ -23,7 +22,6 @@
         "@types/mocha": "^10.0.6",
         "@types/node": "^20.10.5",
         "@types/webpack": "^5.28.5",
-        "@types/webpack-dev-server": "^4.7.2",
         "@typescript-eslint/eslint-plugin": "^6.16.0",
         "@typescript-eslint/parser": "^6.16.0",
         "babel-loader": "^9.1.3",

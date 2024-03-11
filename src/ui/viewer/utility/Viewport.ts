@@ -2,84 +2,109 @@ import {useViewerContext} from "@ui/viewer/context";
 
 const LMB = 1;
 
-export class Viewport {
-    private mouseEvent?: MouseEvent;
+function throttleRAF(): (...args: any) => void {
+    let queuedCallback: ((...args: any) => void) | undefined;
 
-    private touchEvent?: TouchEvent;
+    return function (callback: (...args: any) => void): void {
+        if (!queuedCallback) {
+            requestAnimationFrame(() => {
+                const cb = queuedCallback as ((...args: any) => void);
+                queuedCallback = undefined;
+                cb();
+            });
+        }
+        queuedCallback = callback;
+    };
+}
+const foo = throttleRAF();
+const foo2 = throttleRAF();
+
+export class Viewport {
+    private events: {[key: string]: PointerEvent} = {};
 
     private viewerCtx = useViewerContext();
 
-    onMouseClick(event: MouseEvent): void {
-        //this.pinchOut(, event.x, event.y);
+    onPointerDown(event: PointerEvent): void {
+        this.events[event.pointerId] = event;
     }
 
-    onMouseDown(event: MouseEvent): void {
-        this.mouseEvent = event;
+    onPointerMove(event: PointerEvent): void {
+        foo(() => {
+            if (event.pointerType == "mouse" && event.buttons == LMB) {
+                if (0 in this.events) {
+                    const shiftX = event.clientX - this.events[0].clientX;
+                    const shiftY = event.clientY - this.events[0].clientY;
+
+                    this.move(shiftX, shiftY);
+                }
+            }
+            else if (event.pointerType == "touch") {
+                if (0 in this.events && 1 in this.events) {
+
+                    const staticId = event.pointerId == 1 ? 0 : 1;
+                    const basic = this.events[staticId];
+                    const oldEvent = this.events[event.pointerId];
+                    const newEvent = event;
+
+                    if (oldEvent.x == newEvent.x || oldEvent.y == newEvent.y) {
+                        return;
+                    }
+
+                    const x1 = oldEvent.x - basic.x;
+                    const y1 = oldEvent.y - basic.y;
+
+                    const x2 = newEvent.x - basic.x;
+                    const y2 = newEvent.y - basic.y;
+
+                    const oldLength = Math.sqrt(x1 * x1 + y1 * y1);
+                    const newLength = Math.sqrt(x2 * x2 + y2 * y2);
+
+                    const middleX = (basic.x + newEvent.x) / 2;
+                    const middleY = (basic.y + newEvent.y) / 2;
+
+                    if (newLength > oldLength) {
+                        this.zoom(Math.exp(0.02), middleX, middleY);
+                    }
+                    else if (newLength < oldLength) {
+                        this.zoom(Math.exp(-0.02), middleX, middleY);
+                    }
+                }
+                else if (0 in this.events){
+                    const shiftX = event.clientX - this.events[0].clientX;
+                    const shiftY = event.clientY - this.events[0].clientY;
+
+                    this.move(shiftX, shiftY);
+                }
+            }
+
+            this.events[event.pointerId] = event;
+        });
     }
 
-    onMouseMove(event: MouseEvent): void {
-        if (!this.mouseEvent) return;
-
-        if (event.buttons == LMB) {
-            const shiftX = event.x - this.mouseEvent.x;
-            const shiftY = event.y - this.mouseEvent.y;
-            this.move(shiftX, shiftY);
-        }
-
-        this.mouseEvent = event;
+    onPointerUp(event: PointerEvent): void {
+        this.events = {};
+        this.correct();
     }
 
-    onMouseWheel(event: WheelEvent): void {
-        const direction = -Math.sign(event.deltaY);
-        const intensity = 0.1;
-        const delta = Math.exp(direction * intensity);
-
-        this.zoom(delta, event.x, event.y);
+    onPointerLeave(event: PointerEvent): void {
+        this.events = {};
+        this.correct();
     }
 
-    onMouseUp(): void {this.correct();}
-
-    onMouseLeave(): void {this.correct();}
-
-    onTouchStart(event: TouchEvent): void {
-        this.touchEvent = event;
+    onPointerCancel(event: PointerEvent): void {
+        console.log("cancel");
     }
 
-    onTouchMove(touchEvent: TouchEvent): void {
-        if (!this.touchEvent) return;
+    onWheel(event: WheelEvent): void {
+        event.preventDefault();
 
-        if (touchEvent.touches.length == 1) {
-            const {clientX: x1, clientY: y1} = this.touchEvent.touches[0];
-            const {clientX: x2, clientY: y2} = touchEvent.touches[0];
-
-            const [deltaX, deltaY] = this.getDifference(x1, y1, x2, y2);
-            this.move(deltaX, deltaY);
-        }
-        else {
-            const {clientX: x1, clientY: y1} = this.touchEvent.touches[0];
-            const {clientX: x2, clientY: y2} = this.touchEvent.touches[1];
-            const {clientX: x3, clientY: y3} = touchEvent.touches[0];
-            const {clientX: x4, clientY: y4} = touchEvent.touches[1];
-
-            const [midX, midY] = this.getMiddle(x3, y3, x4, y4);
-            const [oldDeltaX] = this.getDelta(x1, y1, x2, y2);
-            const [newDeltaX] = this.getDelta(x3, y3, x4, y4);
-
-            const direction = newDeltaX > oldDeltaX ? 1 : -1;
-            const intensity = 0.02;
+        foo2(() => {
+            const direction = -Math.sign(event.deltaY);
+            const intensity = 0.1;
             const delta = Math.exp(direction * intensity);
 
-            this.zoom(delta, midX, midY);
-        }
-
-        touchEvent.preventDefault();
-
-        this.touchEvent = touchEvent;
-    }
-
-    onTouchEnd(): void {
-        this.touchEvent = undefined;
-        this.correct();
+            this.zoom(delta, event.x, event.y);
+        });
     }
 
     zoom(delta: number, clientX: number, clientY: number): void {

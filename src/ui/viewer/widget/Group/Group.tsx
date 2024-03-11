@@ -1,4 +1,4 @@
-import {Accessor, For, Index, JSX, JSXElement, createComputed, createMemo, indexArray, mapArray} from "solid-js";
+import {JSX, JSXElement, createMemo} from "solid-js";
 import styles from "./Group.module.scss";
 import {useViewerContext} from "@ui/viewer/context";
 import {Group as GroupData} from "@type";

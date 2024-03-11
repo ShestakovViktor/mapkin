@@ -9,6 +9,7 @@ import i18next from "i18next";
 import {JSXElement} from "solid-js";
 import {Modal} from "@ui/widget/Modal";
 import {useViewerContext} from "@ui/viewer/context";
+import {Project} from "@project";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
@@ -28,8 +29,10 @@ export function InitialDialog(props: Props): JSXElement {
             if (!input.files?.length) return;
             const file = input.files[0];
 
-            context.project().import(file)
+            const project = new Project();
+            project.import(file)
                 .then(() => {
+                    context.setProject(project);
                     context.reRender();
                 })
                 .catch(error => console.log(error));
@@ -69,7 +72,7 @@ export function InitialDialog(props: Props): JSXElement {
                     "project:InitialDialog.continue",
                     {postProcess: ["capitalize"]}
                 )}
-                onClick={handleProjectUpload}
+                onClick={() => handleProjectUpload()}
             />
         </Dialog>
     );
