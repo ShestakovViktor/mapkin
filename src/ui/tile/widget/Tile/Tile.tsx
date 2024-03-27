@@ -18,10 +18,9 @@ export function Tile(props: Props): JSXElement {
             src={src}
             draggable={false}
             style={{
-                left: String(entity.x) + "px",
-                top: String(entity.y) + "px",
-                width: String(entity.width) + "px",
-                height: String(entity.height) + "px",
+                transform: `translate3d(${entity.x + "px"}, ${entity.y + "px"}, 0)`,
+                // width: String(entity.width) + "px",
+                // height: String(entity.height) + "px",
             }}
         />
     );

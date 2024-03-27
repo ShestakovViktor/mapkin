@@ -5,7 +5,7 @@ import SaltireIconSvg from "@public/icon/saltire.svg";
 import {Button, Dialog} from "@ui/widget";
 import {AssetCreateDialog} from "@ui/asset/widget/AssetCreateDialog";
 import i18next from "i18next";
-import {For, JSXElement, createSignal} from "solid-js";
+import {For, JSXElement, createEffect, createSignal, on} from "solid-js";
 import {Modal} from "@ui/widget/Modal";
 import {useViewerContext} from "@ui/viewer/context";
 import {Asset} from "@type";
@@ -18,18 +18,21 @@ type Props = {
 };
 
 export function AssetSelectDialog(props: Props): JSXElement {
-    const context = useViewerContext();
+    const viewerCtx = useViewerContext();
 
-    const [assets, setAssets] = createSignal(
-        Object.entries(context.project().getAssets())
-    );
+    const getAssets = (): [string, Asset][] => Object
+        .entries(viewerCtx.project().getAssets());
+
+    const [assets, setAssets] = createSignal(getAssets());
+
+    createEffect(on(viewerCtx.project, () => setAssets(getAssets())));
 
     const assetCreateModal = new Modal("#modal");
     assetCreateModal.render(
         <AssetCreateDialog
             onComplete={() => {
                 assetCreateModal.hide();
-                setAssets(Object.entries(context.project().getAssets()));
+                setAssets(Object.entries(viewerCtx.project().getAssets()));
             }}
             onClose={() => assetCreateModal.hide()}
         />
@@ -61,11 +64,11 @@ export function AssetSelectDialog(props: Props): JSXElement {
                                 class={styles.CloseButton}
                                 icon={SaltireIconSvg}
                                 onClick={() => {
-                                    context.project().delAsset(id);
+                                    viewerCtx.project().delAsset(id);
                                 }}
                             />
                             <img
-                                src={context.project().getSource(data.sourceId)}
+                                src={viewerCtx.project().getSource(data.sourceId)}
                                 onClick={() => {
                                     if (props.onSelect) props.onSelect(id);
                                     props.onComplete();

@@ -40,7 +40,6 @@ export function MarkerCreateDialog(props: Props): JSXElement {
                 class={styles.MarkerForm}
                 onSubmit={props.onSubmit}
             >
-
                 <Row>
                     <input
                         type="button"
@@ -51,30 +50,37 @@ export function MarkerCreateDialog(props: Props): JSXElement {
                             )}
                         onClick={() => assetSelectModal.show()}
                     />
-                    <input type="text" name="assetId" ref={assetInput}/>
+                    <input
+                        type="text"
+                        name="assetId"
+                        required
+                        ref={assetInput}
+                    />
                 </Row>
                 <Column>
-                    <label for="markerText">
+                    <label for="text">
                         {i18next.t(
                             "marker:CreateMarkerDialog.text",
                             {postProcess: ["capitalize"]}
                         )}
                     </label>
-                    <textarea id="markerText" name="text"/>
+                    <textarea id="text" name="text"/>
                 </Column>
-                {/* <Row>
-                    <label for="illustrationFile">
+                <Row>
+                    {/* <label for="graphic">
                         {i18next.t(
-                            "marker:CreateMarkerDialog.illustration",
+                            "marker:CreateMarkerDialog.graphic",
                             {postProcess: ["capitalize"]}
                         )}
-                    </label>
+                    </label> */}
                     <input
+                        id="graphic"
                         type="file"
-                        name="illustrationFile"
+                        name="graphic"
                         accept="image/*"
+                        multiple
                     />
-                </Row> */}
+                </Row>
                 <input
                     type="submit"
                     value={i18next.t(

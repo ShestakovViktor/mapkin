@@ -2,6 +2,8 @@ import {useViewerContext} from "@ui/viewer/context";
 
 const LMB = 1;
 
+//LERP and animation loop with speed
+
 function throttleRAF(): (...args: any) => void {
     let queuedCallback: ((...args: any) => void) | undefined;
 
@@ -16,118 +18,207 @@ function throttleRAF(): (...args: any) => void {
         queuedCallback = callback;
     };
 }
-const foo = throttleRAF();
-const foo2 = throttleRAF();
+
+type Vector = {x: number; y: number};
+
+type PointerDownState = {
+    map: Vector;
+    centroid: Vector;
+    perimeter: number;
+};
 
 export class Viewport {
-    private events: {[key: string]: PointerEvent} = {};
-
     private viewerCtx = useViewerContext();
 
+    private pointerDownState?: PointerDownState;
+
+    private pointerMoveEvents: {[key: string]: PointerEvent} | never = {};
+
+    private throttlePointerMove: (...args: any) => void;
+
+    private throttleMouseWheel: (...args: any) => void;
+
+    constructor(private viewer: HTMLElement) {
+        this.throttlePointerMove = throttleRAF();
+        this.throttleMouseWheel = throttleRAF();
+    }
+
     onPointerDown(event: PointerEvent): void {
-        this.events[event.pointerId] = event;
+        this.pointerMoveEvents[event.pointerId] = event;
+
+        const pointerMoveEvents = Object.values(this.pointerMoveEvents);
+        this.pointerDownState = {
+            map: {
+                x: this.viewerCtx.mapCtx.x,
+                y: this.viewerCtx.mapCtx.y,
+            },
+            centroid: this.getCentroid(pointerMoveEvents),
+            perimeter: this.getPerimeter(pointerMoveEvents),
+        };
     }
 
     onPointerMove(event: PointerEvent): void {
-        foo(() => {
-            if (event.pointerType == "mouse" && event.buttons == LMB) {
-                if (0 in this.events) {
-                    const shiftX = event.clientX - this.events[0].clientX;
-                    const shiftY = event.clientY - this.events[0].clientY;
+        if (event.pointerType == "mouse" && event.buttons != LMB) return;
 
-                    this.move(shiftX, shiftY);
-                }
-            }
-            else if (event.pointerType == "touch") {
-                if (0 in this.events && 1 in this.events) {
+        this.pointerMoveEvents[event.pointerId] = event;
 
-                    const staticId = event.pointerId == 1 ? 0 : 1;
-                    const basic = this.events[staticId];
-                    const oldEvent = this.events[event.pointerId];
-                    const newEvent = event;
-
-                    if (oldEvent.x == newEvent.x || oldEvent.y == newEvent.y) {
-                        return;
-                    }
-
-                    const x1 = oldEvent.x - basic.x;
-                    const y1 = oldEvent.y - basic.y;
-
-                    const x2 = newEvent.x - basic.x;
-                    const y2 = newEvent.y - basic.y;
-
-                    const oldLength = Math.sqrt(x1 * x1 + y1 * y1);
-                    const newLength = Math.sqrt(x2 * x2 + y2 * y2);
-
-                    const middleX = (basic.x + newEvent.x) / 2;
-                    const middleY = (basic.y + newEvent.y) / 2;
-
-                    if (newLength > oldLength) {
-                        this.zoom(Math.exp(0.02), middleX, middleY);
-                    }
-                    else if (newLength < oldLength) {
-                        this.zoom(Math.exp(-0.02), middleX, middleY);
-                    }
-                }
-                else if (0 in this.events){
-                    const shiftX = event.clientX - this.events[0].clientX;
-                    const shiftY = event.clientY - this.events[0].clientY;
-
-                    this.move(shiftX, shiftY);
-                }
-            }
-
-            this.events[event.pointerId] = event;
+        this.throttlePointerMove(() => {
+            if (!this.pointerDownState) return;
+            this.handlePinchGesture(this.pointerDownState);
+            this.handleGrabGesture(this.pointerDownState);
         });
     }
 
     onPointerUp(event: PointerEvent): void {
-        this.events = {};
+        delete this.pointerMoveEvents[event.pointerId];
+
+        if (Object.values(this.pointerMoveEvents).length == 0) {
+            this.pointerDownState = undefined;
+        }
+        else if (this.pointerDownState) {
+            const pointerEvents = Object.values(this.pointerMoveEvents);
+            this.pointerDownState = {
+                map: {
+                    x: this.viewerCtx.mapCtx.x,
+                    y: this.viewerCtx.mapCtx.y,
+                },
+                centroid: this.getCentroid(pointerEvents),
+                perimeter: this.getPerimeter(pointerEvents),
+            };
+        }
+
         this.correct();
     }
 
     onPointerLeave(event: PointerEvent): void {
-        this.events = {};
+        delete this.pointerMoveEvents[event.pointerId];
+
+        if (Object.values(this.pointerMoveEvents).length == 0) {
+            this.pointerDownState = undefined;
+        }
+        else if (this.pointerDownState) {
+            const pointerEvents = Object.values(this.pointerMoveEvents);
+            this.pointerDownState = {
+                map: {
+                    x: this.viewerCtx.mapCtx.x,
+                    y: this.viewerCtx.mapCtx.y,
+                },
+                centroid: this.getCentroid(pointerEvents),
+                perimeter: this.getPerimeter(pointerEvents),
+            };
+        }
+
         this.correct();
     }
 
-    onPointerCancel(event: PointerEvent): void {
+    onPointerCancel(): void {
         console.log("cancel");
     }
 
     onWheel(event: WheelEvent): void {
         event.preventDefault();
 
-        foo2(() => {
+        this.throttleMouseWheel(() => {
             const direction = -Math.sign(event.deltaY);
             const intensity = 0.1;
-            const delta = Math.exp(direction * intensity);
+            const delta = direction * intensity;
 
             this.zoom(delta, event.x, event.y);
         });
     }
 
+    handleGrabGesture(pointerDownState: PointerDownState): void {
+        const centroid = this.getCentroid(
+            Object.values(this.pointerMoveEvents)
+        );
+
+        const shift = {
+            x: centroid.x - pointerDownState.centroid.x,
+            y: centroid.y - pointerDownState.centroid.y,
+        };
+
+        const viewer = this.viewer.getBoundingClientRect();
+        const {mapCtx: map} = this.viewerCtx;
+
+        const widthGap = -Math.abs(viewer.width - map.width * map.scale);
+        const heightGap = -Math.abs(viewer.height - map.height * map.scale);
+
+        const newMapX = this.foo(pointerDownState.map.x, shift.x, widthGap);
+        const newMapY = this.foo(pointerDownState.map.y, shift.y, heightGap);
+
+        this.move(Math.round(newMapX), Math.round(newMapY));
+    }
+
+    handlePinchGesture(pointerDownState: PointerDownState): void {
+        if (!this.pointerDownState) return;
+
+        const perimeter = this.getPerimeter(
+            Object.values(this.pointerMoveEvents)
+        );
+
+        const delta = (this.pointerDownState.perimeter - perimeter) / -1000;
+        const centroid = this.getCentroid(Object.values(this.pointerMoveEvents));
+
+        if (delta) this.zoom(delta, centroid.x, centroid.y);
+
+        this.pointerDownState.perimeter = perimeter;
+    }
+
+    getCentroid(events: PointerEvent[]): {x: number; y: number} {
+        const centroid = {x: 0, y: 0};
+
+        for (const event of events) {
+            centroid.x += event.x;
+            centroid.y += event.y;
+        }
+
+        centroid.x = centroid.x / events.length;
+        centroid.y = centroid.y / events.length;
+
+        return centroid;
+    }
+
+    getPerimeter(points: Vector[]): number {
+        let res = 0;
+        let prev = points[points.length - 1];
+        for (const point of points) {
+            res += Math.sqrt(
+                Math.pow(point.x - prev.x, 2) + Math.pow(point.y - prev.y, 2)
+            );
+            prev = point;
+        }
+        return res;
+    }
+
     zoom(delta: number, clientX: number, clientY: number): void {
-        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
-        let deltaScale = delta;
+        const viewCtx = this.viewer.getBoundingClientRect();
+        const {mapCtx, setMapCtx} = this.viewerCtx;
+        let deltaScale = Math.exp(delta);
 
         let newScale = mapCtx.scale * deltaScale;
 
-        if (mapCtx.height * newScale < rootCtx.height) {
-            newScale = rootCtx.height / mapCtx.height;
+        if (mapCtx.height * newScale < viewCtx.height) {
+            newScale = viewCtx.height / mapCtx.height;
             deltaScale = newScale / mapCtx.scale;
         }
-        else if (mapCtx.width * newScale < rootCtx.width) {
-            newScale = rootCtx.width / mapCtx.width;
+        else if (mapCtx.width * newScale < viewCtx.width) {
+            newScale = viewCtx.width / mapCtx.width;
             deltaScale = newScale / mapCtx.scale;
         }
 
-        const mouseX = clientX - rootCtx.x - mapCtx.x;
-        const mouseY = clientY - rootCtx.y - mapCtx.y;
+        const mouseX = clientX - viewCtx.x - mapCtx.x;
+        const mouseY = clientY - viewCtx.y - mapCtx.y;
+
+        if (this.pointerDownState) {
+            this.pointerDownState.map = {
+                x: this.pointerDownState.map.x - mouseX * (deltaScale - 1),
+                y: this.pointerDownState.map.y - mouseY * (deltaScale - 1),
+            };
+        }
 
         setMapCtx({
-            x: mapCtx.x - mouseX * (deltaScale - 1),
-            y: mapCtx.y - mouseY * (deltaScale - 1),
+            x: Math.round(mapCtx.x - mouseX * (deltaScale - 1)),
+            y: Math.round(mapCtx.y - mouseY * (deltaScale - 1)),
             scale: newScale,
         });
 
@@ -135,62 +226,65 @@ export class Viewport {
     }
 
     move(shiftX: number, shiftY: number): void {
-        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
+        this.viewerCtx.setMapCtx({x: shiftX, y: shiftY});
+    }
 
-        let newX = mapCtx.x + shiftX;
-        let newY = mapCtx.y + shiftY;
+    foo(coord: number, shift: number, gap: number): number {
+        const left = gap;
+        const right = 0;
 
-        const mapRight = mapCtx.x + mapCtx.width * mapCtx.scale;
-        const mapBottom = mapCtx.y + mapCtx.height * mapCtx.scale;
+        let newCoord = coord;
+        const realCoord = coord;
+        const leftGap = realCoord - left;
+        const shiftedLeftGap = leftGap + shift;
+        const rightGap = realCoord - right;
+        const shiftedRightGap = rightGap + shift;
+        const factor = 5;
 
-        if (mapCtx.x > 0) {
-            newX = mapCtx.x + shiftX / (mapCtx.x * .5);
+        if (leftGap < 0) {
+            const shiftedMathCoord = -Math.pow(leftGap, 2) + shift;
+
+            newCoord = left + (shiftedMathCoord < 0
+                ? Math.sign(shiftedMathCoord)
+                    * Math.sqrt(Math.abs(shiftedMathCoord)) * factor
+                : shiftedMathCoord);
         }
-        else if (mapRight < rootCtx.width) {
-            newX = mapCtx.x + shiftX / (rootCtx.width - mapRight);
+        else if (rightGap > 0) {
+            const shiftedMathCoord = Math.pow(rightGap, 2) + shift;
+
+            newCoord = right + (shiftedMathCoord > 0
+                ? Math.sign(shiftedMathCoord)
+                    * Math.sqrt(Math.abs(shiftedMathCoord)) * factor
+                : shiftedMathCoord);
+        }
+        else if (shiftedRightGap > 0) {
+            newCoord = right + Math.sign(shiftedRightGap)
+                * Math.sqrt(Math.abs(shiftedRightGap)) * factor;
+        }
+        else if (shiftedLeftGap < 0) {
+            newCoord = left + Math.sign(shiftedLeftGap)
+                * Math.sqrt(Math.abs(shiftedLeftGap)) * factor;
+        }
+        else {
+            newCoord = realCoord + shift;
         }
 
-        if (mapCtx.y > 0) {
-            newY = mapCtx.y + shiftY / (mapCtx.y * .5);
-        }
-        else if (mapBottom < rootCtx.height) {
-            newY = mapCtx.y + shiftY / (rootCtx.height - mapBottom);
-        }
-
-        setMapCtx({x: newX, y: newY});
+        return newCoord;
     }
 
     correct(): void {
-        const {mapCtx, setMapCtx, rootCtx} = this.viewerCtx;
+        const viewer = this.viewer.getBoundingClientRect();
+        const {mapCtx: map, setMapCtx} = this.viewerCtx;
 
-        if (mapCtx.x > 0) this.viewerCtx.setMapCtx({x: 0});
-        else if (mapCtx.x + mapCtx.width * mapCtx.scale < rootCtx.width) {
-            setMapCtx({x: rootCtx.width - mapCtx.width * mapCtx.scale});
+        if (map.x > 0) this.viewerCtx.setMapCtx({x: 0});
+        else if (map.x + map.width * map.scale < viewer.width) {
+            setMapCtx({x: Math.round(viewer.width - map.width * map.scale)});
         }
 
-        if (mapCtx.y > 0) setMapCtx({y: 0});
-        else if (mapCtx.y + mapCtx.height * mapCtx.scale < rootCtx.height) {
-            setMapCtx({y: rootCtx.height - mapCtx.height * mapCtx.scale});
+        if (map.y > 0) setMapCtx({y: 0});
+        else if (map.y + map.height * map.scale < viewer.height) {
+            setMapCtx({y: Math.round(viewer.height - map.height * map.scale)});
         }
     }
-
-    private getDifference(
-        x1: number, y1: number, x2: number, y2: number
-    ): [number, number] {
-        return [(x2 - x1), (y2 - y1)];
-    }
-
-    private getMiddle(
-        x1: number, y1: number, x2: number, y2: number
-    ): [number, number] {
-        return [(x1 + x2) / 2, (y1 + y2) / 2];
-    }
-
-    private getDelta(
-        x1: number, y1: number, x2: number, y2: number
-    ): [number, number] {
-        return [Math.abs(x2 - x1), Math.abs(y2 - y1)];
-    }
-
 }
 

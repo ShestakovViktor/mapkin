@@ -1,20 +1,50 @@
 .Marker {
     position: absolute;
-    transform: translate(-50%, -50%);
 
-    transition: transform .1s;
+    //transition: transform .1s;
 
     .Mark {
+        position: absolute;
         cursor: pointer;
+        transform: translate(-50%, -50%);
+        user-select: none;
     }
 
     .Info {
-        background: var(--white);
         position: absolute;
-        bottom: 125%;
-        left: 50%;
-        transform: translate(-50%, 0px);
-        padding: 1em;
-        border-radius: .25em;
+        background: var(--white);
+        transform: translate(-50%, calc(-100% - 20px));
+
+        padding: 20px;
+        border-radius: 8px;
+
+        width: 400px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        box-shadow: 0px 2px 8px 2px hsla(0, 0%, 20%, 0.4);
+
+        &:after {
+            content: "";
+            width: 0px;
+            height: 0px;
+            position: absolute;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #fff;
+            border-bottom: 10px solid transparent;
+            left: 50%;
+            bottom: -20px;
+            transform: translate(-50%, 0%);
+        }
+
+        .Text {}
+
+        .Graphic {
+            width: 100%;
+            height: auto;
+        }
     }
 }

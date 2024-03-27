@@ -50,6 +50,19 @@ export function AssetCreateDialog(props?: Props): JSXElement {
                 onSubmit={(event) => {void handleSubmit(event);}}
             >
                 <Row>
+                    <label for="name">
+                        {i18next.t(
+                            "asset:AssetCreateDialog.name",
+                            {postProcess: ["capitalize"]}
+                        )}
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                    />
+                </Row>
+                <Row>
                     <label for="width">
                         {i18next.t(
                             "asset:AssetCreateDialog.width",
@@ -66,19 +79,6 @@ export function AssetCreateDialog(props?: Props): JSXElement {
                         )}
                     </label>
                     <input id="height" type="text" name="height"/>
-                </Row>
-                <Row>
-                    <label for="name">
-                        {i18next.t(
-                            "asset:AssetCreateDialog.name",
-                            {postProcess: ["capitalize"]}
-                        )}
-                    </label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                    />
                 </Row>
                 <Row>
                     <label for="file">

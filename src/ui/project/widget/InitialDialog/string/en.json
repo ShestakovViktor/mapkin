@@ -2,5 +2,5 @@
     "dialogTitle": "project initialization",
     "create": "Create new project",
     "continue": "Continue existing project",
-    "load": "Load project from file"
+    "demo": "Load demo project"
 }

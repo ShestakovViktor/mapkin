@@ -1,7 +1,7 @@
 import {Accessor, Setter, createContext, useContext} from "solid-js";
 import {Project} from "@project";
 import {SetStoreFunction} from "solid-js/store";
-import {MapContext, RootContext} from "@ui/viewer/context";
+import {MapContext} from "@ui/viewer/context";
 
 export type ViewerContextType = {
     project: Accessor<Project>;
@@ -15,10 +15,6 @@ export type ViewerContextType = {
 
     mapCtx: MapContext;
     setMapCtx: SetStoreFunction<MapContext>;
-
-    rootCtx: RootContext;
-    setRootCtx: SetStoreFunction<RootContext>;
-
 };
 
 export const ViewerContext = createContext<ViewerContextType | undefined>();

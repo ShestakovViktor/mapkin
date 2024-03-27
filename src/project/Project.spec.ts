@@ -31,6 +31,7 @@ describe("Project", () => {
             y: 0,
             sourceId: "",
             text: "",
+            graphicIds: [],
         };
 
         const entityId = project.addEntity(entityData);

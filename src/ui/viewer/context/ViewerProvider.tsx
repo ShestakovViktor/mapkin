@@ -24,21 +24,11 @@ export function ViewerProvider(props: Props): JSXElement {
         scale: 1,
     });
 
-    const [rootCtx, setRootCtx] = createStore<MapContext>({
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-        scale: 1,
-    });
-
     const value = {
         project,
         setProject,
         mapCtx,
         setMapCtx,
-        rootCtx,
-        setRootCtx,
         render,
         reRender,
         root,

@@ -18,7 +18,20 @@ type Props = {
 };
 
 export function InitialDialog(props: Props): JSXElement {
-    const context = useViewerContext();
+    const viewerCtx = useViewerContext();
+
+    function loadTestProject(): void {
+        fetch("/project.mp")
+            .then(async (resp) => resp.blob())
+            .then(async (blob) => {
+                const project = new Project();
+                await project.import(blob);
+                viewerCtx.setProject(project);
+                viewerCtx.reRender();
+                props.onComplete();
+            })
+            .catch((err) => {throw err;});
+    }
 
     function handleProjectUpload(): void {
         const input = document.createElement("input");
@@ -32,8 +45,8 @@ export function InitialDialog(props: Props): JSXElement {
             const project = new Project();
             project.import(file)
                 .then(() => {
-                    context.setProject(project);
-                    context.reRender();
+                    viewerCtx.setProject(project);
+                    viewerCtx.reRender();
                 })
                 .catch(error => console.log(error));
             props.onComplete();
@@ -73,6 +86,14 @@ export function InitialDialog(props: Props): JSXElement {
                     {postProcess: ["capitalize"]}
                 )}
                 onClick={() => handleProjectUpload()}
+            />
+
+            <Button
+                label={i18next.t(
+                    "project:InitialDialog.demo",
+                    {postProcess: ["capitalize"]}
+                )}
+                onClick={() => loadTestProject()}
             />
         </Dialog>
     );

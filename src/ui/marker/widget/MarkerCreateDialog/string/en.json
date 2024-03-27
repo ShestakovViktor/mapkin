@@ -3,7 +3,7 @@
     "width": "width",
     "height": "height",
     "text": "text",
-    "illustration": "illustration",
+    "graphic": "graphic",
     "createMarker": "create marker",
     "chooseAsset": "choose asset",
     "cancel": "cancel"

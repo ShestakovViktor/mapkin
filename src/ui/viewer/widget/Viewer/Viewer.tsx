@@ -1,4 +1,5 @@
-import {JSXElement, createEffect, createSignal, on} from "solid-js";
+import styles from "./Viewer.module.scss";
+import {JSXElement, createEffect, createSignal, on, onMount} from "solid-js";
 
 import {Entity} from "@ui/viewer/widget";
 
@@ -7,6 +8,7 @@ import {Viewport} from "@ui/viewer/utility";
 
 export function Viewer(): JSXElement {
     const viewerCtx = useViewerContext();
+    let viewerEl: HTMLDivElement;
 
     const [rootId, setRootId] = createSignal("", {equals: false});
 
@@ -26,26 +28,37 @@ export function Viewer(): JSXElement {
         setRootId(viewerCtx.project().getRootId());
     }));
 
-    createEffect(() => {
-        const rootBCR = viewerCtx.root()?.getBoundingClientRect();
-        if (!rootBCR) return;
-
-        viewerCtx.setRootCtx({
-            width: rootBCR.width,
-            height: rootBCR.height,
-        });
+    onMount((): void => {
+        const viewport = new Viewport(viewerEl);
+        viewerEl.addEventListener(
+            "pointerdown",
+            (e) => viewport.onPointerDown(e)
+        );
+        viewerEl.addEventListener(
+            "pointermove",
+            (e) => viewport.onPointerMove(e)
+        );
+        viewerEl.addEventListener(
+            "pointerup",
+            (e) => viewport.onPointerUp(e)
+        );
+        viewerEl.addEventListener(
+            "pointerleave",
+            (e) => viewport.onPointerLeave(e)
+        );
+        viewerEl.addEventListener(
+            "pointercancel",
+            (e) => viewport.onPointerCancel()
+        );
+        viewerEl.addEventListener(
+            "wheel",
+            (e) => viewport.onWheel(e)
+        );
     });
 
-    function setupRoot(el: HTMLElement): void {
-        const viewport = new Viewport();
-        el.addEventListener("pointerdown", (e) => viewport.onPointerDown(e));
-        el.addEventListener("pointermove", (e) => viewport.onPointerMove(e));
-        el.addEventListener("pointerup", (e) => viewport.onPointerUp(e));
-        el.addEventListener("pointercancel", (e) => viewport.onPointerCancel(e));
-        el.addEventListener("wheel", (e) => viewport.onWheel(e));
-
-        viewerCtx.setRoot(el);
-    }
-
-    return (<Entity entityId={rootId()} ref={setupRoot} />);
+    return (
+        <div id="viewer" class={styles.Viewer} ref={viewerEl!}>
+            <Entity entityId={rootId()} ref={(el) => viewerCtx.setRoot(el)} />
+        </div>
+    );
 }

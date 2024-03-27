@@ -2,7 +2,7 @@ import {JSXElement} from "solid-js";
 import styles from "./Row.module.scss";
 
 type Props = {
-    children?: JSXElement[];
+    children?: JSXElement | JSXElement[];
     id?: string;
     class?: string;
 };

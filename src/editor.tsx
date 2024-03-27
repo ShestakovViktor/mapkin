@@ -6,7 +6,7 @@ import {Core} from "@core";
 import {Project} from "@project";
 import {render} from "solid-js/web";
 import {Viewer} from "@src/ui/viewer/widget";
-import {ViewerProvider} from "@ui/viewer/context";
+import {ViewerProvider, useViewerContext} from "@ui/viewer/context";
 import {Editor} from "./ui/editor/widget";
 import {EditorProvider} from "@ui/editor/context";
 
@@ -23,7 +23,9 @@ render(() => {
             <EditorProvider value={{core}}>
                 <Editor/>
             </EditorProvider>
+            {
+
+            }
         </ViewerProvider>
     );
 }, app);
-

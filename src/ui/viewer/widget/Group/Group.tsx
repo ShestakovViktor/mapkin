@@ -25,18 +25,12 @@ export function Group(props: Props): JSXElement {
     function foo(name: string): JSX.CSSProperties {
         if (name == "root") {
             return {
-                width: "100%",
-                height: "100%",
+                transform: `translate3d(${context.mapCtx.x + "px"}, ${context.mapCtx.y + "px"}, 0)`,
             };
         }
         else if (name == "map") {
             return {
-                transform: `translate3d(${context.mapCtx.x + "px"}, ${context.mapCtx.y + "px"}, 0) scale(${context.mapCtx.scale})`,
-            };
-        }
-        else if (name == "overlay") {
-            return {
-                transform: `translate3d(${context.mapCtx.x + "px"}, ${context.mapCtx.y + "px"}, 0)`,
+                transform: `scale(${context.mapCtx.scale})`,
             };
         }
         else {

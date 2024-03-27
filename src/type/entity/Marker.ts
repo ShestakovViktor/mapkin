@@ -1,10 +1,11 @@
-import {Entity} from "@type";
+import {Entity, Id} from "@type";
 
 export type Marker = Entity & {
     type: "marker";
     x: number;
     y: number;
-    sourceId: string;
+    sourceId: Id;
 
     text: string;
+    graphicIds: Id[];
 };
