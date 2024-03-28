@@ -34,11 +34,11 @@
             "@ui/*": [
                 "src/ui/*"
             ],
-            "@project": [
-                "src/project"
+            "@store": [
+                "src/store"
             ],
-            "@project/*": [
-                "src/project/*"
+            "@store/*": [
+                "src/store/*"
             ],
             "@style": [
                 "src/style"

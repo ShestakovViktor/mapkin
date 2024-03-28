@@ -4,12 +4,13 @@ import {Button} from "@ui/widget";
 import i18next from "i18next";
 import {JSXElement} from "solid-js";
 import {useViewerContext} from "@ui/viewer/context";
+import {useEditorContext} from "@ui/editor/context";
 
 export function ProjectExportButton(): JSXElement {
-    const context = useViewerContext();
+    const editorCtx = useEditorContext();
 
     async function handleProjectExport(): Promise<void> {
-        const projectFile = await context.project().export();
+        const projectFile = await editorCtx.core.converter.exportAsFile();
 
         const projectFileUrl = URL.createObjectURL(projectFile);
 

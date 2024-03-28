@@ -12,4 +12,6 @@ export interface ImageDriver {
         height: number;
         tiles: ImageTile[];
     }>;
+
+    fooImage(file: File, width: number, height: number): Promise<string>;
 }

@@ -1,7 +1,6 @@
 import {JSXElement, createSignal} from "solid-js";
 import {EditorContext} from "@ui/editor/context";
 import {Core} from "@core";
-import {Project} from "@project";
 import {Mode} from "@ui/editor/utility";
 
 type Props = {

@@ -9,8 +9,10 @@ type Props = {
 
 export function Marker(props: Props): JSXElement {
     const viewerCtx = useViewerContext();
-    const entity = viewerCtx.project().getEntityById(props.entityId) as Data;
-    const src = viewerCtx.project().getSource(entity.sourceId);
+    const entity = viewerCtx.store.entity
+        .getById(props.entityId) as Data;
+    const src = viewerCtx.store.source
+        .get(entity.sourceId);
 
     const [show, setShow] = createSignal(false);
 
@@ -50,8 +52,8 @@ export function Marker(props: Props): JSXElement {
                         <img
                             class={styles.Graphic}
                             src={
-                                viewerCtx.project()
-                                    .getSource(entity.graphicIds[0])
+                                viewerCtx.store.source
+                                    .get(entity.graphicIds[0])
                             }
                         />
                     </Show>

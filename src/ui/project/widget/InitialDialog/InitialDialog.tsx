@@ -9,7 +9,7 @@ import i18next from "i18next";
 import {JSXElement} from "solid-js";
 import {Modal} from "@ui/widget/Modal";
 import {useViewerContext} from "@ui/viewer/context";
-import {Project} from "@project";
+import {useEditorContext} from "@ui/editor/context";
 
 i18next.addResourceBundle("en", "project", {InitialDialog: en}, true, true);
 
@@ -18,15 +18,15 @@ type Props = {
 };
 
 export function InitialDialog(props: Props): JSXElement {
+    const editorCtx = useEditorContext();
     const viewerCtx = useViewerContext();
 
     function loadTestProject(): void {
         fetch("/project.mp")
             .then(async (resp) => resp.blob())
             .then(async (blob) => {
-                const project = new Project();
-                await project.import(blob);
-                viewerCtx.setProject(project);
+                await editorCtx.core.converter.importProject(blob);
+                viewerCtx.reInit();
                 viewerCtx.reRender();
                 props.onComplete();
             })
@@ -42,13 +42,13 @@ export function InitialDialog(props: Props): JSXElement {
             if (!input.files?.length) return;
             const file = input.files[0];
 
-            const project = new Project();
-            project.import(file)
-                .then(() => {
-                    viewerCtx.setProject(project);
-                    viewerCtx.reRender();
-                })
-                .catch(error => console.log(error));
+            // const project = new Project();
+            // project.converter.importProject(file)
+            //     .then(() => {
+            //         viewerCtx.setStore(project);
+            //         viewerCtx.reRender();
+            //     })
+            //     .catch(error => console.log(error));
             props.onComplete();
         });
     }

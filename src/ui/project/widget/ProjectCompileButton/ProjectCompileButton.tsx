@@ -4,15 +4,16 @@ import en from "./string/en.json";
 import {Button} from "@ui/widget";
 import i18next from "i18next";
 import {JSXElement} from "solid-js";
-import {useViewerContext} from "@ui/viewer/context";
+import {useEditorContext} from "@ui/editor/context";
 
 i18next.addResourceBundle("en", "layout", {SystemBar: en}, true, true);
 
 export function ProjectCompileButton(): JSXElement {
-    const context = useViewerContext();
+    const editorCtx = useEditorContext();
 
     async function handleProjectCompile(): Promise<void> {
-        const websiteArchive = await context.project().exportProjectAsSite();
+        const websiteArchive = await editorCtx.core.converter
+            .exportAsSite();
 
         const projectFileUrl = URL.createObjectURL(websiteArchive);
 

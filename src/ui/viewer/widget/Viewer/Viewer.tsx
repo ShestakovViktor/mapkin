@@ -6,14 +6,16 @@ import {Entity} from "@ui/viewer/widget";
 import {useViewerContext} from "@ui/viewer/context";
 import {Viewport} from "@ui/viewer/utility";
 
+export const VIEWER_ID = "viewer";
+
 export function Viewer(): JSXElement {
     const viewerCtx = useViewerContext();
     let viewerEl: HTMLDivElement;
 
     const [rootId, setRootId] = createSignal("", {equals: false});
 
-    createEffect(on(viewerCtx.project, () => {
-        const size = viewerCtx.project().getData().size;
+    createEffect(on(viewerCtx.init, () => {
+        const size = viewerCtx.store.getData().size;
 
         viewerCtx.setMapCtx({
             x: 0,
@@ -25,7 +27,10 @@ export function Viewer(): JSXElement {
     }));
 
     createEffect(on(viewerCtx.render, () => {
-        setRootId(viewerCtx.project().getRootId());
+        const rootId = viewerCtx.store.entity
+            .getByParams({name:"root"});
+        if (!rootId) throw new Error();
+        setRootId(rootId);
     }));
 
     onMount((): void => {
@@ -57,7 +62,7 @@ export function Viewer(): JSXElement {
     });
 
     return (
-        <div id="viewer" class={styles.Viewer} ref={viewerEl!}>
+        <div id={VIEWER_ID} class={styles.Viewer} ref={viewerEl!}>
             <Entity entityId={rootId()} ref={(el) => viewerCtx.setRoot(el)} />
         </div>
     );

@@ -1,12 +1,14 @@
 import styles from "./ToolBar.module.scss";
-import MarkerIconSvg from "@public/icon/marker.svg";
 import CursorIconSvg from "@public/icon/cursor.svg";
+import MarkerIconSvg from "@public/icon/marker.svg";
+import DecorIconSvg from "@public/icon/decor.svg";
 
 import {Button, Icon, Panel} from "@ui/widget";
 import {For, JSXElement, createSignal} from "solid-js";
 import {MarkerMode} from "@ui/marker/utility";
 import {Mode} from "@ui/editor/utility";
 import {useEditorContext} from "@ui/editor/context";
+import {DecorMode} from "@ui/decor/utility";
 
 export function ToolBar(): JSXElement {
     const editorCtx = useEditorContext();
@@ -20,6 +22,10 @@ export function ToolBar(): JSXElement {
         {
             mode: new MarkerMode(),
             icon: MarkerIconSvg,
+        },
+        {
+            mode: new DecorMode(),
+            icon: DecorIconSvg,
         },
     ];
 

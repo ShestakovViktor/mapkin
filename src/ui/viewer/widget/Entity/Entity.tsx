@@ -13,8 +13,8 @@ type Props = {
 export function Entity(props: Props): JSXElement {
     const context = useViewerContext();
 
-    const entity = createMemo(() => context.project()
-        .getEntityById(props.entityId), undefined, {equals: false});
+    const entity = createMemo(() => context.store.entity
+        .getById(props.entityId), undefined, {equals: false});
 
     const entities: {
         [key: string]: (props: {entityId: string}) => JSXElement;

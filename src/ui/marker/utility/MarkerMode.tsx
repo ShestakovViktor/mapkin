@@ -2,12 +2,12 @@ import {Marker} from "@src/type";
 
 import {Modal} from "@ui/widget";
 import {MarkerCreateDialog} from "@src/ui/marker/widget";
-import {OVERLAY} from "@project";
 import {Mode} from "@ui/editor/utility";
 import {ViewerContextType, useViewerContext} from "@ui/viewer/context";
 import {AddEntityAction} from "@core/action";
 import {EditorContexType, useEditorContext} from "@ui/editor/context";
 import {blobToBase64} from "@src/util";
+import {OVERLAY} from "@store";
 
 export class MarkerMode implements Mode {
     private click: [number, number] = [0, 0];
@@ -51,11 +51,11 @@ export class MarkerMode implements Mode {
             .all(files.map((file) => blobToBase64(file)));
 
         const graphicIds = strings.map((base64: string): string => {
-            return this.viewerCtx.project().addSource(base64);
+            return this.viewerCtx.store.source.add(base64);
         });
 
-        const {sourceId} = this.viewerCtx.project()
-            .getAsset(assetId);
+        const {sourceId} = this.viewerCtx.store.asset
+            .get(assetId);
 
         const markerData: Marker = {
             type: "marker",
@@ -66,12 +66,12 @@ export class MarkerMode implements Mode {
             graphicIds,
         };
 
-        const layerId = this.viewerCtx.project()
-            .getEntityByParams({name: OVERLAY});
+        const layerId = this.viewerCtx.store.entity
+            .getByParams({name: OVERLAY});
 
         if (!layerId) throw new Error("There is no overlay layer");
         const addEntityAction = new AddEntityAction(
-            this.viewerCtx.project(),
+            this.viewerCtx.store,
             markerData,
             layerId
         );

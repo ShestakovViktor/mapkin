@@ -1,6 +1,7 @@
-import {Media, Project} from "@project";
+import {Media} from "@core";
 import {ArchiveDriver} from "@src/interface";
 import {Data} from "@src/type";
+import {Store} from "@src/store";
 
 type Blobs = {[key: string]: Blob};
 
@@ -19,17 +20,20 @@ export class Converter {
         },
     };
 
-    constructor(private archiveDriver: ArchiveDriver) {
+    constructor(
+        private store: Store,
+        private archiveDriver: ArchiveDriver
+    ) {
         this.media = new Media();
     }
 
-    async exportProject(project: Project): Promise<Blob> {
-        const blobs = this.exportData(project);
+    async exportAsFile(): Promise<Blob> {
+        const blobs = this.exportData();
         return await this.archiveDriver.archive(blobs);
     }
 
-    private exportData(project: Project): {[key: string]: Blob} {
-        const projectData = project.getData();
+    private exportData(): {[key: string]: Blob} {
+        const projectData = this.store.getData();
         const [source, blobs] = this.splitSourcesToBase64(projectData.source);
         const data = {...projectData, source};
 
@@ -58,11 +62,10 @@ export class Converter {
         return [source, blobs];
     }
 
-    async importProject(blob: Blob): Promise<Data> {
+    async importProject(blob: Blob): Promise<void> {
         const files = await this.archiveDriver.extract(blob);
         const data = await this.importData(files);
-
-        return data;
+        this.store.setData(data);
     }
 
     private async importData(files: Blobs): Promise<Data> {
@@ -77,13 +80,13 @@ export class Converter {
         return data;
     }
 
-    async exportSite(project: Project): Promise<Blob> {
-        const blobs = await this.exportStatic(project);
+    async exportAsSite(): Promise<Blob> {
+        const blobs = await this.exportStatic(this.store);
         return await this.archiveDriver.archive(blobs);
     }
 
-    private async exportStatic(project: Project): Promise<Blobs> {
-        const projectData = project.getData();
+    private async exportStatic(store: Store): Promise<Blobs> {
+        const projectData = store.getData();
         const [source, blobs] = this.splitSourcesToFiles(projectData.source);
 
         const data = {...projectData, source};

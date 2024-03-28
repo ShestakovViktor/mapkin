@@ -21,18 +21,18 @@ export function AssetSelectDialog(props: Props): JSXElement {
     const viewerCtx = useViewerContext();
 
     const getAssets = (): [string, Asset][] => Object
-        .entries(viewerCtx.project().getAssets());
+        .entries(viewerCtx.store.asset.getAll());
 
     const [assets, setAssets] = createSignal(getAssets());
 
-    createEffect(on(viewerCtx.project, () => setAssets(getAssets())));
+    createEffect(on(viewerCtx.init, () => setAssets(getAssets())));
 
     const assetCreateModal = new Modal("#modal");
     assetCreateModal.render(
         <AssetCreateDialog
             onComplete={() => {
                 assetCreateModal.hide();
-                setAssets(Object.entries(viewerCtx.project().getAssets()));
+                setAssets(Object.entries(viewerCtx.store.asset.getAll()));
             }}
             onClose={() => assetCreateModal.hide()}
         />
@@ -64,11 +64,11 @@ export function AssetSelectDialog(props: Props): JSXElement {
                                 class={styles.CloseButton}
                                 icon={SaltireIconSvg}
                                 onClick={() => {
-                                    viewerCtx.project().delAsset(id);
+                                    //viewerCtx.project().delAsset(id);
                                 }}
                             />
                             <img
-                                src={viewerCtx.project().getSource(data.sourceId)}
+                                src={viewerCtx.store.source.get(data.sourceId)}
                                 onClick={() => {
                                     if (props.onSelect) props.onSelect(id);
                                     props.onComplete();

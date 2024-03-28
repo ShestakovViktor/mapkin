@@ -1,11 +1,13 @@
 import {Accessor, Setter, createContext, useContext} from "solid-js";
-import {Project} from "@project";
+import {Store} from "@store";
 import {SetStoreFunction} from "solid-js/store";
 import {MapContext} from "@ui/viewer/context";
 
 export type ViewerContextType = {
-    project: Accessor<Project>;
-    setProject: Setter<Project>;
+    store: Store;
+
+    init: Accessor<undefined>;
+    reInit: Setter<undefined>;
 
     render: Accessor<undefined>;
     reRender: Setter<undefined>;

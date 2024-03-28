@@ -13,7 +13,8 @@ export function Group(props: Props): JSXElement {
     const context = useViewerContext();
 
     const entity = createMemo(
-        () => context.project().getEntityById(props.entityId) as GroupData,
+        () => context.store.entity
+            .getById(props.entityId) as GroupData,
         undefined,
         {equals: false}
     );

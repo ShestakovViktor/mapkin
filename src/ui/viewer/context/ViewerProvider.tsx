@@ -1,20 +1,17 @@
 import {JSXElement, createSignal} from "solid-js";
 import {MapContext, ViewerContext} from "@ui/viewer/context";
 import {createStore} from "solid-js/store";
-import {Project} from "@project";
+import {Store} from "@store";
 
 type Props = {
-    project: Project;
+    store: Store;
     children: JSXElement | JSXElement[];
 };
 
 export function ViewerProvider(props: Props): JSXElement {
+    const [init, reInit] = createSignal(undefined, {equals: false});
     const [render, reRender] = createSignal(undefined, {equals: false});
     const [root, setRoot] = createSignal<HTMLElement | undefined>();
-
-    const [project, setProject] = createSignal(
-        props.project, {equals: false}
-    );
 
     const [mapCtx, setMapCtx] = createStore<MapContext>({
         x: 0,
@@ -25,10 +22,11 @@ export function ViewerProvider(props: Props): JSXElement {
     });
 
     const value = {
-        project,
-        setProject,
+        store: props.store,
         mapCtx,
         setMapCtx,
+        init,
+        reInit,
         render,
         reRender,
         root,

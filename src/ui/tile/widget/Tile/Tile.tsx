@@ -9,8 +9,10 @@ type Props = {
 
 export function Tile(props: Props): JSXElement {
     const context = useViewerContext();
-    const entity = context.project().getEntityById(props.entityId) as TileData;
-    const src = context.project().getSource(entity.sourceId);
+    const entity = context.store.entity
+        .getById(props.entityId) as TileData;
+    const src = context.store.source
+        .get(entity.sourceId);
 
     return (
         <img

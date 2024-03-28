@@ -3,10 +3,10 @@ import en from "./string/en.json";
 
 import i18next from "i18next";
 import {Dialog, Form, Row} from "@ui/widget";
-import {useEditorContext} from "@ui/editor/context";
 import {JSXElement} from "solid-js";
 import {useViewerContext} from "@ui/viewer/context";
-import {Project} from "@project";
+import {Store} from "@store";
+import {useEditorContext} from "@ui/editor/context";
 
 i18next.addResourceBundle(
     "en",
@@ -21,7 +21,8 @@ type Props = {
 };
 
 export function ProjectCreateDialog(props: Props): JSXElement {
-    const context = useViewerContext();
+    const editorCtx = useEditorContext();
+    const viewerCtx = useViewerContext();
 
     function handleSubmit(event: SubmitEvent): void {
         event.preventDefault();
@@ -44,18 +45,17 @@ export function ProjectCreateDialog(props: Props): JSXElement {
             formData.get("horizontalTilesNumber")
         ) || 1;
 
-        const projectData = {
+        const storeData = {
             projectName,
             mapFile,
             horizontalTilesNumber,
             verticalTilesNumber,
         };
 
-        const project = new Project();
-        project.initProject(projectData)
-            .then(() => context.setProject(project))
-            .then(() => context.reRender())
-            .catch(error => console.log(error));
+        editorCtx.core.initProject(storeData)
+            .then(() => viewerCtx.reInit())
+            .then(() => viewerCtx.reRender())
+            .catch(error => {throw new Error(error);});
 
         props.onComplete();
     }
